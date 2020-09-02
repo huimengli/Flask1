@@ -1,0 +1,136 @@
+﻿{% extends "back.html" %}
+
+{% block head %}
+<!-- 检查登录 -->
+<script>
+    /**当前用户名称 */
+    var nowUser = "";
+</script>
+<!-- 页面样式 -->
+<style>
+    body {
+        position: relative;
+        z-index: -100;
+    }
+</style>
+<link href="/static/css/oneValue.css" rel="stylesheet" />
+{% endblock %}
+{% block value%}
+<div class="outBox">
+    <div class="back">
+        <div class="block">
+            <div class="blockTitle">{{context.diarytitle}}</div>
+            <div class="blockValue">{{context.diaryvalue}}</div>
+            <div class="blockBack">返回</div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+<script src="/static/js/oneValue.js"></script>
+<script>
+    //从后台加载页面内容
+    !function () {
+        /**外部框 */
+        var outBox = lt_code.getAll(".outBox");
+        /**图片内容 */
+        var photoValue;
+        /**表题框 */
+        var title = lt_code.getAll(".blockTitle");
+        /**内容框 */
+        var blockValue = lt_code.getAll(".blockValue");
+        /**返回按钮 */
+        var back = lt_code.getAll(".blockBack");
+
+        /**
+         * 产生一个新的段落
+         * @param {string} str 段落内容
+         */
+        var newSpan = function (str) {
+            var newSpanDom = lt_code.newDom("div", {
+                class: "spanblock",
+                style: {
+                    "text-indent": "2em",
+                }
+            });
+            newSpanDom.innerText = str;
+            return newSpanDom;
+        }
+
+        /**新的换行符 */
+        var newBr = function () {
+            return lt_code.newDom("br");
+        }
+
+        $(blockValue).ready(function () {
+            console.log(blockValue.innerText);
+            try {
+                var outPut = lt_code.base64.decode(blockValue.innerText);
+                blockValue.innerHTML = "";
+                if (/\n/.test(outPut)) {
+                    var outPuts = outPut.split(/\n/);
+                    outPuts = Array.prototype.slice.call(outPuts);
+                    //console.log(outPuts.length);
+                    //for (var i = 0; i < outPut.length-1; i++) {
+                    //    lt_code.addChild(newSpan(outPuts[i]), blockValue);
+                    //    //lt_code.addChild(newBr(), blockValue);
+                    //}
+                    outPuts.forEach(function (e) {
+                        lt_code.addChild(newSpan(e), blockValue);
+                    });
+                } else {
+                    console.log(outPut);
+                    lt_code.addChild(newSpan(outPut), blockValue);
+                }
+            } catch (e) {
+                blockValue.innerText = blockValue.innerText;
+                console.log(e);
+            }
+        })
+        //$.ajax({
+        //    type: "post",
+        //    url: "oneValue.aspx/GetValue",
+        //    data: '{}',
+        //    contentType: "application/json; charset=utf-8",
+        //    dataType: "text",
+        //    success: function (data) {
+        //        //console.log(data);
+        //        data = JSON.parse(data);
+        //        //console.log(data);
+        //        data = JSON.parse(data.d);
+        //        //console.log(data);
+        //        title.innerHTML = data.other;
+        //        blockValue.innerHTML = data.value;
+        //        //读取图片
+        //        //$.ajax({
+        //        //    type: "post",
+        //        //    url: "oneValue.aspx/GetPhoto",
+        //        //    data: '{}',
+        //        //    contentType: "application/json; charset=utf-8",
+        //        //    dataType: "text",
+        //        //    success: function (data) {
+        //        //        //console.log(data);
+        //        //        data = JSON.parse(data);
+        //        //        //console.log(data);
+        //        //        photoValue = data.d;
+        //        //        if (photoValue.length > 10) {
+        //        //            outBox.style.backgroundImage = "url(" + photoValue + ")";
+        //        //        }
+        //        //    },
+        //        //    error: function (err) {
+        //        //        console.error(err);
+        //        //    }
+        //        //});
+        //    },
+        //    error: function (err) {
+        //        console.error(err);
+        //    }
+        //});
+
+        back.onmousedown = function () {
+            window.location.href = "/oneValue/?exit=true";
+        }
+    }();
+</script>
+{% endblock %}
+

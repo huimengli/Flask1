@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>c9daaf0b-e606-4047-9b0c-29b4b3706ebc</ProjectGuid>
+    <ProjectHome>.</ProjectHome>
+    <ProjectTypeGuids>{789894c7-04a9-4a11-a6b5-3f4435165112};{1b580a1a-fdb3-4b32-83e1-6407eb2722e6};{349c5851-65df-11da-9384-00065b846f21};{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
+    <StartupFile>runserver.py</StartupFile>
+    <SearchPath>
+    </SearchPath>
+    <WorkingDirectory>.</WorkingDirectory>
+    <LaunchProvider>Web launcher</LaunchProvider>
+    <WebBrowserUrl>http://localhost</WebBrowserUrl>
+    <OutputPath>.</OutputPath>
+    <SuppressCollectPythonCloudServiceFiles>true</SuppressCollectPythonCloudServiceFiles>
+    <Name>Flask1</Name>
+    <RootNamespace>Flask1</RootNamespace>
+    <InterpreterId>MSBuild|env|$(MSBuildProjectFullPath)</InterpreterId>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Flask1\item.py" />
+    <Compile Include="Flask1\mySqlLink.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Flask1\users.py" />
+    <Compile Include="runserver.py" />
+    <Compile Include="Flask1\__init__.py" />
+    <Compile Include="Flask1\views.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Flask1\" />
+    <Folder Include="Flask1\static\" />
+    <Folder Include="Flask1\static\content\" />
+    <Folder Include="Flask1\static\fonts\" />
+    <Folder Include="Flask1\static\images\" />
+    <Folder Include="Flask1\static\images\background\" />
+    <Folder Include="Flask1\static\images\number\" />
+    <Folder Include="Flask1\static\JavaScriptCode\" />
+    <Folder Include="Flask1\static\JavaScriptCode\dist\" />
+    <Folder Include="Flask1\static\JavaScriptCode\dist\lt_code_3\" />
+    <Folder Include="Flask1\static\JavaScriptCode\dist\lt_code_3\css\" />
+    <Folder Include="Flask1\static\JavaScriptCode\dist\lt_code_3\js\" />
+    <Folder Include="Flask1\static\JavaScriptCode\dist\lt_code_5\" />
+    <Folder Include="Flask1\static\JavaScriptCode\dist\lt_code_5\css\" />
+    <Folder Include="Flask1\static\JavaScriptCode\dist\lt_code_5\js\" />
+    <Folder Include="Flask1\static\JavaScriptCode\dist\lt_code_6\" />
+    <Folder Include="Flask1\static\JavaScriptCode\dist\lt_code_6\css\" />
+    <Folder Include="Flask1\static\JavaScriptCode\dist\lt_code_6\js\" />
+    <Folder Include="Flask1\static\JavaScriptCode\dist\lt_code_7\" />
+    <Folder Include="Flask1\static\JavaScriptCode\dist\lt_code_7\css\" />
+    <Folder Include="Flask1\static\JavaScriptCode\dist\lt_code_7\js\" />
+    <Folder Include="Flask1\static\JavaScriptCode\min\" />
+    <Folder Include="Flask1\static\JavaScriptCode\sVersion\" />
+    <Folder Include="Flask1\static\js\" />
+    <Folder Include="Flask1\static\css\" />
+    <Folder Include="Flask1\static\scripts\" />
+    <Folder Include="Flask1\templates\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Flask1\static\css\all.css" />
+    <Content Include="Flask1\static\css\ChangeValue.css" />
+    <Content Include="Flask1\static\css\Default.css" />
+    <Content Include="Flask1\static\css\Login.css" />
+    <Content Include="Flask1\static\css\Menu.css" />
+    <Content Include="Flask1\static\css\oneValue.css" />
+    <Content Include="Flask1\static\images\background\1.jpg" />
+    <Content Include="Flask1\static\images\background\2.jpg" />
+    <Content Include="Flask1\static\images\background\3.jpg" />
+    <Content Include="Flask1\static\images\number\0.png" />
+    <Content Include="Flask1\static\images\number\1.png" />
+    <Content Include="Flask1\static\images\number\2.png" />
+    <Content Include="Flask1\static\images\number\3.png" />
+    <Content Include="Flask1\static\images\number\4.png" />
+    <Content Include="Flask1\static\images\number\5.png" />
+    <Content Include="Flask1\static\images\number\6.png" />
+    <Content Include="Flask1\static\images\number\7.png" />
+    <Content Include="Flask1\static\images\number\8.png" />
+    <Content Include="Flask1\static\images\number\9.png" />
+    <Content Include="Flask1\static\JavaScriptCode\.gitignore" />
+    <Content Include="Flask1\static\JavaScriptCode\dist\lt_code_10.js" />
+    <Content Include="Flask1\static\JavaScriptCode\dist\lt_code_11.js" />
+    <Content Include="Flask1\static\JavaScriptCode\dist\lt_code_12.js" />
+    <Content Include="Flask1\static\JavaScriptCode\dist\lt_code_13.js" />
+    <Content Include="Flask1\static\JavaScriptCode\dist\lt_code_14.js" />
+    <Content Include="Flask1\static\JavaScriptCode\dist\lt_code_3\css\action.css" />
+    <Content Include="Flask1\static\JavaScriptCode\dist\lt_code_3\js\lt_code.js" />
+    <Content Include="Flask1\static\JavaScriptCode\dist\lt_code_5\css\action.css" />
+    <Content Include="Flask1\static\JavaScriptCode\dist\lt_code_5\js\lt_code.js" />
+    <Content Include="Flask1\static\JavaScriptCode\dist\lt_code_6\css\action.css" />
+    <Content Include="Flask1\static\JavaScriptCode\dist\lt_code_6\js\lt_code.js" />
+    <Content Include="Flask1\static\JavaScriptCode\dist\lt_code_7\css\action.css" />
+    <Content Include="Flask1\static\JavaScriptCode\dist\lt_code_7\js\lt_code.js" />
+    <Content Include="Flask1\static\JavaScriptCode\dist\lt_code_9.js" />
+    <Content Include="Flask1\static\JavaScriptCode\lt_code.js" />
+    <Content Include="Flask1\static\JavaScriptCode\min\lt_code_14.min.js" />
+    <Content Include="Flask1\static\JavaScriptCode\sVersion\lt_code_s11.js" />
+    <Content Include="Flask1\static\JavaScriptCode\sVersion\lt_code_s14.js" />
+    <Content Include="Flask1\static\JavaScriptCode\文件合并.bat" />
+    <Content Include="Flask1\static\js\Default.js" />
+    <Content Include="Flask1\static\js\jquery-3.3.1.js" />
+    <Content Include="Flask1\static\js\Login.js" />
+    <Content Include="Flask1\static\js\Menu.js" />
+    <Content Include="Flask1\static\js\oneValue.js" />
+    <Content Include="Flask1\templates\back.html" />
+    <Content Include="Flask1\templates\index.html" />
+    <Content Include="Flask1\templates\oneValue.html" />
+    <Content Include="Flask1\templates\signIn.html" />
+    <Content Include="Flask1\templates\signOn.html" />
+    <Content Include="Flask1\templates\changeValue.html" />
+    <Content Include="requirements.txt" />
+    <Content Include="Flask1\static\content\bootstrap.css" />
+    <Content Include="Flask1\static\content\bootstrap.min.css" />
+    <Content Include="Flask1\static\content\site.css" />
+    <Content Include="Flask1\static\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Flask1\static\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Flask1\static\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="Flask1\static\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="Flask1\static\scripts\bootstrap.js" />
+    <Content Include="Flask1\static\scripts\bootstrap.min.js" />
+    <Content Include="Flask1\static\scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Flask1\static\scripts\jquery-1.10.2.js" />
+    <Content Include="Flask1\static\scripts\jquery-1.10.2.min.js" />
+    <Content Include="Flask1\static\scripts\jquery-1.10.2.min.map" />
+    <Content Include="Flask1\static\scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Flask1\static\scripts\jquery.validate.js" />
+    <Content Include="Flask1\static\scripts\jquery.validate.min.js" />
+    <Content Include="Flask1\static\scripts\jquery.validate.unobtrusive.js" />
+    <Content Include="Flask1\static\scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Flask1\static\scripts\modernizr-2.6.2.js" />
+    <Content Include="Flask1\static\scripts\respond.js" />
+    <Content Include="Flask1\static\scripts\respond.min.js" />
+    <Content Include="Flask1\static\scripts\_references.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <Interpreter Include="env\">
+      <Id>env</Id>
+      <Version>3.6</Version>
+      <Description>env (Python 3.6 (64-bit))</Description>
+      <InterpreterPath>Scripts\python.exe</InterpreterPath>
+      <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
+      <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
+      <Architecture>X64</Architecture>
+    </Interpreter>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.Web.targets" />
+  <!-- Specify pre- and post-build commands in the BeforeBuild and 
+       AfterBuild targets below. -->
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <AutoAssignPort>True</AutoAssignPort>
+          <UseCustomServer>True</UseCustomServer>
+          <CustomServerUrl>http://localhost</CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}" User="">
+        <WebProjectProperties>
+          <StartPageUrl>
+          </StartPageUrl>
+          <StartAction>CurrentPage</StartAction>
+          <AspNetDebugging>True</AspNetDebugging>
+          <SilverlightDebugging>False</SilverlightDebugging>
+          <NativeDebugging>False</NativeDebugging>
+          <SQLDebugging>False</SQLDebugging>
+          <ExternalProgram>
+          </ExternalProgram>
+          <StartExternalURL>
+          </StartExternalURL>
+          <StartCmdLineArguments>
+          </StartCmdLineArguments>
+          <StartWorkingDirectory>
+          </StartWorkingDirectory>
+          <EnableENC>False</EnableENC>
+          <AlwaysStartWebServerOnDebug>False</AlwaysStartWebServerOnDebug>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

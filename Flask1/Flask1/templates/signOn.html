@@ -1,0 +1,351 @@
+﻿{% extends "back.html" %}
+
+{% block head %}
+<style>
+    div#code{
+        display:none;
+        opacity:0;
+        width:0;
+        height:0;
+        overflow:hidden;
+    }
+</style>
+<link href="/static/css/Default.css" rel="stylesheet" />
+{% endblock %}
+<!-- 页面内容 -->
+{% block value %}
+<div>
+    <div class="loadIn">
+        <div class="lina">
+            <div class="title">
+                账号登录
+            </div>
+        </div>
+        <div class="line">
+            <div class="line_left">请输入账户名称</div>
+            <div class="line_right">
+                <input type="text" class="input" id="input_name" name="" value="" placeholder="请输入账户名称" />
+                <div class="alert">
+                    <div class="x"></div>
+                </div>
+            </div>
+        </div>
+        <div class="line">
+            <div class="line_left">请输入账号密码</div>
+            <div class="line_right">
+                <input id="input_password" autocomplete="on" class="input" type="password" name="" value="" placeholder="请输入账户密码" />
+                <div class="alert">
+                    <div class="x"></div>
+                </div>
+            </div>
+        </div>
+        <div class="line">
+            <div class="line_left">请输入此验证码</div>
+            <div class="line_right">
+                <input id="input_code" class="input" type="text" name="name" value="" placeholder="验证" />
+                <input type="button" class="subit" name="name" value="" />
+                <div class="change_code" title="点击刷新">
+                    <canvas width="60" height="25" id="code"></canvas>
+                </div>
+                <div class="alert">
+                    <div class="x"></div>
+                </div>
+            </div>
+        </div>
+        <div class="lina">
+            <div class="left_line">
+                <input class="change_page" type="button" name="name" value="登录" />
+            </div>
+            <div class="right_line">
+                <input class="change_page" type="button" name="name" value="注册" />
+            </div>
+        </div>
+    </div>
+    <div class="allFooter">
+        &copy; <a href="https://github.com/huimengli" target="_blank" title="我的GitHub地址">绘梦璃</a> | <a target="_blank" href="http://beian.miit.gov.cn/" title="备案信息查看">浙ICP备2020031480号</a>
+    </div>
+</div>
+<div id="contextcode">{{context.code}}</div>
+<img id="background" src="/static/images/background/3.jpg" />
+{% endblock %}
+{% block script %}
+<script src="/static/js/Default.js"></script>
+<script>
+    /**改变验证码 */
+    var change_code = function () {
+        /**验证码 */
+        var code = lt_code.getAll("#contextcode").innerText;
+        //获取验证码
+        //$(function () {
+        //    $.ajax({
+        //        type: "post",
+        //        url: "Default.aspx/GetCode",
+        //        data: "{}",
+        //        contentType: "application/json; charset=utf-8",
+        //        dataType: "text",
+        //        success: function (data) {
+        //            data = JSON.parse(lt_code.getJson(data));
+        //            code = data.d;
+        //            //console.log(code);
+        //        },
+        //        error: function (err) {
+        //            console.log(err);
+        //        }
+        //    });
+        //})
+        /**图片 */
+        var num = new Array();
+        for (var i = 0; i < 10; i++) {
+            num[i] = "/static/images/number/" + i + ".png";
+        }
+        //验证码
+        /**重新请求验证码按钮 */
+        var buttom = lt_code.getAll2("input", lt_code.getAll(".line_right", 2), 1);
+        //console.log(buttom);
+        //隐藏重新请求验证码按钮
+        buttom.style.width = "0px";
+        buttom.style.height = "0px";
+        buttom.style.position = "relative";
+        buttom.style.opacity = "0";
+        buttom.style.display = "none";
+        /**输入验证码的输入框 */
+        var input_code = lt_code.getAll(".input");
+        input_code = lt_code.getAll(".input", input_code.length - 1);
+        //修改样式
+        input_code.style.width = "40px";
+        /**绘画画布 */
+        var canvas = lt_code.getAll("#code");/*document.createElement("canvas");*/
+        /**绘画对象 */
+        var ctx = canvas.getContext("2d");
+        /**画布的宽度 */
+        var width = canvas.offsetWidth;
+        /**画布的高度 */
+        var height = canvas.offsetHeight;
+        /**生成随机的颜色 */
+        var color = lt_code.variable.roundColor(255, 160);
+        /**用来生成的图片组 */
+        var imgs = new Array();
+
+        /**
+         * 生成验证码图片
+         * @param {string} str 验证码
+         */
+        var make_code = function (str) {
+            //清空画布
+            ctx.clearRect(0, 0, width, height);
+
+            //让背景显示为随机颜色
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(width, 0);
+            ctx.lineTo(width, height);
+            ctx.lineTo(0, height);
+            ctx.lineTo(0, 0);
+            ctx.fillStyle = color;
+            ctx.fill();
+            ctx.closePath();
+
+            for (var i = 0; i < str.length; i++) {
+                imgs[i] = document.createElement("img");
+                imgs[i].src = num[lt_code.getNum(str[i])];
+            }
+
+
+            setTimeout(function () {
+                for (var i = 0; i < str.length; i++) {
+                    make_code_one(imgs[i], i * width / 4, 0);
+                }
+
+                for (var i = 0; i < 3; i++) {
+                    ramdom_line();
+                }
+
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.lineTo(width, 0);
+                ctx.lineTo(width, height);
+                ctx.lineTo(0, height);
+                ctx.lineTo(0, 0);
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = "black";
+                ctx.stroke();
+                ctx.closePath();
+            }, 100);
+        }
+
+        /**
+         * 生成一位验证码
+         * @param {HTMLImageElement} img 一位验证码
+         * @param {number} x 验证码开头_x
+         * @param {number} y 验证码开头_y
+         */
+        var make_code_one = function (img, x, y) {
+            ctx.beginPath();
+            ctx.drawImage(img, x, y, width / 4, height);
+            ctx.closePath();
+        }
+
+        /**
+         * 画随机干扰线
+         */
+        var ramdom_line = function () {
+            var x0, y0, x1, y1, weight, color;
+            x0 = lt_code.variable.random() * width;
+            y0 = lt_code.variable.random() * height;
+            x1 = lt_code.variable.random() * width;
+            y1 = lt_code.variable.random() * height;
+            weight = [0.1, 0.2, 0.3];
+            color = lt_code.variable.roundColor(180);
+            ctx.beginPath();
+            ctx.lineWidth = weight[
+                lt_code.variable.random() * weight.length
+            ];
+            ctx.moveTo(x0, y0);
+            ctx.lineTo(x1, y1);
+            ctx.strokeStyle = color;
+            ctx.stroke();
+            ctx.closePath();
+        }
+
+        //请求验证码需要时间,需要等待一定时间后再打印验证码
+        setTimeout(function () {
+            code = function () {
+                if (!code||code=="") {
+                    alert("验证码请求失败!");
+                    return "0000";
+                } else {
+                    return code;
+                }
+            }();
+            make_code(code);
+        }, 200);
+    }
+
+    //生成验证码(此代码必须放在页面内部)
+    !function () {
+        change_code();
+    }();
+</script>
+<script>
+    //重新请求验证码
+    !function () {
+        var code = lt_code.getAll("#code");
+        code.style.cursor = "pointer";
+        code.onmousedown = function () {
+            lt_code.getAll(".subit").click();
+        }
+    }();
+</script>
+    <%-- 上传和跳转页面 --%>
+<script>
+    !function () {
+        /**此页面验证码 */
+        var code;
+        /**登录按钮 */
+        var denlu = lt_code.getAll(".change_page", 0);
+        /**注册按钮 */
+        var zhuce = lt_code.getAll(".change_page", 1);
+        lt_code.getAll(".lina", 1).onmouseenter = function () {
+            //获取验证码
+            code = lt_code.getAll("#contextcode").innerText;
+            //$(function () {
+            //    $.ajax({
+            //        type: "post",
+            //        url: "Default.aspx/GetCode",
+            //        data: "{}",
+            //        contentType: "application/json; charset=utf-8",
+            //        dataType: "text",
+            //        success: function (data) {
+            //            data = JSON.parse(lt_code.getJson(data));
+            //            code = data.d;
+            //            //console.log(code);
+            //        },
+            //        error: function (err) {
+            //            console.log(err);
+            //        }
+            //    });
+            //});
+            if (denlu.style.color == "black") {
+                denlu.onmousedown = function () {
+                    var values = new Array();
+                    for (var i = 0; i < lt_code.getAll(".input").length; i++) {
+                        values[i] = lt_code.getAll(".input", i).value;
+                    }
+                    //console.log(code);
+                    if (values[2] != code) {
+                        alert("验证码输入错误!");
+                        lt_code.getAll(".subit").click();
+                        return false;
+                    }
+                    //console.log(values);
+                    var value = {
+                        "name": values[0],
+                        "password": values[1]
+                    };
+                    //console.log(JSON.stringify(value));
+                    //是否登录
+                    window.location.href = window.location.href.split("?")[0] + "?name=" + value.name + "&password=" + lt_code.md5(value.password);
+                    //$(function () {
+                    //    $.ajax({
+                    //        type: "post",
+                    //        url: "Default.aspx/LoadIn",
+                    //        data: JSON.stringify(value),
+                    //        contentType: "application/json; charset=utf-8",
+                    //        dataType: "text",
+                    //        success: function (data) {
+                    //            data = JSON.parse(lt_code.getJson(data));
+                    //            data = JSON.parse(data.d);
+                    //            //console.log(data);
+                    //            if (data.isLoad == "True") {
+                    //                alert("登录成功");
+                    //                Go();
+                    //            } else {
+                    //                alert("输入的用户名或密码不正确");
+                    //                lt_code.getAll(".subit").click();
+                    //            }
+                    //        },
+                    //        error: function (err) {
+                    //            alert(err);
+                    //        }
+                    //    });
+                    //});
+                }
+            } else {
+                denlu.onmousedown = null;
+            }
+        };
+        zhuce.onmousedown = function () {
+            window.location.href = "/signIn/";
+        }
+    }();
+</script>
+<script>
+    //重置验证码
+    $(".subit").click(function () {
+        window.location.href = window.location.href.split("?")[0] + "?changeCode=true";
+        //$(function () {
+        //    $.ajax({
+        //        type: "post",
+        //        url: "Default.aspx/ChangeCode",
+        //        data: "{}",
+        //        contentType: "application/json; charset=utf-8",
+        //        dataType: "text",
+        //        success: function (data) {
+        //            console.log(data);
+        //            change_code();
+        //        },
+        //        error: function (err) {
+        //            console.log("重置失败");
+        //            console.log(err);
+        //        }
+        //    })
+        //});
+    });
+</script>
+<script>
+    /**跳转页面的函数 */
+    var Go = function () {
+        window.location.href = "Menu.aspx";
+    }
+</script>
+{% endblock %}

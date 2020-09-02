@@ -1,0 +1,30 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head runat="server">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>{{context.name}}小日记网站-{{context.title}}</title>
+    <link href="/static/css/all.css" rel="stylesheet" />
+    <script src="/static/JavaScriptCode/lt_code.js"></script>
+    <script src="/static/js/jquery-3.3.1.js"></script>
+    <style>
+        * {
+            border: 0;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <!--<form id="form1" runat="server">
+        <div>
+            <asp:ContentPlaceHolder id="ContentPlaceHolder1" runat="server">
+
+            </asp:ContentPlaceHolder>
+        </div>
+    </form>-->
+    {% block value %}{% endblock %}
+    {% block script %}{% endblock %}
+</body>
+</html>

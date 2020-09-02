@@ -1,0 +1,407 @@
+﻿.background {
+    width: 100%;
+    height: 100%;
+}
+
+/*原点样式*/
+.print {
+    width: 40px;
+    float: right;
+    height: 40px;
+    background-color: transparent;
+    border-radius: 20px;
+    cursor: pointer;
+    position: relative;
+}
+
+    .print::before {
+        content: "";
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background-color: blue;
+        position: absolute;
+        top: 2px;
+        left: 2px;
+    }
+
+    .print::after {
+        content: '';
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        background-color: white;
+        position: absolute;
+        top: 18px;
+        left: 18px;
+    }
+
+.menu {
+    width: 200px;
+    height: 100%;
+    padding-top: 20px;
+    position: fixed;
+    top: 0;
+    opacity: 0.4;
+    background-color: black;
+    left: -150px;
+    transition-duration: 0.3s;
+    /*padding-right:10px;*/
+    /*border-right: 2px solid;
+    border-image: -webkit-linear-gradient( top,transparent 0%,transparent 15%,#999 50%,transparent 75%,transparent 100%) 1 1;*/
+}
+
+    .menu:hover {
+        opacity: 1;
+    }
+
+    .menu ul {
+        height: 80%;
+        width: 100%;
+        float: right;
+        padding-top: 40px;
+        list-style-type: none;
+    }
+
+    .menu li {
+        transition-duration: 0.3s;
+        margin-bottom: 20px;
+        height: 40px;
+        line-height: 40px;
+        margin-left: 50px;
+        padding-left: 20px;
+        cursor: pointer;
+        border-radius: 10px 0 0 10px;
+        border-right: 4px solid;
+        border-right-color: transparent;
+        background-color: #999;
+    }
+
+        .menu li:hover {
+            background-color: #aaa !important;
+        }
+
+        
+
+.close_menu {
+    transition-duration: 1s;
+    float: right;
+    width: 40px;
+    height: 40px;
+    margin-right: 3px;
+    border-radius: 50%;
+    border: 1px solid #111;
+    text-align: center;
+    line-height: 40px;
+    cursor: pointer;
+    background-color: #ccc;
+}
+
+.back{
+    width:1024px;
+    height:768px;
+    /*margin:0 auto;*/
+    min-height:660px!important;
+}
+
+.exitUser {
+    width: 150px;
+    height: 40px;
+    position: relative;
+    float: right;
+    transition-duration:0.2s;
+    border-radius:10px 0 0 10px;
+    background-color:white;
+    border-right:5px solid red;
+    line-height:40px;
+    overflow:hidden;
+}
+
+.exitUser div:first-child{
+    margin-left:110px;
+}
+
+.exitUser div{
+    float:left;
+    margin-right:3px;
+    transition-duration:1s;
+}
+
+.exitUser:hover{
+    background-color:red;
+    color:white;
+    transition-duration:0.2s;
+    cursor:pointer;
+}
+
+.exitUser:hover{
+    /*background-color:red;*/
+
+}
+
+#outBox {
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    background-color: rgba(0,0,0,0.4);
+    display: none;
+}
+
+#alertBox {
+    position: relative;
+    margin: 35vh auto;
+    width: 400px;
+    height: 220px;
+    background-color: rgba(255,255,255,0.5);
+}
+
+#valueBox {
+    position: relative;
+    margin: 20px;
+    top: 20px;
+    border: 2px solid;
+    height: 176px;
+    text-align:center;
+}
+
+#valueTop {
+    height: 50px;
+    line-height: 50px;
+    font-size: 26px;
+    font-weight: 600;
+    border-bottom: 3px double;
+    width: 300px;
+    margin: 0 auto;
+}
+
+#value {
+    height: 70px;
+    line-height: 70px;
+    width: 300px;
+    margin: 0 auto;
+    border-bottom: 3px double;
+    font-size: 20px;
+}
+
+#inputBox {
+    height: 50px;
+    line-height: 50px;
+}
+
+    #inputBox input {
+        width: 70px;
+        height: 30px;
+        border-radius: 5px;
+        box-shadow: 0px 0px 5px #999;
+        margin:10px;
+        cursor:pointer;
+    }
+
+.person {
+    margin: 0 auto;
+    width: 40%;
+    text-align: center;
+}
+
+.head{
+    height:300px;
+    position:relative;
+    top:10vh;
+}
+
+.head input{
+    display:none!important;
+}
+
+.head img{
+    width:200px;
+    height:200px;
+    margin:0 auto;
+    border-radius:100px;
+}
+
+.upDate {
+    width: 200px;
+    height: 200px;
+    text-align: center;
+    margin: 0 auto;
+    font-size: 200px;
+    border-radius: 100px;
+    background-color: rgba(50,50,255,0.2);
+    line-height: 170px;
+    color:rgba(255,255,255,0.2);
+    cursor:pointer;
+}
+
+.upDateBotton {
+    display: none;
+    width: 100px;
+    margin: 0 auto;
+    height: 40px;
+    border: 1px solid #999;
+    border-radius: 5px;
+    line-height: 40px;
+    position: relative;
+    top: 10px;
+    background-color: rgba(255,255,255,0.3);
+    box-shadow: 0px 0px 1px black;
+    cursor: pointer;
+}
+
+.name {
+    font-size: 30px;
+    font-weight: 600;
+    position:relative;
+    top:10vh;
+}
+
+.afterName{
+    position:relative;
+    top:10vh;
+}
+
+.list{
+    /*height:50px;*/
+    line-height:50px;
+    border:1px solid #999;
+    overflow:hidden;
+}
+
+.list:first-child{
+    border-radius:5px 5px 0 0;
+}
+
+.list:last-child{
+    border-radius:0 0 5px 5px;
+}
+
+.listValue{
+    height:50px;
+    line-height:50px;
+    background-color:rgba(222, 222, 222, 0.4);
+    cursor:pointer;   
+}
+
+.listLeft{
+    width:50%;
+    float:left;
+}
+
+.listRight{
+    width:50%;
+    float:left;
+}
+
+.zhongxing{
+    height:50px;
+    overflow:hidden;
+    transition-duration:0.3s;
+
+}
+
+.tagBall {
+    width: 750px;
+    height: 750px;
+    margin: 0px auto;
+    position: relative;
+}
+
+.tag {
+    display: block;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    color: #000;
+    text-decoration: none;
+    font-size: 15px;
+    font-family: "微软雅黑";
+    font-weight: bold;
+}
+
+    .tag:hover {
+        border: 1px solid #666;
+    }
+
+.valueImg, .valueTitle,.valueButton, .valueValue {
+    min-height: 80px;
+    width: 600px;
+    margin: 0 auto;
+    position: relative;
+    /*top: 100px;*/
+}
+
+.valueImg{
+    height:200px;
+    text-align:center;
+}
+
+    .valueImg img {
+        max-width: 400px;
+        height: 200px;
+        display:none;
+    }
+
+    .valueImg input{
+        display:none;
+    }
+
+    .valueImg div {
+        width: 100%;
+        height: 100%;
+        border: 1px solid #999;
+        border-radius: 3px;
+        text-align: center;
+        line-height: 200px;
+        background-color: rgba(255,255,255,0.3);
+        cursor:pointer;
+    }
+
+.valueTitle input[type=text] {
+    height: 40px;
+    width: 100%;
+    border: 1px solid #999;
+    border-radius: 3px;
+    text-indent: 1em;
+    margin: 20px auto;
+    background-color:rgba(255,255,255,0.3);
+}
+
+.valueValue textarea {
+    width: 600px;
+    height: 180px;
+    padding: 10px;
+    resize: none;
+    border: 1px solid #999;
+    border-radius: 3px;
+    background-color: rgba(255,255,255,0.3);
+}
+
+.valueButton div {
+    height: 60px;
+    margin-top: 20px;
+    border: 1px solid #999;
+    border-radius: 3px;
+    background-color: rgba(255,255,255,0.3);
+}
+
+.valueButton input[type=button] {
+    width: 160px;
+    height: 40px;
+    margin: 10px 18px;
+    border: 1px solid #999;
+    border-radius: 3px;
+    opacity: 0.7;
+}
+
+.valueButton input[type=button]:last-child{
+    float:right;
+}
+
+.valueButton input[type=button]:hover{
+    transition-duration:0.3s;
+    opacity:1;
+
+}

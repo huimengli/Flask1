@@ -1,0 +1,497 @@
+﻿{% extends "back.html" %}
+
+{% block head %}
+<!-- 检查登录 -->
+<script>
+    /**当前用户名称 */
+    var nowUser = "";
+</script>
+<!-- 页面样式 -->
+<style>
+    body {
+        position: relative;
+        z-index: -100;
+        overflow:hidden;
+    }
+</style>
+<link href="/static/css/ChangeValue.css" rel="stylesheet" />
+{% endblock %}
+{% block value%}
+<div class="outBox">
+    <div class="back">
+        <div class="head person">
+            <img src="#" alt="Alternate Text" />
+            <br />
+            <div class="upDate">+</div>
+            <input class="upHeadPhoto" type="file" name="name" value="" />
+            <!--<%--<asp:FileUpload CssClass="upHeadPhoto" runat="server" />--%>-->
+            <div class="upDateBotton">
+                上传
+            </div>
+        </div>
+        <div class="name person"></div>
+        <div class="afterName">
+            <div class="zhongxing person list">
+                <div class="listValue">修改数据</div>
+                <div class="listOne">
+                    <div class="listLeft">
+                        <div>用户ID</div>
+                    </div>
+                    <div class="listMiddle">
+                        {{context.userid}}
+                    </div>
+                    <div class="listRight">
+                        <!--<%--<div class="button">修改</div>--%>-->
+                    </div>
+                </div>
+                <div class="listOne">
+                    <div class="listLeft">
+                        <div>用户姓名</div>
+                    </div>
+                    <div class="listMiddle">
+                        {{context.username}}
+                    </div>
+                    <div class="listRight">
+                        <div class="button">修改</div>
+                    </div>
+                </div>
+                <div class="listOne">
+                    <div class="listLeft">
+                        <div>用户密码</div>
+                    </div>
+                    <div class="listMiddle">
+                        &nbsp;
+                    </div>
+                    <div class="listRight">
+                        <div class="button">修改</div>
+                    </div>
+                </div>
+                <!--<div class="listOne">
+                    <div class="listLeft">
+                        <div>用户头像</div>
+                    </div>
+                    <div class="listMiddle">
+                        &nbsp;
+                    </div>
+                    <div class="listRight">
+                        <div class="button">修改</div>
+                    </div>
+                </div>-->
+            </div>
+        </div>
+        <div class="close">
+            X
+        </div>
+    </div>
+</div>
+<div class="changeValue" id="name">
+    <div class="back">
+        <div class="innerBack">
+            <input type="text" name="name" value="" placeholder="新的用户名" />
+            <input class="true" type="button" value="确认" />
+            <input class="false" type="button" value="取消" />
+        </div>
+    </div>
+    <div class="close">X</div>
+</div>
+<div class="changeValue" id="password">
+    <div class="back">
+        <div class="innerBack">
+
+            <input type="text" name="password" value="" placeholder="旧的密码" />
+            <input type="text" name="password" value="" placeholder="新的密码" />
+            <input class="true" type="button" value="确认" />
+            <input class="false" type="button" value="取消" />
+        </div>
+    </div>
+    <div class="close">X</div>
+</div>
+<div class="changeValue" id="head">
+    <div class="back">
+        <div class="innerBack">
+
+            <div>是否删除当前头像?</div>
+            <input class="true" type="button" value="确认" />
+            <input class="false" type="button" value="取消" />
+        </div>
+    </div>
+    <div class="close">X</div>
+</div>
+{% endblock %}
+{% block script %}
+<!-- 获取登录信息 -->
+<script>
+    /**信息列 */
+    var listMiddle = lt_code.getAll(".listMiddle");
+    /**修改信息按钮 */
+    var button = lt_code.getAll2(".button");
+    //获取用户信息
+    !function () {
+        //获取用户名
+        $(function () {
+            /**用户名 */
+            var nameBox = lt_code.getAll(".name");
+            //$.ajax({
+            //    type: "post",
+            //    url: "ChangeValue.aspx/GetNowUser",
+            //    data: '{n:"name"}',
+            //    contentType: "application/json; charset=utf-8",
+            //    dataType: "text",
+            //    success: function (data) {
+            //        //console.log(data);
+            //        data = JSON.parse(data);
+            //        //console.log(data);
+            //        //console.log(data);
+            //        if (/err/.test(data.d)) {
+            //            data = JSON.parse(data.d);
+            //            console.error(data.error);
+            //        } else {
+            //            nowUser = data.d;
+            //            nameBox.innerText = nowUser;
+            //            listMiddle[1].innerHTML = nowUser;
+            //        }
+            //    },
+            //    error: function (err) {
+            //        console.error(err);
+            //    }
+            //});
+        });
+        //获取id
+        //$(function () {
+        //    $.ajax({
+        //        type: "post",
+        //        url: "ChangeValue.aspx/GetNowUser",
+        //        data: '{n:"id"}',
+        //        contentType: "application/json; charset=utf-8",
+        //        dataType: "text",
+        //        success: function (data) {
+        //            data = JSON.parse(data);
+        //            //console.log(data);
+        //            if (/err/.test(data.d)) {
+        //                data = JSON.parse(data.d);
+        //                console.error(data.error);
+        //            } else {
+        //                listMiddle[0].innerHTML = data.d;;
+        //            }
+        //        },
+        //        error: function (err) {
+        //            console.error(err);
+        //        }
+        //    });
+        //});
+    }();
+</script>
+<!-- 个人头像处理 -->
+<script>
+    !function () {
+        /**头像图片位置 */
+        var headPhotoImg = lt_code.getAll2("img", lt_code.getAll(".head", 0));
+        /**上传图片实际按钮 */
+        var upDateImg = lt_code.getAll2("input", lt_code.getAll(".head", 0));
+        /**上传按钮虚拟按钮 */
+        var upDate = lt_code.getAll(".upDate");
+        /**用户名显示框 */
+        var nameBox = lt_code.getAll(".name");
+        /**上传按钮 */
+        var upDateBotton = lt_code.getAll(".upDateBotton");
+
+        //开始时隐藏上传按钮
+        upDate.style.display = "none";
+        nameBox.innerText = nowUser;
+
+        //虚按钮联动
+        upDate.onmousedown = function () {
+            upDateImg.click();
+        }
+
+        //真实按钮检测是否选取图片
+        upDateImg.onchange = function () {
+            if (!upDateImg.value.length == 0) {
+                upDateBotton.style.display = "block";
+            } else {
+                upDateBotton.style.display = "none";
+            }
+        };
+
+        /**如果图片不在则删除图片 */
+        var displayImg = function () {
+            headPhotoImg.style.display = "none";
+            upDate.style.display = "block";
+        }
+
+        headPhotoImg.src = lt_code.variable.images.headPortrait[0];
+
+        //读取头像
+        //$(function () {
+        //    $.ajax({
+        //        type: "post",
+        //        url: "ChangeValue.aspx/GetNowUser",
+        //        data: '{n:"headPhoto"}',
+        //        contentType: "application/json; charset=utf-8",
+        //        dataType: "text",
+        //        success: function (data) {
+        //            //console.log(data);
+        //            data = JSON.parse(data);
+        //            if (data.d == "") {
+        //                displayImg();
+        //            } else {
+        //                headPhotoImg.src = data.d;
+        //            }
+        //        },
+        //        error: function (err) {
+        //            console.error(err);
+        //        }
+        //    });
+        //});
+
+        /**
+         * 上传图片函数
+         * @param photo
+         */
+        var UpHeadPhoto = function (photo) {
+            $(function () {
+                $.ajax({
+                    type: "post",
+                    url: "ChangeValue.aspx/UpHeadPhoto",
+                    data: '{photoValue:"' + photo + '"}',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "text",
+                    success: function (data) {
+                        //console.log(data);
+                        data = JSON.parse(data);
+
+                    },
+                    error: function (err) {
+                        console.error(err);
+                    }
+                });
+            });
+        };
+
+        //上传图像
+        upDateBotton.onmousedown = function () {
+            if (headPhotoImg.src.length < 100 && upDateImg.value.length > 0) {
+                lt_code.test.fileToBase(upDateImg);
+                setTimeout(function () {
+                    var photo = lt_code.test.fileToBase.getReturn();
+                    //console.log(photo);
+                    if (photo.length > 100) {
+                        $.ajax({
+                            type: "post",
+                            url: "ChangeValue.aspx/UpHeadPhoto",
+                            data: '{photoValue:"' + photo + '"}',
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "text",
+                            success: function (data) {
+                                console.log(data);
+                                data = JSON.parse(data);
+                                if (data.d == true) {
+                                    headPhotoImg.src = photo;
+                                    upDate.style.display = "none";
+                                    headPhotoImg.style.display = "block";
+                                    upDateBotton.style.display = "none";
+                                    alert("头像上传成功");
+                                } else {
+                                    upDateImg.value = null;
+                                    alert("头像上传失败");
+                                }
+                            },
+                            error: function (err) {
+                                console.error(err);
+                            }
+                        });
+                    }
+                }, 400);
+            }
+        }
+    }();
+</script>
+<script>
+    //修改内容框样式,改变内容框的背景颜色
+    !function () {
+        /**内容框 */
+        var back = lt_code.getClass("back");
+        //把对象转化为动态数组
+        back = Array.prototype.slice.call(back);
+        /**当前页面的高度 */
+        var height = window.innerHeight;
+        /**内容框的高度 */
+        var back_height = back[0].offsetHeight;
+        /**相差高度 */
+        var change_height = height - back_height;
+        //change_height = change_height < 0 ? 0 : change_height;
+        /**背景内容 */
+        var backs = ["rgba(0,0,255,0.1)", "none", "none", "none"];
+        //内容框垂直居中
+        if (change_height >= 0) {
+            back.forEach(function (each, i) {
+                each.style.margin = lt_code.getNum(change_height / 2) + "px auto";
+                each.style.backgroundColor = backs[i];
+            });
+        } else {
+            back.forEach(function (e, i) {
+                e.style.height = height + "px";
+                e.style.margin = "0 auto";
+                e.style.backgroundColor = backs[i];
+            });
+        }
+
+        lt_code.variable.addRun(setInterval(function () {
+            //height = window.innerHeight;
+            if (height != window.innerHeight) {
+                height = window.innerHeight;
+                change_height = height - back_height;
+                if (change_height >= 0) {
+                    back.forEach(function (each) {
+                        each.style.margin = lt_code.getNum(change_height / 2) + "px auto";
+                        each.style.height = back_height + "px";
+                    });
+                } else {
+                    back.forEach(function (e) {
+                        //e.style.height = height + "px";
+                        e.style.margin = "0 auto";
+                    });
+                }
+            }
+        }, 200), "动态修改back块垂直状态");
+    }();
+</script>
+<script>
+    //返回个人主页
+    !function () {
+        var closeButton = lt_code.getAll(".close", 0);
+        closeButton.onmousedown = function () {
+            window.location.href = "/index/";
+        }
+    }();
+
+    //弹窗相关
+    !function () {
+        /**关闭弹窗按钮 */
+        var closeButton = lt_code.getAll(".close");
+        /**弹窗对象 */
+        var changeValue = lt_code.getAll(".changeValue");
+        changeValue = Array.prototype.slice.call(changeValue);
+        closeButton = function () {
+            var ret = [];
+            for (var i = 1; i < closeButton.length; i++) {
+                ret.push(closeButton[i]);
+            }
+            return ret;
+        }();
+        //console.log(closeButton);
+        changeValue.forEach(function (e) {
+            e.style.display = "none";
+        });
+        button = Array.prototype.slice.call(button);
+        button.forEach(function (e, i) {
+            e.onmousedown = function () {
+                changeValue[i].style.display = "block";
+            }
+        });
+        closeButton.forEach(function (e, i) {
+            e.onmousedown = function () {
+                changeValue[i].style.display = "none";
+            }
+        });
+    }();
+</script>
+<script>
+    /**弹窗对象 */
+    var changeValue = lt_code.getAllToArray(".changeValue");
+    /**确认按钮 */
+    var yes = lt_code.getAll(".true");
+    /**取消按钮 */
+    var no = lt_code.getAllToArray(".false");
+    no.forEach(function (e, i) {
+        e.onmousedown = function () {
+            changeValue[i].style.display = "none";
+        }
+    });
+    yes[0].onmousedown = function () {
+        var input = lt_code.getAll("input", 0, changeValue[0]);
+        input = input.value;
+        if (input.length > 0) {
+            window.location.href = window.location.href.split("?")[0] + "?newname=" + input;
+            //$.ajax({
+            //    type: "post",
+            //    url: "ChangeValue.aspx/ChangeValue",
+            //    data: '{name:"name",value:"' + input + '"}',
+            //    contentType: "application/json; charset=utf-8",
+            //    dataType: "text",
+            //    success: function (data) {
+            //        //console.log(data);
+            //        data = JSON.parse(data);
+            //        if (data.d == true) {
+            //            alert("修改成功");
+            //            window.location.href = "ChangeValue.aspx";
+            //        } else {
+            //            alert("修改失败");
+            //        }
+            //    },
+            //    error: function (err) {
+            //        console.error(err);
+            //    }
+            //});
+        } else {
+            alert("请输入新的姓名!");
+        }
+    }
+    yes[1].onmousedown = function () {
+        var old = lt_code.getAll("input", 0, changeValue[1]);
+        var ne = lt_code.getAll("input", 1, changeValue[1]);
+        old = old.value;
+        ne = ne.value;
+        if (old.length > 0 && ne.length > 0) {
+            old = lt_code.md5(old);
+            ne = lt_code.md5(ne);
+            window.location.href = window.location.href.split("?")[0] + "?old=" + old + "&ne=" + ne;
+            //$.ajax({
+            //    type: "post",
+            //    url: "ChangeValue.aspx/ChangePassword",
+            //    data: '{oldP:"' + old + '",newP:"' + ne + '"}',
+            //    contentType: "application/json; charset=utf-8",
+            //    dataType: "text",
+            //    success: function (data) {
+            //        //console.log(data);
+            //        data = JSON.parse(data);
+            //        if (data.d == true) {
+            //            alert("修改成功");
+            //            window.location.href = "ChangeValue.aspx";
+            //        } else {
+            //            alert("修改失败");
+            //        }
+            //    },
+            //    error: function (err) {
+            //        console.error(err);
+            //    }
+            //});
+        } else {
+            alert("请输入旧密码和新密码");
+        }
+    }
+    yes[2].onmousedown = function () {
+        //$.ajax({
+        //    type: "post",
+        //    url: "ChangeValue.aspx/DisableHead",
+        //    data: '{}',
+        //    contentType: "application/json; charset=utf-8",
+        //    dataType: "text",
+        //    success: function (data) {
+        //        //console.log(data);
+        //        data = JSON.parse(data);
+        //        if (data.d == true) {
+        //            alert("修改成功");
+        //            window.location.href = "ChangeValue.aspx";
+        //        } else {
+        //            alert("修改失败");
+        //        }
+        //    },
+        //    error: function (err) {
+        //        console.error(err);
+        //    }
+        //});
+    }
+</script>
+{% endblock %}
+

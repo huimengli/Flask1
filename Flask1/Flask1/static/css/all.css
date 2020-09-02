@@ -1,0 +1,38 @@
+@keyframes changeColor {
+    0% {
+        color: inherit;
+    }
+
+    50% {
+        color: aqua;
+    }
+
+    100% {
+        color: inherit;
+    }
+}
+
+.allFooter {
+    width:100%;
+    text-align: center;
+    position: absolute;
+    bottom: 10px;
+}
+
+    .allFooter a {
+        color: inherit;
+        text-decoration: none;
+    }
+
+        .allFooter a:link {
+            color: inherit;
+        }
+
+        .allFooter a:hover {
+            cursor: pointer;
+            animation: changeColor 1s infinite;
+        }
+
+        .allFooter a:visited {
+            color: inherit;
+        }

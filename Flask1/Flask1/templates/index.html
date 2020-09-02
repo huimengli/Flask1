@@ -1,0 +1,709 @@
+﻿{% extends "back.html" %}
+
+{% block head %}
+<!-- 检查登录 -->
+<script>
+    /**当前用户名称 */
+    var nowUser = "";
+</script>
+<!-- 页面样式 -->
+<style>
+    body {
+        position: relative;
+        z-index: -100;
+    }
+</style>
+<link href="/static/css/Menu.css" rel="stylesheet" />
+{% endblock %}
+{% block value%}
+<!-- 目录 -->
+<div class="menu">
+    <div class="close_menu">三</div>
+    <ul>
+        <li>
+            个人主页
+            <div class="print"></div>
+        </li>
+        <li>
+            日记页面
+            <div class="print"></div>
+        </li>
+        <li>
+            上传日记
+            <div class="print"></div>
+        </li>
+        <!--
+            <li>第四页 <div class="print"></div></li>
+        -->
+    </ul>
+    <div class="exitUser">
+        <div>退</div>
+        <div>出</div>
+        <div>登</div>
+        <div>录</div>
+    </div>
+</div>
+<div class="background">
+    <!-- 第一页 -->
+    <div class="lt_for_page">
+        <div class="back">
+            <div class="head person">
+                <img src="#" alt="Alternate Text" />
+                <br />
+                <div class="upDate">+</div>
+                <input class="upHeadPhoto" type="file" name="name" value="" />
+                <div class="upDateBotton">
+                    上传
+                </div>
+            </div>
+            <div class="name person"></div>
+            <div class="afterName">
+                <div class="zhongxing person list">
+                    <div class="listValue">个人中心</div>
+                    <div class="listOne">
+                        <div class="listLeft">
+                            <div>用户ID</div>
+                        </div>
+                        <div class="listRight">
+                            none
+                        </div>
+                    </div>
+                    <div class="listOne">
+                        <div class="listLeft">
+                            <div>用户姓名</div>
+                        </div>
+                        <div class="listRight">
+                            none
+                        </div>
+                    </div>
+                </div>
+                <div class="changeValue person list">
+                    <div class="listValue">修改数据</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 第二页 -->
+    <div class="lt_for_page">
+        <div class="back">
+            <div class="tagBall">
+            </div>
+        </div>
+    </div>
+    <!-- 第三页 -->
+    <div class="lt_for_page">
+        <div class="back">
+            <div class="valueImg">
+                <img src="#" alt="记录的图片" />
+                <input type="file" name="name" value="" />
+                <div>点击这里选择要上传的图片</div>
+            </div>
+            <div class="valueTitle">
+                <input type="text" name="name" value="" placeholder="新日记的标题" />
+            </div>
+            <div class="valueValue">
+                <textarea placeholder="日记内容"></textarea>
+            </div>
+            <div class="valueButton">
+                <div>
+                    <input type="button" name="name" value="上传图片" />
+                    <input type="button" name="name" value="上传日记" />
+                    <input type="button" name="name" value="清空内容" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<img src="/static/images/background/2.jpg" id="background" />
+<div id="outBox">
+    <div id="alertBox">
+        <div id="valueBox">
+            <div id="valueTop">是否退出登录</div>
+            <div id="value">
+                难道乃不是手滑了吗?
+            </div>
+            <div id="inputBox">
+                <input type="button" name="确定" value="嗯，拜拜" />
+                <input type="button" name="取消" value="我手滑了" />
+            </div>
+        </div>
+    </div>
+</div>
+<div class="allFooter">
+    &copy; <a href="https://github.com/huimengli" target="_blank" title="我的GitHub地址">绘梦璃</a> | <a target="_blank" href="http://beian.miit.gov.cn/" title="备案信息查看">浙ICP备2020031480号</a>
+</div>
+
+{% endblock %}
+{% block script %}
+<!-- 分页 -->
+<script>
+    /**页面的背景颜色 */
+    var backgroundcolors = [
+        "rgba(224,231,240,0.5)",
+        "rgba(210,218,211,0.5)",
+        "rgba(219,258,231,0.5)"
+    ];
+    //分页
+    lt_code.test.fullpage(backgroundcolors, 1, lt_code.getAll(".background"));
+</script>
+<script src="/static/js/Menu.js"></script>
+<!-- 获取登录信息 -->
+<script>
+    !function () {
+        var listRight = lt_code.getAll(".listRight");
+        //获取用户名
+        $(function () {
+            /**用户名 */
+            var nameBox = lt_code.getAll(".name");
+            $.ajax({
+                type: "post",
+                url: "/index/",
+                data: '{"n":"name"}',
+                contentType: "application/json; charset=utf-8",
+                dataType: "text",
+                success: function (data) {
+                    ////console.log(data);
+                    //data = JSON.parse(data);
+                    ////console.log(data);
+                    ////console.log(data);
+                    //if (/err/.test(data.d)) {
+                    //    data = JSON.parse(data.d);
+                    //    console.error(data.error);
+                    //} else {
+                    //    nowUser = data.d;
+                    //    nameBox.innerText = nowUser;
+                    //    listRight[1].innerHTML = nowUser;
+                    //}
+                    nowUser = data;
+                    nameBox.innerText = nowUser;
+                    listRight[1].innerHTML = nowUser;
+                },
+                error: function (err) {
+                    console.error(err);
+                }
+            });
+        });
+        //获取id
+        $(function () {
+            $.ajax({
+                type: "post",
+                url: "/index/",
+                data: '{"n":"id"}',
+                contentType: "application/json; charset=utf-8",
+                dataType: "text",
+                success: function (data) {
+                    console.log(data);
+                    listRight[0].innerHTML = data;
+                },
+                error: function (err) {
+                    console.error(err);
+                }
+            });
+        });
+    }();
+</script>
+<!-- 特殊函数 -->
+<script>
+    /**
+     * 函数追加
+     * @param {Function} fuc 要被追加的函数
+     * @param {string} code 追加的代码
+     * @return {Function}
+     */
+    var addFuc = function (fuc, code) {
+        var fucText = fuc.toString();
+        var fucTexts = "";
+        for (var i = 0; i < fucText.length - 1; i++) {
+            fucTexts += fucText[i];
+        };
+        fucTexts += code;
+        fucTexts += "}";
+        var ret;
+        ret = new Function(fucTexts);
+        console.log(ret);
+        console.log(e);
+        return ret;
+    };
+</script>
+<!-- 注销账户 -->
+<script>
+    !function () {
+        /**
+         * 退出账户
+         */
+        var exitUser = function () {
+            $(function () {
+                $.ajax({
+                    type: "post",
+                    url: "/index/",
+                    data: '{"n":"exit"}',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "JSON",
+                    success: function (data) {
+                        console.log(data);
+                        if (data) {
+                            alert("退出成功");
+                        }
+                        else {
+                            alert("退出失败");
+                        }
+                    },
+                    error: function (err) {
+                        console.log(err);
+                        window.location.href = "/index/";
+                    }
+                });
+            });
+        };
+
+        /**关闭特殊alert框 */
+        var closeAlert = function () {
+            lt_code.getAll("#outBox").style.display = "none";
+            lt_code.test.fullpage.canUseMouseWheel = true;
+        };
+
+        /**
+         * 特殊alert
+         * @param {string} str 弹出内容
+         * @param {string} yes 确认选项内容
+         * @param {string} no 取消选项内容
+         * @param {Function} yesFuc 确认选项函数
+         * @param {Function} noFuc 否认选项函数
+         */
+        var lt_alert = function (top, str, yes, no, yesFuc, noFuc) {
+            /**弹窗背景板 */
+            var alertBox;
+            /**确认按钮 */
+            var yesB;
+            /**否认按钮 */
+            var noB;
+            /**内容框 */
+            var value;
+            /**顶部内容框 */
+            var topB = lt_code.getAll("#valueTop");
+            alertBox = lt_code.getAll("#outBox");
+            value = lt_code.getAll2("#value");
+            yesB = lt_code.getAll("input", 0, alertBox);
+            noB = lt_code.getAll("input", 1, alertBox);
+
+            value.innerHTML = str;
+            alertBox.style.display = "block";
+            yesB.value = yes;
+            noB.value = no;
+            topB.innerHTML = top;
+            yesB.onmousedown = yesFuc;
+            noB.onmousedown = noFuc;
+
+            //禁止滚轮
+            lt_code.test.fullpage.canUseMouseWheel = false;
+
+        };
+
+        lt_code.getAll(".exitUser").onmousedown = function () {
+            lt_alert("退出登录", "难道乃不是手滑了?",
+                "嗯,拜拜", "我手滑了", function () {
+                    exitUser();
+                    closeAlert();
+                }, function () {
+                    closeAlert();
+                });
+        };
+    }();
+</script>
+<!-- 个人头像处理 -->
+<script>
+    !function () {
+        /**头像图片位置 */
+        var headPhotoImg = lt_code.getAll2("img", lt_code.getAll(".head", 0));
+        /**上传图片实际按钮 */
+        var upDateImg = lt_code.getAll2("input", lt_code.getAll(".head", 0));
+        /**上传按钮虚拟按钮 */
+        var upDate = lt_code.getAll(".upDate");
+        /**用户名显示框 */
+        var nameBox = lt_code.getAll(".name");
+        /**上传按钮 */
+        var upDateBotton = lt_code.getAll(".upDateBotton");
+
+        //开始时隐藏上传按钮
+        upDate.style.display = "none";
+        nameBox.innerText = nowUser;
+
+        //虚按钮联动
+        upDate.onmousedown = function () {
+            upDateImg.click();
+        }
+
+        //真实按钮检测是否选取图片
+        upDateImg.onchange = function () {
+            if (!upDateImg.value.length < 2) {
+                upDateBotton.style.display = "block";
+            } else {
+                upDateBotton.style.display = "none";
+            }
+        };
+
+        /**如果图片不在则删除图片 */
+        var displayImg = function () {
+            headPhotoImg.style.display = "none";
+            upDate.style.display = "block";
+        }
+
+        //读取头像
+        $(function () {
+            $.ajax({
+                type: "post",
+                url: "/index/",
+                data: '{"n":"headPhoto"}',
+                contentType: "application/json; charset=utf-8",
+                dataType: "text",
+                success: function (data) {
+                    console.log(data);
+                    if (data == "" || data == '{"n":"headPhoto"}' || data.length < 20) {
+                        displayImg();
+                    } else {
+                        headPhotoImg.src = data;
+                    }
+                },
+                error: function (err) {
+                    console.error(err);
+                    headPhotoImg.src = lt_code.variable.images.headPortrait[0];
+                }
+            });
+        });
+
+        /**
+         * 上传图片函数
+         * @param photo
+         */
+        var UpHeadPhoto = function (photo) {
+            $(function () {
+                $.ajax({
+                    type: "post",
+                    url: "/index/",
+                    data: '{"photoValue":"' + photo + '"}',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "text",
+                    success: function (data) {
+                        //console.log(data);
+                        data = JSON.parse(data);
+
+                    },
+                    error: function (err) {
+                        console.error(err);
+                    }
+                });
+            });
+        };
+
+        //上传图像
+        upDateBotton.onmousedown = function () {
+            if (headPhotoImg.src.length < 100 && upDateImg.value.length > 0) {
+                lt_code.test.fileToBase(upDateImg);
+                setTimeout(function () {
+                    var photo = lt_code.test.fileToBase.getReturn();
+                    //console.log(photo);
+                    if (photo.length > 100) {
+                        $.ajax({
+                            type: "post",
+                            url: "/index/",
+                            data: '{"n":"upPhoto","photoValue":"' + photo + '"}',
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "text",
+                            success: function (data) {
+                                console.log(data);
+                                if (data || data == "True") {
+                                    headPhotoImg.src = photo;
+                                    upDate.style.display = "none";
+                                    headPhotoImg.style.display = "block";
+                                    upDateBotton.style.display = "none";
+                                    alert("头像上传成功");
+                                } else {
+                                    upDateImg.value = null;
+                                    alert("头像上传失败");
+                                }
+                            },
+                            error: function (err) {
+                                console.error(err);
+                            }
+                        });
+                    }
+                }, 400);
+            }
+        }
+    }();
+</script>
+<!-- 获取所有的消息 -->
+<script>
+    /**
+     * 跳转函数
+     * @param a
+     */
+    var trunTo = function (a) {
+        console.log(a);
+        if (a.nodeName == "A" && a.className == "tag") {
+            $.ajax({
+                type: "post",
+                url: "/index/",
+                data: '{"n":"diary","id":"' + a.dataset.id + '"}',
+                contentType: "application/json; charset=utf-8",
+                dataType: "text",
+                success: function (data) {
+                    console.log(data);
+                    if (data) {
+                        window.location.href = "/oneValue/";
+                    }
+                    //data = JSON.parse(data);
+                    //if (data.d) {
+                    //    window.location.href = "oneValue.aspx";
+                    //}
+                },
+                error: function (err) {
+                    console.error(err);
+                }
+            });
+        }
+    }
+
+    //根据消息产生标签贴
+    !function () {
+        /**标签盒子 */
+        var tagBall = lt_code.getAll(".tagBall");
+        /**
+         * 创建一个新的a标签
+         * @param id
+         * @param value
+         */
+        var newA = function (id, value) {
+            var a = document.createElement("a");
+            a.href = "#";
+            value = value.length > 10 ? /.{10}/.exec(value)[0] : value;
+            a.innerHTML = value;
+            a.dataset.id = id;
+            a.className = "tag";
+            a.onmousedown = function () {
+                trunTo(this);
+            }
+            tagBall.appendChild(a);
+        };
+        $.ajax({
+            type: "post",
+            url: "/index/",
+            data: '{"n":"ball"}',
+            contentType: "application/json; charset=utf-8",
+            dataType: "text",
+            success: function (data) {
+                //console.log(data);
+                data = JSON.parse(data);
+                //console.log(data);
+                if (lt_code.getLength(data) > 0) {
+                    //data = JSON.parse(data.d);
+                    //console.log(data);
+                    if (lt_code.getLength(data) > 1) {
+                        tagBall.innerHTML = "";
+                        for (var i in data) {
+                            newA(data[i]['id'], data[i]['title']);
+                        }
+                        innit();
+                        downPower();
+                    }
+                }
+                //console.log(data);
+                //if (data.d.length > 0) {
+                //    data = JSON.parse(data.d);
+                //    //console.log(data);
+                //    var date = [];
+                //    for (var j in data) {
+                //        date.push(JSON.parse(data[j]));
+                //    }
+                //    //console.log(date);
+                //    if (date.length > 1) {
+                //        tagBall.innerHTML = "";
+                //        for (var i = 0; i < date.length; i++) {
+                //            //console.log(date[i]);
+                //            newA(date[i].id, date[i].other);
+                //        }
+                //        innit();
+                //        downPower();
+                //    }
+                //}
+            },
+            error: function (err) {
+                console.error(err);
+            }
+        });
+    }();
+
+    //上传新的日记
+    !function () {
+        lt_code.variable.addRun(setInterval(function () {
+            if (lt_code.variable.WHchange) {
+                innit();
+                downPower();
+            }
+        }, 100), "修正鼠标坐标");
+
+        /**
+         * 添加记录
+         * @param title 记录头部
+         * @param value 记录内容
+         * @param [photo] 上传的图片
+         */
+        var addValue = function (title, value) {
+            $.ajax({
+                type: "post",
+                url: "/index/",
+                data: '{"n":"upValue","title":"' + title + '","value":"' + lt_code.base64.encode(value) + '"}',
+                contentType: "application/json; charset=utf-8",
+                dataType: "text",
+                success: function (data) {
+                    //data = JSON.parse(data);
+                    console.log(data);
+                    if (data) {
+                        alert("记录添加完成");
+                        window.location.href = "/index/?page=1";
+                    } else {
+                        alert("记录添加失败");
+                    }
+                },
+                error: function (err) {
+                    console.error(err);
+                }
+            });
+            //if (photo.length < 10) {
+
+            //} else {
+            //    $.ajax({
+            //        type: "post",
+            //        url: "/index/",
+            //        data: '{"n":"upValue","title":"' + title + '","value":"' + value + '","photo":"' + photo + '"}',
+            //        contentType: "application/json; charset=utf-8",
+            //        dataType: "text",
+            //        success: function (data) {
+            //            data = JSON.parse(data);
+            //            console.log(data);
+            //            if (data.d) {
+            //                alert("记录添加完成");
+            //                window.location.href = "Menu.aspx?page=1";;
+            //            } else {
+            //                alert("记录添加失败");
+            //            }
+            //        },
+            //        error: function (err) {
+            //            console.error(err);
+            //        }
+            //    });
+            //}
+        };
+
+        /**上传图片显示的地方 */
+        var img = lt_code.getAll2("img", lt_code.getAll(".valueImg"));
+        /**选择图片按钮 */
+        var upFileButton = lt_code.getAll2("div", lt_code.getAll(".valueImg"));
+        /**选择图片正真的按钮 */
+        var UPfile = lt_code.getAll2("input", lt_code.getAll(".valueImg"));
+        /**上传图片按钮 */
+        var upPhoto = lt_code.getAll("input", 0, lt_code.getAll(".valueButton"));
+        /**上传内容按钮 */
+        var upValue = lt_code.getAll("input", 1, lt_code.getAll(".valueButton"));
+        /**清除内容按钮 */
+        var clearValue = lt_code.getAll("input", 2, lt_code.getAll(".valueButton"));
+        /**日记表头 */
+        var inputTitle = lt_code.getAll2("input", lt_code.getAll(".valueTitle"));
+        /**日记表头 */
+        var inputValue = lt_code.getAll2("textarea", lt_code.getAll(".valueValue"));
+        /**图片值 */
+        var photoValue;
+
+        //删除上传图片功能
+        img.style.display = "none";
+        upFileButton.style.display = "none";
+        UPfile.style.display = "none";
+        upPhoto.style.display = "none";
+
+        upFileButton.onmousedown = function () {
+            UPfile.click();
+        };
+
+        upPhoto.onmousedown = function () {
+            UPfile.click();
+        };
+
+        UPfile.onchange = function () {
+            //console.log(1);
+            lt_code.test.fileToBase(UPfile);
+            setTimeout(function () {
+                photoValue = lt_code.test.fileToBase.getReturn();
+                if (photoValue.length < 10) {
+                    setTimeout(function () {
+                        photoValue = lt_code.test.fileToBase.getReturn();
+                        if (photoValue.length < 10) {
+                            alert("日记图片上传失败");
+                        } else {
+                            img.src = photoValue;
+                            upPhoto.value = "更换图片";
+                            upFileButton.style.display = "none";
+                            img.style.display = "block";
+                        }
+                    }, 2000);
+                } else {
+                    img.src = photoValue;
+                    upPhoto.value = "更换图片";
+                    upFileButton.style.display = "none";
+                    img.style.display = "block";
+                }
+            }, 1000);
+        };
+
+        inputTitle.onchange = function () {
+            if (inputTitle.value.length > 14) {
+                inputTitle.value = /.{14}/.exec(inputTitle.value)[0];
+            }
+        };
+
+        inputValue.onchange = function () {
+            if (inputValue.value.length > 244) {
+                inputValue.value = /.{244}/.exec(inputValue.value)[0];
+            }
+        };
+
+        clearValue.onmousedown = function () {
+            upPhoto.value = "上传图片";
+            inputTitle.value = "";
+            inputValue.value = "";
+            UPfile.value = "";
+            photoValue = "";
+            img.src = "";
+            //upFileButton.style.display = "block";
+            img.style.display = "none";
+        };
+
+        upValue.onmousedown = function () {
+            if (inputTitle.value.length && inputValue.value.length) {
+                addValue(inputTitle.value, inputValue.value);
+            }
+        };
+    }();
+</script>
+<!-- 进入页面时直接跳转 -->
+<script>
+    $(document).ready(function () {
+        var data = lt_code.getUrlData();
+        for (var i = 0; i < data.length; i++) {
+            if (/page/.test(JSON.stringify(data[i]))) {
+                var page = data[i].page;
+                //console.log(page);
+                page = lt_code.getNum(page);
+                if (!(page > lt_code.getAll(".lt_for_page").length && page < 0)) {
+                    setTimeout(function () {
+                        lt_code.test.fullpage.change_page(page);
+                        downPower();
+                        //通过history方法去掉url里面的数据(不刷新页面)
+                        //防止ajax向后台传输时出错
+                        history.pushState({}, "", "/index/");
+                    }, 1500);
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}
