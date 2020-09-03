@@ -505,6 +505,8 @@
                         }
                         innit();
                         downPower();
+                    } else {
+                        alert("日记条数少于两条,显示日记页面无法正确显示");
                     }
                 }
                 //console.log(data);
@@ -703,6 +705,9 @@
                     }, 1500);
                 }
             }
+        }
+        if (!/Chrome/.test(lt_code.variable.browserInfo)) {
+            alert("建议使用谷歌浏览器,其他浏览器可能会导致页面错误");
         }
     });
 </script>
