@@ -1,0 +1,22 @@
+﻿{% extends "back.html" %}
+
+{% block head %}
+
+{% endblock %}
+<!-- 页面内容 -->
+{% block value %}
+<div>
+    <div class="allFooter">
+        &copy; <a href="https://github.com/huimengli" target="_blank" title="我的GitHub地址">绘梦璃</a> | <a target="_blank" href="http://beian.miit.gov.cn/" title="备案信息查看">浙ICP备2020031480号</a>
+    </div>
+</div>
+<img id="background" src="/static/images/background/3.jpg" />
+{% endblock %}
+
+{% block script %}
+<script>
+    $(document).ready(function () {
+        alert(lt_code.variable.browserInfo+"\nWidth:"+lt_code.variable.width+"Height:"+lt_code.variable.height);
+    });
+</script>
+{% endblock %}

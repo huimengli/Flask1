@@ -112,9 +112,11 @@
     <Content Include="Flask1\static\js\Menu.js" />
     <Content Include="Flask1\static\js\oneValue.js" />
     <Content Include="Flask1\templates\back.html" />
+    <Content Include="Flask1\templates\test.html" />
     <Content Include="Flask1\templates\index.html" />
     <Content Include="Flask1\templates\oneValue.html" />
     <Content Include="Flask1\templates\signIn.html" />
+    <Content Include="Flask1\templates\buckpage.html" />
     <Content Include="Flask1\templates\signOn.html" />
     <Content Include="Flask1\templates\changeValue.html" />
     <Content Include="requirements.txt" />

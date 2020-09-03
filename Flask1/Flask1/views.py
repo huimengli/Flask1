@@ -90,7 +90,6 @@ def signIn():
         context=context,
     )
 
-
 @app.route("/index/",methods=['GET','POST'])
 def index():
     '''
@@ -276,6 +275,20 @@ def changeValue():
     return render_template(
         'changeValue.html',
         context = context,
+    )
+
+@app.route("/test/")
+def test():
+    '''
+    测试页面
+    '''
+    context = {};
+    context['name'] = myname;
+    context['title'] = "测试页面";
+
+    return render_template(
+        'test.html',
+        context=context,        
     )
 
 #@app.route('/')
