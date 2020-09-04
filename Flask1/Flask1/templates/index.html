@@ -559,7 +559,7 @@
                 success: function (data) {
                     //data = JSON.parse(data);
                     console.log(data);
-                    if (data) {
+                    if (data||data==="False") {
                         alert("记录添加完成");
                         window.location.href = "/index/?page=1";
                     } else {
