@@ -73,6 +73,7 @@
     <Content Include="Flask1\static\css\all.css" />
     <Content Include="Flask1\static\css\ChangeValue.css" />
     <Content Include="Flask1\static\css\Default.css" />
+    <Content Include="Flask1\static\css\plane.css" />
     <Content Include="Flask1\static\css\Login.css" />
     <Content Include="Flask1\static\css\Menu.css" />
     <Content Include="Flask1\static\css\oneValue.css" />
@@ -125,6 +126,7 @@
     <Content Include="Flask1\static\js\plane\program.js" />
     <Content Include="Flask1\templates\back.html" />
     <Content Include="Flask1\templates\plane.html" />
+    <Content Include="Flask1\templates\plane2.html" />
     <Content Include="Flask1\templates\test.html" />
     <Content Include="Flask1\templates\index.html" />
     <Content Include="Flask1\templates\oneValue.html" />

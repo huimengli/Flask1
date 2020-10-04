@@ -301,7 +301,7 @@ def plane():
     context['title'] = "打飞机游戏";
 
     return render_template(
-        'plane.html',
+        'plane2.html',
         context=context,
     )
 
