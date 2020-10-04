@@ -59,6 +59,7 @@
     <Folder Include="Flask1\static\JavaScriptCode\dist\lt_code_7\" />
     <Folder Include="Flask1\static\JavaScriptCode\dist\lt_code_7\css\" />
     <Folder Include="Flask1\static\JavaScriptCode\dist\lt_code_7\js\" />
+    <Folder Include="Flask1\static\JavaScriptCode\images\" />
     <Folder Include="Flask1\static\JavaScriptCode\min\" />
     <Folder Include="Flask1\static\JavaScriptCode\sVersion\" />
     <Folder Include="Flask1\static\js\" />
@@ -106,6 +107,7 @@
     <Content Include="Flask1\static\JavaScriptCode\dist\lt_code_7\css\action.css" />
     <Content Include="Flask1\static\JavaScriptCode\dist\lt_code_7\js\lt_code.js" />
     <Content Include="Flask1\static\JavaScriptCode\dist\lt_code_9.js" />
+    <Content Include="Flask1\static\JavaScriptCode\images\headPortrait.js" />
     <Content Include="Flask1\static\JavaScriptCode\lt_code.js" />
     <Content Include="Flask1\static\JavaScriptCode\min\lt_code_14.min.js" />
     <Content Include="Flask1\static\JavaScriptCode\sVersion\lt_code_s11.js" />
