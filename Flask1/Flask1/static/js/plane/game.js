@@ -1,28 +1,28 @@
-/**»ùÀà */
+/**åŸºç±» */
 myglobal.games.base = myglobal;
 
-/**¹Ø¿¨Ä£¿é */
+/**å…³å¡æ¨¡å— */
 myglobal.games.rounds = {};
 
-/**ËùÓĞµÄ°´Å¥ */
+/**æ‰€æœ‰çš„æŒ‰é’® */
 myglobal.games.bottoms = [];
 
-/**µĞÈË³öÏÖµÄ¼ä¸ôÊ±¼ä:Ãë */
+/**æ•Œäººå‡ºç°çš„é—´éš”æ—¶é—´:ç§’ */
 myglobal.games.INTERVEL = 2;
 
-/**³¡ÉÏ×î¶à³öÏÖ¶àÉÙµĞÈË */
+/**åœºä¸Šæœ€å¤šå‡ºç°å¤šå°‘æ•Œäºº */
 myglobal.games.MAXFOE = 5;
 
-/**ÓÎÏ·ÏµÍ³¹ÒÔØ */
+/**æ¸¸æˆç³»ç»ŸæŒ‚è½½ */
 myglobal.games.run = 0;
 
-/**ÓÎÏ·Ë¢ĞÂ¹ÒÔØ */
+/**æ¸¸æˆåˆ·æ–°æŒ‚è½½ */
 myglobal.games.gameRun = 0;
 
-/**²¶»ñµÄ°´¼ü */
+/**æ•è·çš„æŒ‰é”® */
 myglobal.games.keys = [];
 
-/**É¾³ıËùÓĞµÄ°´Å¥ */
+/**åˆ é™¤æ‰€æœ‰çš„æŒ‰é’® */
 myglobal.games.clearBottoms = function () {
     myglobal.games.bottoms.forEach(function (e) {
         e.display();
@@ -31,22 +31,22 @@ myglobal.games.clearBottoms = function () {
 };
 
 /**
- * ¿ªÊ¼¹Ø¿¨
- * @param {number} foes µĞÈËÊıÁ¿
- * @param {Array} foeType µĞÈËÀàĞÍ
+ * å¼€å§‹å…³å¡
+ * @param {number} foes æ•Œäººæ•°é‡
+ * @param {Array} foeType æ•Œäººç±»å‹
  */
 myglobal.games.startRound = function (foes,foeType) {
-    /**ÒÑ¾­³öÏÖ¹ıµÄµĞÈË */
+    /**å·²ç»å‡ºç°è¿‡çš„æ•Œäºº */
     var i = 0;
 
-    /**´´½¨Íæ¼Ò */
+    /**åˆ›å»ºç©å®¶ */
     myglobal.player = new myglobal.class.player(200, 700, 50, 60, myglobal.MAXHP, 1000, myglobal.class.bullet.line, myglobal.image.image.plane[0])
 
     /**
-     * ·µ»Ø°´Å¥
-     * (²¢ÇÒÇå¿ÕÓÎÏ·Êı¾İ)
+     * è¿”å›æŒ‰é’®
+     * (å¹¶ä¸”æ¸…ç©ºæ¸¸æˆæ•°æ®)
      */
-    var returnBottom = myglobal.class.bottom(40, 40, 40, 40, "¡û", function () {
+    var returnBottom = myglobal.class.bottom(40, 40, 40, 40, "â†", function () {
         myglobal.games.clearBottoms();
         myglobal.games.rounds.menu.start();
         clearInterval(myglobal.games.run);
@@ -57,8 +57,8 @@ myglobal.games.startRound = function (foes,foeType) {
         myglobal.bullet = [];
         myglobal.clearCtx();
     });
-    var pointDiv = myglobal.class.bottom(330, 40, 100, 40, "·ÖÊı:" + myglobal.POINT, null, null, "transparent", "transparent");
-    returnBottom.title = "·µ»Ø²Ëµ¥";
+    var pointDiv = myglobal.class.bottom(330, 40, 100, 40, "åˆ†æ•°:" + myglobal.POINT, null, null, "transparent", "transparent");
+    returnBottom.title = "è¿”å›èœå•";
     returnBottom.style.opacity = "0.4";
     returnBottom.onmousemove = function () {
         this.style.opacity = "1";
@@ -68,19 +68,19 @@ myglobal.games.startRound = function (foes,foeType) {
     };
     pointDiv.className = "bottom point";
 
-    //Ìí¼Ó·µ»Ø°´Å¥
+    //æ·»åŠ è¿”å›æŒ‰é’®
     myglobal.games.bottoms.push(returnBottom);
     myglobal.games.bottoms.push(pointDiv);
     
-    //¿ªÊ¼¹ÒÔØ
+    //å¼€å§‹æŒ‚è½½
     myglobal.games.run = setInterval(function () {
 
-        //Ôö¼ÓµĞÈË
+        //å¢åŠ æ•Œäºº
         if (i<foes&&myglobal.foes.length<myglobal.games.MAXFOE) {
             //myglobal.foes.push(new myglobal.class.foe())
-            /**È·¶¨·É»úµÄ×Óµ¯ÀàĞÍ */
+            /**ç¡®å®šé£æœºçš„å­å¼¹ç±»å‹ */
             var bullet = foeType[lt_code.variable.random(foeType.length,0,true)];
-            /**È·¶¨·É»úµÄ´óĞ¡ */
+            /**ç¡®å®šé£æœºçš„å¤§å° */
             var size = myglobal.class.foe.size(bullet);
             myglobal.foes.push(new myglobal.class.foe(
                 lt_code.variable.random(myglobal.cas.width - 100, 100, true),
@@ -89,21 +89,21 @@ myglobal.games.startRound = function (foes,foeType) {
 
         }
 
-        //½áÊøÓÎÏ·
+        //ç»“æŸæ¸¸æˆ
         if (i == foes&&myglobal.foes.length == 0) {
-            alert("¹ı¹Ø!");
+            alert("è¿‡å…³!");
 
         }
 
     }, myglobal.games.INTERVEL * 1000);
 
-    //ÒÔ30Ö¡ÔËĞĞÓÎÏ·
+    //ä»¥30å¸§è¿è¡Œæ¸¸æˆ
     myglobal.games.gameRun = setInterval(function () {
 
-        //Çå¿ÕÆÁÄ»
+        //æ¸…ç©ºå±å¹•
         myglobal.clearCtx();
 
-        //µĞÈË¶¯×÷
+        //æ•ŒäººåŠ¨ä½œ
         myglobal.foes.forEach(function (e) {
             e.move(myglobal.cas);
             e.draw(myglobal.ctx);
@@ -111,13 +111,13 @@ myglobal.games.startRound = function (foes,foeType) {
             e.touch(myglobal.player);
         });
 
-        //Íæ¼Ò»æÖÆ
+        //ç©å®¶ç»˜åˆ¶
         myglobal.player.update(myglobal.ctx);
 
-        //Íæ¼Ò¿ØÖÆ
+        //ç©å®¶æ§åˆ¶
         myglobal.player.checkKey(myglobal.cas, myglobal.games.keys);
 
-        //×Óµ¯ÒÆ¶¯
+        //å­å¼¹ç§»åŠ¨
         myglobal.bullet.forEach(function (e) {
             e.move(myglobal.cas);
             e.draw(myglobal.ctx);
@@ -128,25 +128,25 @@ myglobal.games.startRound = function (foes,foeType) {
             }
         });
 
-        //Íæ¼ÒËÀÍöÓÎÏ·½áÊø
+        //ç©å®¶æ­»äº¡æ¸¸æˆç»“æŸ
         if (myglobal.player.l<0) {
             myglobal.games.rounds.over.start();
         }
 
     }, myglobal.refresh30);
 
-    //°´¼ü²¶»ñ
+    //æŒ‰é”®æ•è·
     window.onkeydown = function (e) {
         myglobal.games.keys = myglobal.games.keys.add(e.keyCode);
     };
-    //°´¼üÊÍ·Å
+    //æŒ‰é”®é‡Šæ”¾
     window.onkeyup = function (e) {
         myglobal.games.keys = myglobal.games.keys.ree(e.keyCode);
     }
 
 }
 
-/**Èç¹ûÃ»ÓĞÔòÔö¼Ó */
+/**å¦‚æœæ²¡æœ‰åˆ™å¢åŠ  */
 Array.prototype.add = function (e) {
     var ret = Array.prototype.slice.call(this);
     if (this.indexOf(e) == -1) {
@@ -157,7 +157,7 @@ Array.prototype.add = function (e) {
     }
 };
 
-/**Èç¹ûÓĞÔòÉ¾³ı */
+/**å¦‚æœæœ‰åˆ™åˆ é™¤ */
 Array.prototype.ree = function (e) {
     if (this.indexOf(e) >= 0) {
         return this.delete(e);
@@ -166,35 +166,35 @@ Array.prototype.ree = function (e) {
     }
 };
 
-/**»ùÀà */
+/**åŸºç±» */
 myglobal.games.rounds.base = myglobal.games;
 
-/**ÓÎÏ·¿ªÊ¼½çÃæ */
+/**æ¸¸æˆå¼€å§‹ç•Œé¢ */
 myglobal.games.rounds.begin = {
-    /**»ùÀà */
+    /**åŸºç±» */
     base: myglobal.games.rounds,
-    /**Æô¶¯ */
+    /**å¯åŠ¨ */
     start: function () {
-        /**¿ªÊ¼ÓÎÏ·°´Å¥ */
-        var startBottom = myglobal.class.bottom(200, 400, 120, 40, "¿ªÊ¼ÓÎÏ·",
+        /**å¼€å§‹æ¸¸æˆæŒ‰é’® */
+        var startBottom = myglobal.class.bottom(200, 400, 120, 40, "å¼€å§‹æ¸¸æˆ",
             function () {
                 myglobal.games.clearBottoms()
                 myglobal.games.rounds.menu.start();
             });
-        /**½áÊøÓÎÏ·°´Å¥ */
-        var exitBottom = myglobal.class.bottom(200, 460, 100, 40, "ÍË³öÓÎÏ·",
+        /**ç»“æŸæ¸¸æˆæŒ‰é’® */
+        var exitBottom = myglobal.class.bottom(200, 460, 100, 40, "é€€å‡ºæ¸¸æˆ",
             function () {
                 lt_code.close();
             });
-        /**ËùÎ½µÄÍ¼±ê */
-        var icon = myglobal.class.bottom(200, 200, 300, 300, "·É»ú´óÕ½", null, "40px", "white", "white", null);
+        /**æ‰€è°“çš„å›¾æ ‡ */
+        var icon = myglobal.class.bottom(200, 200, 300, 300, "é£æœºå¤§æˆ˜", null, "40px", "white", "white", null);
         icon.style.cursor = "auto";
-        /**ÖÆ×÷ÕßĞÅÏ¢ */
-        var auther = myglobal.class.bottom(300, 760, 160, 40, "ÖÆ×÷Õß:»æÃÎÁ§", function () {
+        /**åˆ¶ä½œè€…ä¿¡æ¯ */
+        var auther = myglobal.class.bottom(300, 760, 160, 40, "åˆ¶ä½œè€…:ç»˜æ¢¦ç’ƒ", function () {
             window.location.href = "https://github.com/huimengli";
         }, null, "white", "white", null);
-        auther.title = "ÖÆ×÷ÕßĞÅÏ¢";
-        //Ìí¼Ó½ø°´Å¥Êı×é,ÎªÁË·½±ãÉ¾³ı...
+        auther.title = "åˆ¶ä½œè€…ä¿¡æ¯";
+        //æ·»åŠ è¿›æŒ‰é’®æ•°ç»„,ä¸ºäº†æ–¹ä¾¿åˆ é™¤...
         myglobal.games.bottoms.push(startBottom);
         myglobal.games.bottoms.push(exitBottom);
         myglobal.games.bottoms.push(icon);
@@ -202,50 +202,50 @@ myglobal.games.rounds.begin = {
     },
 };
 
-/**ÓÎÏ·²Ëµ¥½çÃæ */
+/**æ¸¸æˆèœå•ç•Œé¢ */
 myglobal.games.rounds.menu = {
-    /**»ùÀà */
+    /**åŸºç±» */
     base: myglobal.games.rounds,
-    /**×î´ó¹Ø¿¨ÊıÁ¿ */
+    /**æœ€å¤§å…³å¡æ•°é‡ */
     MAXROUND:28,
-    /**Æô¶¯ */
+    /**å¯åŠ¨ */
     start: function () {
-        /**»ùÀà */
+        /**åŸºç±» */
         var base = this;
-        /**·µ»Ø°´Å¥ */
-        var returnBottom = myglobal.class.bottom(40, 40, 40, 40, "¡û", function () {
+        /**è¿”å›æŒ‰é’® */
+        var returnBottom = myglobal.class.bottom(40, 40, 40, 40, "â†", function () {
             myglobal.games.clearBottoms();
             myglobal.games.rounds.begin.start();
         });
-        returnBottom.title = "·µ»ØÖ÷½çÃæ";
+        returnBottom.title = "è¿”å›ä¸»ç•Œé¢";
 
-        //¿ªÊ¼¸ù¾İ¹Ø¿¨Ìí¼Ó¹Ø¿¨°´Å¥
+        //å¼€å§‹æ ¹æ®å…³å¡æ·»åŠ å…³å¡æŒ‰é’®
         myglobal.games.rounds.rounds.forEach(function (e,i) {
             if (i<base.MAXROUND) {
-                /**¹Ø¿¨°´Å¥ */
+                /**å…³å¡æŒ‰é’® */
                 var round = myglobal.class.bottom(90 * (i % 4) + 65, 40 + 100 + 90 * lt_code.getNum(i / 4), 80, 80, i.toString(), function () {
                     myglobal.games.clearBottoms();
                     e.start();
                 });
-                round.title = "¹Ø¿¨:" + round.innerText;
-                //Ìí¼Ó°´Å¥½øÈë°´Å¥Êı×é
+                round.title = "å…³å¡:" + round.innerText;
+                //æ·»åŠ æŒ‰é’®è¿›å…¥æŒ‰é’®æ•°ç»„
                 myglobal.games.bottoms.push(round);
             }
         })
 
-        //Ìí¼Ó½ø°´Å¥Êı×é
+        //æ·»åŠ è¿›æŒ‰é’®æ•°ç»„
         myglobal.games.bottoms.push(returnBottom);
     },
 }
 
-/**ÓÎÏ·½áÊø½çÃæ */
+/**æ¸¸æˆç»“æŸç•Œé¢ */
 myglobal.games.rounds.over = {
-    /**»ùÀà */
+    /**åŸºç±» */
     base: myglobal.games.rounds,
 
-    /**½áÊø½çÃæ */
+    /**ç»“æŸç•Œé¢ */
     start: function () {
-        //ÓÎÏ·½áÊø
+        //æ¸¸æˆç»“æŸ
         myglobal.games.clearBottoms();
         //myglobal.games.rounds.menu.start();
         clearInterval(myglobal.games.run);
@@ -256,26 +256,26 @@ myglobal.games.rounds.over = {
         myglobal.bullet = [];
         myglobal.clearCtx();
 
-        /**ÖØĞÂ¿ªÊ¼ÓÎÏ·°´Å¥ */
-        var startBottom = myglobal.class.bottom(200, 400, 120, 40, "»Øµ½Ö÷½çÃæ",
+        /**é‡æ–°å¼€å§‹æ¸¸æˆæŒ‰é’® */
+        var startBottom = myglobal.class.bottom(200, 400, 120, 40, "å›åˆ°ä¸»ç•Œé¢",
             function () {
                 myglobal.games.clearBottoms()
                 myglobal.games.rounds.begin.start();
             });
-        /**½áÊøÓÎÏ·°´Å¥ */
-        //var exitBottom = myglobal.class.bottom(200, 460, 100, 40, "ÍË³öÓÎÏ·",
+        /**ç»“æŸæ¸¸æˆæŒ‰é’® */
+        //var exitBottom = myglobal.class.bottom(200, 460, 100, 40, "é€€å‡ºæ¸¸æˆ",
         //    function () {
         //        lt_code.close();
         //    });
-        /**ËùÎ½µÄÍ¼±ê */
-        var icon = myglobal.class.bottom(200, 200, 300, 300, "ÓÎÏ·½áÊø!\nÄãµÄ·ÖÊı:"+myglobal.POINT, null, "40px", "white", "white", null);
+        /**æ‰€è°“çš„å›¾æ ‡ */
+        var icon = myglobal.class.bottom(200, 200, 300, 300, "æ¸¸æˆç»“æŸ!\nä½ çš„åˆ†æ•°:"+myglobal.POINT, null, "40px", "white", "white", null);
         icon.style.cursor = "auto";
-        /**ÖÆ×÷ÕßĞÅÏ¢ */
-        var auther = myglobal.class.bottom(300, 760, 160, 40, "ÖÆ×÷Õß:»æÃÎÁ§", function () {
+        /**åˆ¶ä½œè€…ä¿¡æ¯ */
+        var auther = myglobal.class.bottom(300, 760, 160, 40, "åˆ¶ä½œè€…:ç»˜æ¢¦ç’ƒ", function () {
             window.location.href = "https://github.com/huimengli";
         }, null, "white", "white", null);
-        auther.title = "ÖÆ×÷ÕßĞÅÏ¢";
-        //Ìí¼Ó½ø°´Å¥Êı×é,ÎªÁË·½±ãÉ¾³ı...
+        auther.title = "åˆ¶ä½œè€…ä¿¡æ¯";
+        //æ·»åŠ è¿›æŒ‰é’®æ•°ç»„,ä¸ºäº†æ–¹ä¾¿åˆ é™¤...
         myglobal.games.bottoms.push(startBottom);
         //myglobal.games.bottoms.push(exitBottom);
         myglobal.games.bottoms.push(icon);
@@ -283,77 +283,77 @@ myglobal.games.rounds.over = {
     }
 }
 
-/**¹Ø¿¨ */
+/**å…³å¡ */
 myglobal.games.rounds.rounds = [];
 
-/**¹Ø¿¨1 */
+/**å…³å¡1 */
 myglobal.games.rounds.rounds[0] = {
-    /**»ùÀà */
+    /**åŸºç±» */
     base: myglobal.games.rounds,
-    /**µĞÈËÊıÁ¿ */
+    /**æ•Œäººæ•°é‡ */
     foes: 15,
-    /**µĞÈËÖÖÀà */
+    /**æ•Œäººç§ç±» */
     foeType: [myglobal.class.bullet.noBullet],
-    /**¿ªÊ¼¹Ø¿¨ */
+    /**å¼€å§‹å…³å¡ */
     start: function () {
         //this.base.base.base.clearGame();
         //this.base.base.base.clearCtx();
         myglobal.games.startRound(this.foes, this.foeType);
     },
 }
-/**¹Ø¿¨1 */
+/**å…³å¡1 */
 myglobal.games.rounds.rounds[1] = {
-    /**»ùÀà */
+    /**åŸºç±» */
     base: myglobal.games.rounds,
-    /**µĞÈËÊıÁ¿ */
+    /**æ•Œäººæ•°é‡ */
     foes: 20,
-    /**µĞÈËÖÖÀà */
+    /**æ•Œäººç§ç±» */
     foeType: [myglobal.class.bullet.noBullet,myglobal.class.bullet.slow],
-    /**¿ªÊ¼¹Ø¿¨ */
+    /**å¼€å§‹å…³å¡ */
     start: function () {
         myglobal.games.startRound(this.foes, this.foeType);
     },
 }
-/**¹Ø¿¨2 */
+/**å…³å¡2 */
 myglobal.games.rounds.rounds[2] = {
-    /**»ùÀà */
+    /**åŸºç±» */
     base: myglobal.games.rounds,
-    /**µĞÈËÊıÁ¿ */
+    /**æ•Œäººæ•°é‡ */
     foes: 20,
-    /**µĞÈËÖÖÀà */
+    /**æ•Œäººç§ç±» */
     foeType: [myglobal.class.bullet.slow,myglobal.class.bullet.line],
-    /**¿ªÊ¼¹Ø¿¨ */
+    /**å¼€å§‹å…³å¡ */
     start: function () {
         myglobal.games.startRound(this.foes, this.foeType);
     },
 }
-//myglobal.games.rounds.rounds[3] = { start: function () { alert("¹Ø¿¨ÉĞÎ´ÖÆ×÷!"); },};
-//myglobal.games.rounds.rounds[4] = { start: function () { alert("¹Ø¿¨ÉĞÎ´ÖÆ×÷!"); },};
-//myglobal.games.rounds.rounds[5] = { start: function () { alert("¹Ø¿¨ÉĞÎ´ÖÆ×÷!"); },};
-//myglobal.games.rounds.rounds[6] = { start: function () { alert("¹Ø¿¨ÉĞÎ´ÖÆ×÷!"); },};
-//myglobal.games.rounds.rounds[7] = { start: function () { alert("¹Ø¿¨ÉĞÎ´ÖÆ×÷!"); },};
-//myglobal.games.rounds.rounds[8] = { start: function () { alert("¹Ø¿¨ÉĞÎ´ÖÆ×÷!"); },};
-//myglobal.games.rounds.rounds[9] = { start: function () { alert("¹Ø¿¨ÉĞÎ´ÖÆ×÷!"); },};
-//myglobal.games.rounds.rounds[10] = { start: function () { alert("¹Ø¿¨ÉĞÎ´ÖÆ×÷!"); },};
-//myglobal.games.rounds.rounds[11] = { start: function () { alert("¹Ø¿¨ÉĞÎ´ÖÆ×÷!"); },};
-//myglobal.games.rounds.rounds[12] = { start: function () { alert("¹Ø¿¨ÉĞÎ´ÖÆ×÷!"); },};
-//myglobal.games.rounds.rounds[13] = { start: function () { alert("¹Ø¿¨ÉĞÎ´ÖÆ×÷!"); },};
-//myglobal.games.rounds.rounds[14] = { start: function () { alert("¹Ø¿¨ÉĞÎ´ÖÆ×÷!"); },};
-//myglobal.games.rounds.rounds[15] = { start: function () { alert("¹Ø¿¨ÉĞÎ´ÖÆ×÷!"); },};
-//myglobal.games.rounds.rounds[16] = { start: function () { alert("¹Ø¿¨ÉĞÎ´ÖÆ×÷!"); },};
-//myglobal.games.rounds.rounds[17] = { start: function () { alert("¹Ø¿¨ÉĞÎ´ÖÆ×÷!"); },};
-//myglobal.games.rounds.rounds[18] = { start: function () { alert("¹Ø¿¨ÉĞÎ´ÖÆ×÷!"); },};
-//myglobal.games.rounds.rounds[19] = { start: function () { alert("¹Ø¿¨ÉĞÎ´ÖÆ×÷!"); },};
-//myglobal.games.rounds.rounds[20] = { start: function () { alert("¹Ø¿¨ÉĞÎ´ÖÆ×÷!"); },};
-//myglobal.games.rounds.rounds[21] = { start: function () { alert("¹Ø¿¨ÉĞÎ´ÖÆ×÷!"); },};
-//myglobal.games.rounds.rounds[22] = { start: function () { alert("¹Ø¿¨ÉĞÎ´ÖÆ×÷!"); },};
-//myglobal.games.rounds.rounds[23] = { start: function () { alert("¹Ø¿¨ÉĞÎ´ÖÆ×÷!"); },};
-//myglobal.games.rounds.rounds[24] = { start: function () { alert("¹Ø¿¨ÉĞÎ´ÖÆ×÷!"); },};
-//myglobal.games.rounds.rounds[25] = { start: function () { alert("¹Ø¿¨ÉĞÎ´ÖÆ×÷!"); },};
-//myglobal.games.rounds.rounds[26] = { start: function () { alert("¹Ø¿¨ÉĞÎ´ÖÆ×÷!"); },};
-//myglobal.games.rounds.rounds[27] = { start: function () { alert("¹Ø¿¨ÉĞÎ´ÖÆ×÷!"); },};
+//myglobal.games.rounds.rounds[3] = { start: function () { alert("å…³å¡å°šæœªåˆ¶ä½œ!"); },};
+//myglobal.games.rounds.rounds[4] = { start: function () { alert("å…³å¡å°šæœªåˆ¶ä½œ!"); },};
+//myglobal.games.rounds.rounds[5] = { start: function () { alert("å…³å¡å°šæœªåˆ¶ä½œ!"); },};
+//myglobal.games.rounds.rounds[6] = { start: function () { alert("å…³å¡å°šæœªåˆ¶ä½œ!"); },};
+//myglobal.games.rounds.rounds[7] = { start: function () { alert("å…³å¡å°šæœªåˆ¶ä½œ!"); },};
+//myglobal.games.rounds.rounds[8] = { start: function () { alert("å…³å¡å°šæœªåˆ¶ä½œ!"); },};
+//myglobal.games.rounds.rounds[9] = { start: function () { alert("å…³å¡å°šæœªåˆ¶ä½œ!"); },};
+//myglobal.games.rounds.rounds[10] = { start: function () { alert("å…³å¡å°šæœªåˆ¶ä½œ!"); },};
+//myglobal.games.rounds.rounds[11] = { start: function () { alert("å…³å¡å°šæœªåˆ¶ä½œ!"); },};
+//myglobal.games.rounds.rounds[12] = { start: function () { alert("å…³å¡å°šæœªåˆ¶ä½œ!"); },};
+//myglobal.games.rounds.rounds[13] = { start: function () { alert("å…³å¡å°šæœªåˆ¶ä½œ!"); },};
+//myglobal.games.rounds.rounds[14] = { start: function () { alert("å…³å¡å°šæœªåˆ¶ä½œ!"); },};
+//myglobal.games.rounds.rounds[15] = { start: function () { alert("å…³å¡å°šæœªåˆ¶ä½œ!"); },};
+//myglobal.games.rounds.rounds[16] = { start: function () { alert("å…³å¡å°šæœªåˆ¶ä½œ!"); },};
+//myglobal.games.rounds.rounds[17] = { start: function () { alert("å…³å¡å°šæœªåˆ¶ä½œ!"); },};
+//myglobal.games.rounds.rounds[18] = { start: function () { alert("å…³å¡å°šæœªåˆ¶ä½œ!"); },};
+//myglobal.games.rounds.rounds[19] = { start: function () { alert("å…³å¡å°šæœªåˆ¶ä½œ!"); },};
+//myglobal.games.rounds.rounds[20] = { start: function () { alert("å…³å¡å°šæœªåˆ¶ä½œ!"); },};
+//myglobal.games.rounds.rounds[21] = { start: function () { alert("å…³å¡å°šæœªåˆ¶ä½œ!"); },};
+//myglobal.games.rounds.rounds[22] = { start: function () { alert("å…³å¡å°šæœªåˆ¶ä½œ!"); },};
+//myglobal.games.rounds.rounds[23] = { start: function () { alert("å…³å¡å°šæœªåˆ¶ä½œ!"); },};
+//myglobal.games.rounds.rounds[24] = { start: function () { alert("å…³å¡å°šæœªåˆ¶ä½œ!"); },};
+//myglobal.games.rounds.rounds[25] = { start: function () { alert("å…³å¡å°šæœªåˆ¶ä½œ!"); },};
+//myglobal.games.rounds.rounds[26] = { start: function () { alert("å…³å¡å°šæœªåˆ¶ä½œ!"); },};
+//myglobal.games.rounds.rounds[27] = { start: function () { alert("å…³å¡å°šæœªåˆ¶ä½œ!"); },};
 
 
 
-//°Ñ¹¤³ÌÎÄ¼ş¼ÓÈëÍøÕ¾
+//æŠŠå·¥ç¨‹æ–‡ä»¶åŠ å…¥ç½‘ç«™
 myglobal.addJs(myglobal.currentDir+"program.js");
