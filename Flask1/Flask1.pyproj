@@ -64,6 +64,7 @@
     <Folder Include="Flask1\static\js\" />
     <Folder Include="Flask1\static\css\" />
     <Folder Include="Flask1\static\files\" />
+    <Folder Include="Flask1\static\js\plane\" />
     <Folder Include="Flask1\static\scripts\" />
     <Folder Include="Flask1\templates\" />
   </ItemGroup>
@@ -115,7 +116,13 @@
     <Content Include="Flask1\static\js\Login.js" />
     <Content Include="Flask1\static\js\Menu.js" />
     <Content Include="Flask1\static\js\oneValue.js" />
+    <Content Include="Flask1\static\js\plane\class.js" />
+    <Content Include="Flask1\static\js\plane\game.js" />
+    <Content Include="Flask1\static\js\plane\image.js" />
+    <Content Include="Flask1\static\js\plane\index.js" />
+    <Content Include="Flask1\static\js\plane\program.js" />
     <Content Include="Flask1\templates\back.html" />
+    <Content Include="Flask1\templates\plane.html" />
     <Content Include="Flask1\templates\test.html" />
     <Content Include="Flask1\templates\index.html" />
     <Content Include="Flask1\templates\oneValue.html" />

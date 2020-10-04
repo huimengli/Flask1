@@ -291,6 +291,20 @@ def test():
         context=context,        
     )
 
+@app.route("/plane/")
+def plane():
+    '''
+    打飞机小游戏
+    '''
+    context = {};
+    context["name"] = myname;
+    context['title'] = "打飞机游戏";
+
+    return render_template(
+        'plane.html',
+        context=context,
+    )
+
 #@app.route('/')
 #@app.route('/home')
 #def home():
