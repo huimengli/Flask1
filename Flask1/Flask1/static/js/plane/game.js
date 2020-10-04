@@ -1,4 +1,4 @@
-/**基类 */
+﻿/**基类 */
 myglobal.games.base = myglobal;
 
 /**关卡模块 */
