@@ -1,0 +1,31 @@
+body
+{
+    width:100vw;
+    height:100vh;
+    overflow:hidden;
+}
+
+.menu{
+    width:30vw;
+    float:left;
+    position:relative;
+    left:0px;
+    top:0px;
+    height:100vh;
+    overflow-x:hidden;
+    overflow-y:auto;
+}
+
+.main{
+    width:70vw;
+    float:left;
+    position:relative;
+    top:0px;
+    right:0px;
+    height:100vh;
+    overflow-x:hidden;
+    overflow-y:auto;
+
+}
+
+

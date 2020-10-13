@@ -73,6 +73,7 @@
     <Content Include="Flask1\static\css\all.css" />
     <Content Include="Flask1\static\css\ChangeValue.css" />
     <Content Include="Flask1\static\css\Default.css" />
+    <Content Include="Flask1\static\css\file.css" />
     <Content Include="Flask1\static\css\plane.css" />
     <Content Include="Flask1\static\css\Login.css" />
     <Content Include="Flask1\static\css\Menu.css" />
@@ -134,6 +135,7 @@
     <Content Include="Flask1\templates\buckpage.html" />
     <Content Include="Flask1\templates\signOn.html" />
     <Content Include="Flask1\templates\changeValue.html" />
+    <Content Include="Flask1\templates\file.html" />
     <Content Include="requirements.txt" />
     <Content Include="Flask1\static\content\bootstrap.css" />
     <Content Include="Flask1\static\content\bootstrap.min.css" />
