@@ -28,6 +28,9 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Flask1\fileSystem.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Flask1\item.py" />
     <Compile Include="Flask1\mySqlLink.py">
       <SubType>Code</SubType>
@@ -65,6 +68,7 @@
     <Folder Include="Flask1\static\js\" />
     <Folder Include="Flask1\static\css\" />
     <Folder Include="Flask1\static\files\" />
+    <Folder Include="Flask1\static\js\file\" />
     <Folder Include="Flask1\static\js\plane\" />
     <Folder Include="Flask1\static\scripts\" />
     <Folder Include="Flask1\templates\" />
@@ -116,6 +120,7 @@
     <Content Include="Flask1\static\JavaScriptCode\sVersion\lt_code_s14.js" />
     <Content Include="Flask1\static\JavaScriptCode\文件合并.bat" />
     <Content Include="Flask1\static\js\Default.js" />
+    <Content Include="Flask1\static\js\file\file.js" />
     <Content Include="Flask1\static\js\jquery-3.3.1.js" />
     <Content Include="Flask1\static\js\Login.js" />
     <Content Include="Flask1\static\js\Menu.js" />

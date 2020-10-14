@@ -12,20 +12,79 @@
 <body>
     <div class="menu">
         <div class="title">
-            文件管理系统
+            绘梦璃的文件管理系统
+        </div>
+        <div class="list">
+
         </div>
         <div class="icon">
             <img class="icon" src="#" alt="Alternate Text" />
-            <span>
-                绘梦璃
-            </span>
+            <div>
+                管理员:<a href="#">绘梦璃</a>
+            </div>
         </div>
     </div>
     <div class="main">
-
+        <div class="title">
+            <!--<div class="bottom">上一个目录</div>-->
+            <div class="bottom admin ">增加根目录</div>
+            <div class="bottom admin user">新建目录</div>
+            <div class="bottom admin user">上传文件</div>
+            <div class="bottom admin user guest">下载文件</div>
+            <div class="bottom admin user">删除文件</div>
+            <div class="bottom admin">删除目录</div>
+        </div>
     </div>
-    <div class="allFooter">
-        &copy; 2020 <a href="https://github.com/huimengli" target="_blank" title="我的GitHub地址">绘梦璃</a> | <a target="_blank" href="http://beian.miit.gov.cn/" title="备案信息查看">浙ICP备2020031480号</a> | All Rights Reserved.
+    <div class="footer">
+        <div class="allFooter">
+            &copy; 2020 <a href="https://github.com/huimengli" target="_blank" title="我的GitHub地址">绘梦璃</a> | <a target="_blank" href="http://beian.miit.gov.cn/" title="备案信息查看">浙ICP备2020031480号</a> | All Rights Reserved.
+        </div>
     </div>
 </body>
 </html>
+<script>
+    /**用户UID */
+    var UID = lt_code.cookie.getCookie("uid") || function () {
+        var ret = lt_code.variable.newUID(lt_code.variable.userAgent());
+        lt_code.cookie.saveCookie("uid", ret, 7);
+        return ret;
+    }();
+</script>
+<script>
+    /**文件系统功能目录 */
+    var title = lt_code.getAll(".menu");
+    /**目录表头模块 */
+    var icon = lt_code.getAll(".icon",0);
+    /**文件表头图片 */
+    var iconImg = lt_code.getAll2(".icon", icon);
+    /**表头内容 */
+    var iconVal = lt_code.getAll2("div", icon);
+    /**网页主体 */
+    var body = lt_code.getAll();
+    /**目录列表 */
+    var list = lt_code.getAll(".list");
+    /**按钮块 */
+    var mouseBox = lt_code.getAll2(".title", lt_code.getAll(".main"));
+
+
+
+    lt_code.variable.addRun(function () {
+        return setInterval(function () {
+            body.clientWidth / body.clientHeight < 1470 / 935 ? body.style.backgroundSize = "auto 100%" : body.style.backgroundSize = "100% auto";
+        },100);
+    }(), "背景图片适应");
+
+    window.onload = function () {
+        iconImg.src = lt_code.variable.images.headPortrait[0];
+        /**所有按钮 */
+        var bottoms = Array.prototype.slice.call(lt_code.getAll2(".bottom", mouseBox));
+        mouseBox.onmousemove = function (e) {
+            bottoms.forEach(function (ea) {
+                lt_code.mouseBoxShadow(ea, e, "#999");
+            });
+        };
+
+        
+    };
+</script>
+<script src="/static/js/file/file.js"></script>

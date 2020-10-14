@@ -305,7 +305,20 @@ def plane():
         context=context,
     )
 
+@app.route("/file/",methods=['GET','POST'])
+def file():
+    '''
+    文件系统
+    '''
 
+    import Flask1.fileSystem as sys;
+    
+
+    return render_template(
+        'file.html',
+        context={},
+    )
+    
 
 #@app.route('/')
 #@app.route('/home')
