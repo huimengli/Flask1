@@ -313,6 +313,50 @@ def file():
 
     import Flask1.fileSystem as sys;
     
+    name = request.args.get("name");
+    password = request.args.get("password");
+    user = None;
+    if name==None or password==None:
+        try:
+            name = session['name'];
+            password = session['password'];
+        except :
+            print;
+
+    if not name==None and not password==None and not name=='' and not password=='':
+        id = User.SignOn(name,password);
+        print(id);
+        user = User.GetUser(id);
+        print(user);
+
+    if isinstance(user,User):
+        session['id'] = user.id;
+        session['name'] = name;
+        session['password'] = password;
+
+    values = request.get_data();
+    print(values);
+    if len(values)>0:
+        print(values);
+        value = json.loads(values);
+        try:
+            if value['n']=='name':
+                return user.name;
+            elif value['n']=='id':
+                return str(user.id);
+            elif value['n']=="exit":
+                session['name'] = "";
+                session['password'] = "";
+                session['id'] = "";
+                redirect(url_for("signOn"));
+                return "exit";
+            elif value['n']=="":
+                pass
+        except Exception as e:
+            print(e);
+
+        return values;
+
 
     return render_template(
         'file.html',

@@ -476,8 +476,20 @@ myglobal.class.foe = class {
     fire() {
         this.j++;
         if (this.bulletType && this.j % this.c == 0) {
-            var newBullet = new myglobal.class.foeBullet(this.x, this.y + this.h / 2, 4, 8, 0, 5,this.bv, myglobal.image.image.bullet.foeBullet,this.bulletType);
-            myglobal.bullet.push(newBullet);
+            if (this.bulletType==myglobal.class.bullet.slow||this.bulletType==myglobal.class.bullet.line) {
+                var newBullet = new myglobal.class.foeBullet(this.x, this.y + this.h / 2, 4, 8, 0, 5, this.bv, myglobal.image.image.bullet.foeBullet, this.bulletType);
+                myglobal.bullet.push(newBullet);
+            } else if (this.bulletType==myglobal.class.bullet.group) {
+                var b1 = new myglobal.class.foeBullet(this.x, this.y + this.h / 2, 4, 8, 0, 5, this.bv, myglobal.image.image.bullet.foeBullet, this.bulletType);
+                var b2 = new myglobal.class.foeBullet(this.x + this.w / 3, this.y + this.h / 3, 4, 8, 3.5, 3.5, this.bv, myglobal.image.image.bullet.foeBullet, this.bulletType);
+                var b3 = new myglobal.class.foeBullet(this.x + this.w / 2, this.y , 8, 4, 5, 0, this.bv, myglobal.image.image.bullet.foeBullet, this.bulletType);
+                var b4 = new myglobal.class.foeBullet(this.x + this.w / 3, this.y - this.h / 3, 4, 8, 3.5, -3.5, this.bv, myglobal.image.image.bullet.foeBullet, this.bulletType);
+                var b5 = new myglobal.class.foeBullet(this.x, this.y - this.h / 2, 4, 8, 0, -5, this.bv, myglobal.image.image.bullet.foeBullet, this.bulletType);
+                var b6 = new myglobal.class.foeBullet(this.x - this.w / 3, this.y - this.h / 3, 4, 8, -3.5, -3.5, this.bv, myglobal.image.image.bullet.foeBullet, this.bulletType);
+                var b7 = new myglobal.class.foeBullet(this.x - this.w/2, this.y, 8, 4, -5,0, this.bv, myglobal.image.image.bullet.foeBullet, this.bulletType);
+                var b8 = new myglobal.class.foeBullet(this.x - this.w / 3, this.y + this.h / 3, 4, 8, -3.5, 3.5, this.bv, myglobal.image.image.bullet.foeBullet, this.bulletType);
+                myglobal.bullet.push(b1, b2, b3, b4, b5, b6, b7, b8);
+            }
         }
     }
 
@@ -744,11 +756,15 @@ myglobal.class.foeBullet = class {
         var y = Math.abs(this.y - player.y);
         var distance = Math.sqrt(x * x + y * y);
         //console.log(0);
-        if (distance<player.r&&player.s<=0) {
-            player.l = player.l - this.value;
-            player.s = myglobal.refresh30;
-            //console.log(1);
-            this.delete();
+        if (distance<player.r) {
+            if (player.s <= 0) {
+                player.l = player.l - this.value;
+                player.s = myglobal.refresh30;
+                //console.log(1);
+                this.delete();
+            } else {
+                this.delete();
+            }
         }
     }
 }
@@ -884,6 +900,61 @@ myglobal.class.bottom = function (x, y, w, h, t, fuc,f, c, bc, br) {
     lt_code.addChild(ret, myglobal.box);
 
     return ret;
+}
+
+/**背景 */
+myglobal.class.background = class {
+    /**
+     * 构造函数
+     * @param {any} x
+     * @param {any} y
+     * @param {any} mv 向下移动速度
+     */
+    constructor(x, y, mv) {
+        /**x轴位置 */
+        this.x = x;
+        /**y轴位置 */
+        this.y = y;
+        /**纵向移动速度 */
+        this.mv = mv;
+        /**尺寸大小 */
+        this.r = lt_code.variable.random(myglobal.games.BACKGROUND_MAX_SIZE, myglobal.games.BACKGROUND_MIN_SIZE, true);
+        /**道具图片 */
+        this.img = lt_code.newDom("img", {
+            src: myglobal.image.image.background[
+                lt_code.variable.random(myglobal.image.image.background.length, 0, true)
+            ]
+        });
+    }
+
+    /**
+     * 移动
+     * @param {HTMLCanvasElement} cas
+     */
+    move(cas) {
+        //console.log(cas);
+        this.y = this.y + this.mv;
+        //console.log(this.y+" "+(cas.height+this.r));
+        //超出屏幕的道具就直接消失
+        if (this.y > cas.height + this.r) {
+            this.delete();
+        }
+    }
+
+    /**
+     * 绘制
+     * @param {CanvasRenderingContext2D} ctx
+     */
+    draw(ctx) {
+        var x = this.x - this.r / 2;
+        var y = this.y - this.r / 2;
+        ctx.drawImage(this.img, x, y, this.r, this.r);
+    }
+    
+    /**删除本背景道具 */
+    delete() {
+        myglobal.games.background = myglobal.games.background.ree(this);
+    }
 }
 
 //游戏类文件加载完成以后才加载游戏逻辑文件

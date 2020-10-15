@@ -1,4 +1,4 @@
-﻿/**基类 */
+/**基类 */
 myglobal.games.base = myglobal;
 
 /**关卡模块 */
@@ -13,6 +13,18 @@ myglobal.games.INTERVEL = 2;
 /**场上最多出现多少敌人 */
 myglobal.games.MAXFOE = 5;
 
+/**场上背景道具应该有多少个 */
+myglobal.games.BACKGROUND = 15;
+
+/**背景道具最大尺寸 */
+myglobal.games.BACKGROUND_MAX_SIZE = 100;
+
+/**背景道具最小尺寸 */
+myglobal.games.BACKGROUND_MIN_SIZE = 30;
+
+/**背景道具移动速度 */
+myglobal.games.BACKGROUND_MOVE_SPEED = 2;
+
 /**游戏系统挂载 */
 myglobal.games.run = 0;
 
@@ -21,6 +33,9 @@ myglobal.games.gameRun = 0;
 
 /**捕获的按键 */
 myglobal.games.keys = [];
+
+/**背景道具 */
+myglobal.games.background = [];
 
 /**删除所有的按钮 */
 myglobal.games.clearBottoms = function () {
@@ -34,8 +49,14 @@ myglobal.games.clearBottoms = function () {
  * 开始关卡
  * @param {number} foes 敌人数量
  * @param {Array} foeType 敌人类型
+ * @param round 关卡本身
  */
-myglobal.games.startRound = function (foes,foeType) {
+myglobal.games.startRound = function (foes, foeType, round) {
+    /**关卡数据 */
+    var index = this.rounds.rounds.indexOf(round);
+
+    console.log(index);
+
     /**已经出现过的敌人 */
     var i = 0;
 
@@ -71,6 +92,17 @@ myglobal.games.startRound = function (foes,foeType) {
     //添加返回按钮
     myglobal.games.bottoms.push(returnBottom);
     myglobal.games.bottoms.push(pointDiv);
+
+    //背景道具先画
+    while (myglobal.games.background.length < myglobal.games.BACKGROUND) {
+        myglobal.games.background.push(
+            new myglobal.class.background(
+                lt_code.variable.random(myglobal.cas.width, 0, true),
+                lt_code.variable.random(myglobal.cas.height,0,true),
+                myglobal.games.BACKGROUND_MOVE_SPEED
+            )
+        );
+    }
     
     //开始挂载
     myglobal.games.run = setInterval(function () {
@@ -86,13 +118,26 @@ myglobal.games.startRound = function (foes,foeType) {
                 lt_code.variable.random(myglobal.cas.width - 100, 100, true),
                 0, size.x, size.y, myglobal.MAXHP, bullet
             ));
-
+            i++;
         }
 
         //结束游戏
         if (i == foes&&myglobal.foes.length == 0) {
-            alert("过关!");
-
+            clearInterval(myglobal.games.run);
+            clearInterval(myglobal.games.gameRun);
+            myglobal.foes = [];
+            myglobal.player = null;
+            myglobal.item = [];
+            myglobal.bullet = [];
+            myglobal.games.keys = [];
+            myglobal.games.clearBottoms();
+            if (index < myglobal.games.rounds.rounds.length-1) {
+                alert("恭喜,进入下一关!");
+                myglobal.games.rounds.rounds[index + 1].start();
+            } else {
+                alert("恭喜你已经挑战完了所有关卡了");
+                myglobal.games.rounds.over.start(true);
+            }
         }
 
     }, myglobal.games.INTERVEL * 1000);
@@ -102,6 +147,22 @@ myglobal.games.startRound = function (foes,foeType) {
 
         //清空屏幕
         myglobal.clearCtx();
+
+        //背景道具先画
+        if (myglobal.games.background.length < myglobal.games.BACKGROUND) {
+            myglobal.games.background.push(
+                new myglobal.class.background(
+                    lt_code.variable.random(myglobal.cas.width, 0, true),
+                    0,
+                    myglobal.games.BACKGROUND_MOVE_SPEED
+                )
+            );
+        }
+
+        myglobal.games.background.forEach(function (e) {
+            e.move(myglobal.cas);
+            e.draw(myglobal.ctx);
+        });
 
         //敌人动作
         myglobal.foes.forEach(function (e) {
@@ -243,8 +304,11 @@ myglobal.games.rounds.over = {
     /**基类 */
     base: myglobal.games.rounds,
 
-    /**结束界面 */
-    start: function () {
+    /**
+     * 结束界面
+     * @param {boolean} isEnd 是否是正常结束
+     */
+    start: function (isEnd) {
         //游戏结束
         myglobal.games.clearBottoms();
         //myglobal.games.rounds.menu.start();
@@ -255,10 +319,13 @@ myglobal.games.rounds.over = {
         myglobal.item = [];
         myglobal.bullet = [];
         myglobal.clearCtx();
+        myglobal.games.keys = [];
 
         /**重新开始游戏按钮 */
         var startBottom = myglobal.class.bottom(200, 400, 120, 40, "回到主界面",
             function () {
+                //游戏结束分数清零
+                myglobal.POINT = 0;
                 myglobal.games.clearBottoms()
                 myglobal.games.rounds.begin.start();
             });
@@ -268,7 +335,8 @@ myglobal.games.rounds.over = {
         //        lt_code.close();
         //    });
         /**所谓的图标 */
-        var icon = myglobal.class.bottom(200, 200, 300, 300, "游戏结束!\n你的分数:"+myglobal.POINT, null, "40px", "white", "white", null);
+        var icon = isEnd? myglobal.class.bottom(200, 200, 300, 300, "恭喜通关!\n你的分数:" + myglobal.POINT, null, "40px", "white", "white", null) :
+            myglobal.class.bottom(200, 200, 300, 300, "游戏结束!\n你的分数:" + myglobal.POINT, null, "40px", "white", "white", null);
         icon.style.cursor = "auto";
         /**制作者信息 */
         var auther = myglobal.class.bottom(300, 760, 160, 40, "制作者:绘梦璃", function () {
@@ -286,7 +354,7 @@ myglobal.games.rounds.over = {
 /**关卡 */
 myglobal.games.rounds.rounds = [];
 
-/**关卡1 */
+/**关卡0 */
 myglobal.games.rounds.rounds[0] = {
     /**基类 */
     base: myglobal.games.rounds,
@@ -298,7 +366,7 @@ myglobal.games.rounds.rounds[0] = {
     start: function () {
         //this.base.base.base.clearGame();
         //this.base.base.base.clearCtx();
-        myglobal.games.startRound(this.foes, this.foeType);
+        myglobal.games.startRound(this.foes, this.foeType,this);
     },
 }
 /**关卡1 */
@@ -311,7 +379,7 @@ myglobal.games.rounds.rounds[1] = {
     foeType: [myglobal.class.bullet.noBullet,myglobal.class.bullet.slow],
     /**开始关卡 */
     start: function () {
-        myglobal.games.startRound(this.foes, this.foeType);
+        myglobal.games.startRound(this.foes, this.foeType, this);
     },
 }
 /**关卡2 */
@@ -324,10 +392,48 @@ myglobal.games.rounds.rounds[2] = {
     foeType: [myglobal.class.bullet.slow,myglobal.class.bullet.line],
     /**开始关卡 */
     start: function () {
-        myglobal.games.startRound(this.foes, this.foeType);
+        myglobal.games.startRound(this.foes, this.foeType, this);
     },
 }
-//myglobal.games.rounds.rounds[3] = { start: function () { alert("关卡尚未制作!"); },};
+/**关卡3 */
+myglobal.games.rounds.rounds[3] = {
+    /**基类 */
+    base: myglobal.games.rounds,
+    /**敌人数量 */
+    foes: 25,
+    /**敌人种类 */
+    foeType: [myglobal.class.bullet.slow, myglobal.class.bullet.line,myglobal.class.bullet.noBullet],
+    /**开始关卡 */
+    start: function () {
+        myglobal.games.startRound(this.foes, this.foeType, this);
+    },
+};
+/**关卡4 */
+myglobal.games.rounds.rounds[4] = {
+    /**基类 */
+    base: myglobal.games.rounds,
+    /**敌人数量 */
+    foes: 25,
+    /**敌人种类 */
+    foeType: [myglobal.class.bullet.slow, myglobal.class.bullet.line,myglobal.class.bullet.group],
+    /**开始关卡 */
+    start: function () {
+        myglobal.games.startRound(this.foes, this.foeType, this);
+    },
+};
+/**关卡4 */
+myglobal.games.rounds.rounds[5] = {
+    /**基类 */
+    base: myglobal.games.rounds,
+    /**敌人数量 */
+    foes: 25,
+    /**敌人种类 */
+    foeType: [myglobal.class.bullet.group],
+    /**开始关卡 */
+    start: function () {
+        myglobal.games.startRound(this.foes, this.foeType, this);
+    },
+};
 //myglobal.games.rounds.rounds[4] = { start: function () { alert("关卡尚未制作!"); },};
 //myglobal.games.rounds.rounds[5] = { start: function () { alert("关卡尚未制作!"); },};
 //myglobal.games.rounds.rounds[6] = { start: function () { alert("关卡尚未制作!"); },};
