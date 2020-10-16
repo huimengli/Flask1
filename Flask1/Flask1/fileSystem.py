@@ -119,13 +119,13 @@ class fileSystem(object):
     nowDir = os.getcwd();
 
     # 根目录
-    root = nowDir+"\\Flask1\\root";
+    root = nowDir+"/Flask1/root";
 
     # 管理员根目录
-    adminRoot = root+"\\admin";
+    adminRoot = root+"/admin";
 
     # 用户目录
-    userRoot = root+"\\user";
+    userRoot = root+"/user";
 
     @staticmethod
     def exists(filename):
@@ -143,7 +143,7 @@ class fileSystem(object):
         dirpath = dirpath[len(fileSystem.root):]
         ret = [];
         for x in filelist:
-            ret.append(dirpath+"\\"+x);
+            ret.append(dirpath+"/"+x);
         return ret;
 
     @staticmethod
