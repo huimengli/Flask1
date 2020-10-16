@@ -15,7 +15,13 @@
             绘梦璃的文件管理系统
         </div>
         <div class="list">
-
+            <div class="listBlock listSelect" data-listBlock="false" data-dir="root">
+                <div class="listValue">root</div>
+                <!--<div class="listBlock" data-isFile="false" data-dir="root\admin">
+                    <div class="listValue">admin</div>
+                </div>-->
+            </div>
+            
         </div>
         <div class="icon">
             <img class="icon" src="#" alt="Alternate Text" />
@@ -68,8 +74,45 @@
     var list = lt_code.getAll(".list");
     /**按钮块 */
     var mouseBox = lt_code.getAll2(".title", lt_code.getAll(".main"));
+    /**文件夹列表 */
+    var lists = [];
+    
+    /**
+     * 新文件夹行
+     * @param {string} value 文件夹名称
+     * @param {string} isfile 是否是文件
+     * @param {HTMLElement} father 父类结点
+     */
+    var newListBlock = function (value, isfile, father) {
+        console.log(father);
 
+        var newValue = lt_code.newDom("div", {
+            class: "listValue",
 
+        });
+        
+        newValue.onmousedown = function () {
+            var father = lt_code.getDomFather(this);
+            father.className = father.classList.length > 1 ? "listBlock" : "listBlock listSelect";
+            //console.log(father.classList);
+        }
+
+        var newBlock = lt_code.newDom("div", {
+            "data-listBlock": isfile,
+            "data-dir": value,
+            class: "listBlock listSelect",
+
+        });
+
+        value = father.dataset.dir == "root" ? value : value.slice(father.dataset.dir.length);
+
+        newValue.innerHTML = value;
+
+        lt_code.addChild(newValue, newBlock);
+        lt_code.addChild(newBlock, father);
+        lists.push(newBlock);
+
+    }
 
     lt_code.variable.addRun(function () {
         return setInterval(function () {
@@ -87,6 +130,60 @@
             });
         };
 
+        lists.push(lt_code.getAll(".listBlock", 0));
+        lt_code.getAll(".listValue", 0).onmousedown = function () {
+            var father = lt_code.getDomFather(this);
+            father.className = father.classList.length > 1 ? "listBlock" : "listBlock listSelect";
+            //console.log(father.classList);
+        };
+        var i = 0;
+        lt_code.variable.addRun(setInterval(function () {
+            if (i<lists.length) {
+                /**父类结点 */
+                var father = lists[i];
+                /**真实路径 */
+                var dir = father.dataset.dir;
+                /**上传数据 */
+                var up = {
+                    n: "list",
+                    dir: dir
+                };
+                //获取目录
+                $(function () {
+                    $.ajax({
+                        type: "post",
+                        url: "/file/",
+                        data: JSON.stringify(up),
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "text",
+                        success: function (data) {
+                            eval("data = " + data);
+                            console.log(data);
+                            for (var j = 0; j < data.length; j++) {
+                                console.log(data[j]);
+                                for (var x in data[j]) {
+                                    if (data[j][x] == "False") {
+                                        newListBlock(x, false, father);
+                                    } else if (data[j][x] == "True") {
+
+                                    }
+                                }
+                            }
+                        },
+                        error: function (err) {
+                            console.log(err);
+                        }
+                    });
+                });
+                i++;
+            } else {
+                //lt_code.variable.runer.forEach(function (e) {
+                //    if (e['name'] == '遍历所有文件夹') {
+                //        clearInterval(e['num']);
+                //    }
+                //});
+            }
+        }, 100), "遍历所有文件夹");
         
     };
 </script>

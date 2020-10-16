@@ -8,8 +8,11 @@ from Flask1 import app
 from random import randint;
 from Flask1.users import UserBasic as User;
 import json;
+import Flask1.fileSystem as sys;
 
 myname = "绘梦璃";
+
+fileSys = sys.fileSystem("files");
 
 @app.route("/")
 @app.route("/signOn/")
@@ -311,7 +314,6 @@ def file():
     文件系统
     '''
 
-    import Flask1.fileSystem as sys;
     
     name = request.args.get("name");
     password = request.args.get("password");
@@ -335,10 +337,13 @@ def file():
         session['password'] = password;
 
     values = request.get_data();
-    print(values);
+    
+    #print(values);
+    
     if len(values)>0:
         print(values);
         value = json.loads(values);
+        #print(values.decode("utf8"));
         try:
             if value['n']=='name':
                 return user.name;
@@ -350,13 +355,22 @@ def file():
                 session['id'] = "";
                 redirect(url_for("signOn"));
                 return "exit";
-            elif value['n']=="":
-                pass
-        except Exception as e:
-            print(e);
+            elif value['n']=="test":
+                return fileSys.fileSteam[0].getValue();
+            elif value['n']=="list":
+                try:
+                    return fileSys.getFileList(value['dir']);
+                except Exception as e:
+                    print(e);
+                    return fileSys.getFileList();
+                
 
+        except Exception as e:
+            raise e;
+    #else:
         return values;
 
+    #print(fileSys.fileSteam[0].getValue());
 
     return render_template(
         'file.html',

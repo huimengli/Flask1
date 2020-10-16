@@ -105,9 +105,51 @@ div.menu div.title {
 }
 
 div.menu div.list{
-    width:30vw;
-    height:calc(100vh - 200px);
+    width:calc(30vw-40px);
+    height:calc(100vh - 240px);
     overflow:auto;
+    padding:20px;
+}
+
+div.listBlock {
+    /*margin-left:20px;*/
+    height: 25px;
+    overflow: hidden;
+}
+
+div.listBlock div.listBlock{
+    margin-left:20px;
+}
+
+div.listBlock div.listValue {
+    padding-left: 5px;
+    border: 1px dashed snow;
+    background-color: rgba(255,255,255,0.5);
+    height: 23px;
+    line-height: 23px;
+    position:relative;  
+}
+
+div.listValue::before {
+    content: "";
+    width: 0;
+    height: 0;
+    border-right: 20px solid black;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    position: absolute;
+    right: 4px;
+    top: 1px;
+    transition-duration:0.3s;
+}
+
+div.menu div.list div.listSelect{
+    overflow:visible;
+    height:auto;
+}
+
+div.listSelect>div.listValue::before {
+    transform:rotate(-90deg);
 }
 
 div.footer {
@@ -152,6 +194,10 @@ div.main div.title div.user{
 
 div.main div.title div.guest{
     background-color:rgba(255, 255, 255,0.6);
+}
+
+div.main div.title div.bottom:hover{
+    color:white;
 }
 
 div.main div.box{
