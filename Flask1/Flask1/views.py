@@ -359,7 +359,10 @@ def file():
                 return fileSys.fileSteam[0].getValue();
             elif value['n']=="list":
                 try:
-                    return fileSys.getFileList(value['dir']);
+                    if value['isdir']=="True":
+                        return fileSys.getFileList(value['dir']);
+                    else:
+                        return fileSys.getFileList(value['dir']);
                 except Exception as e:
                     print(e);
                     return fileSys.getFileList();

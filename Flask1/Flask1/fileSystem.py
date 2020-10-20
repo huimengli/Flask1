@@ -80,7 +80,7 @@ class files(object):
     '''
     文件对象
     '''
-    def __init__(self,id,name,size,eachSize,package,md5,path,userid,level):
+    def __init__(self,id,name,size,eachSize,package,md5,path,userid,level,create):
         '''
         初始化
         '''
@@ -93,6 +93,7 @@ class files(object):
         self.path = path;
         self.userid = userid;
         self.level = level;
+        self.create = create;
 
         return;
 
@@ -109,6 +110,50 @@ class files(object):
             return str(val);
         else:
             return "{}";
+
+    def toDict(self):
+        '''
+        转化为列表
+        '''
+        ret = {
+            "id":self.id,
+            "name":self.name,
+            "size":self.size,
+            "eachSize":self.eachSize,
+            "package":self.package,
+            "md5":self.md5,
+            "path":self.path,
+            "userid":self.userid,
+            "level":self.level,
+            "create":self.create,
+        };
+
+        return json.dumps(ret);
+
+    @staticmethod
+    def toDicts(files):
+        '''
+        转化成列表
+        '''
+        ret = [];
+        for x in files:
+            ret.append(x.toDict());
+
+    @staticmethod
+    def getFile(files,fileName):
+        '''
+        查询文件信息
+
+        :param files:list[files] 所有已经从数据库中拉取出的
+        :param fileName:str 文件名
+
+        '''
+        ret = [];
+        for x in files:
+            if fileName==x.name:
+                ret.append(x);
+
+        return ret;
 
 class fileSystem(object):
     '''
@@ -186,9 +231,17 @@ class fileSystem(object):
         ret = [];
         if not type(all)==bool and len(all)>0:
             for x in all:
-                ret.append(files(x[0],x[1],x[2],x[3],x[4],x[5],x[6],x[7],x[8]));
+                ret.append(files(x[0],x[1],x[2],x[3],x[4],x[5],x[6],x[7],x[8],x[9]));
 
         return ret;
+
+    @staticmethod
+    def getFileInfo(fileName):
+        '''
+        获取文件信息
+        '''
+        fileInfo = files();
+        return fileInfo;
 
     def __init__(self,tableName):
         '''

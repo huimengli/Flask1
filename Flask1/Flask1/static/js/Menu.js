@@ -63,6 +63,9 @@
     $(".menu ul").on("click", "li", function () {
         var index = $(this).index();
         //console.log($(this));
+        if (index==3) {
+            window.location.href = "/file/";
+        }
         chackLi(index);
     });
     //目录检查

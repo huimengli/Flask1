@@ -115,6 +115,8 @@ div.listBlock {
     /*margin-left:20px;*/
     height: 25px;
     overflow: hidden;
+    border-left:1px dashed snow;
+    border-bottom:1px dashed snow;
 }
 
 div.listBlock div.listBlock{
@@ -123,15 +125,15 @@ div.listBlock div.listBlock{
 
 div.listBlock div.listValue {
     padding-left: 5px;
-    border: 1px dashed snow;
+    border-top: 1px dashed snow;
+    border-right: 1px dashed snow;
     background-color: rgba(255,255,255,0.5);
-    height: 23px;
-    line-height: 23px;
+    height: 24px;
+    line-height: 24px;
     position:relative;  
 }
 
-div.listValue::before {
-    content: "";
+div.listValue>div.listBottom {
     width: 0;
     height: 0;
     border-right: 20px solid black;
@@ -148,7 +150,11 @@ div.menu div.list div.listSelect{
     height:auto;
 }
 
-div.listSelect>div.listValue::before {
+div.listSelect>div.listValue{
+    border-bottom:1px dashed snow;
+}
+
+div.listSelect>div.listValue>div.listBottom {
     transform:rotate(-90deg);
 }
 
@@ -204,8 +210,59 @@ div.main div.box{
     width:70vw;
     height:calc(100vh - 100px);
     background-color:rgba(255, 255, 255, 0.6);
+    overflow:hidden;
 }
 
+div.showBox{
+    width:70vw;
+    height:calc(100vh - 127px);
+    overflow-x:hidden;
+    overflow-y:scroll;
+}
+
+div.eachFile {
+    width: 70vw;
+    height: 50px;
+    overflow: hidden;
+    box-shadow: inset 0px 0px 5px snow;
+    background-color: rgba(255,255,255,0.3);
+    border-bottom: 1px solid snow;
+    display: flex;
+    display: -webkit-flex;
+    justify-content: space-around;
+}
+
+    div.eachFile:first-child {
+        border-top: 1px solid snow;
+    }
+
+    div.eachFile>div{
+        /*float:left;*/
+        margin:auto;
+        height:25px;
+        line-height:25px;
+        width:calc(70vw / 4);
+        text-align:center;
+        border-right:1px solid snow;
+    }
+
+    div.eachFile>div:last-child{
+        border-right:none;
+    }
+
+        div.eachFile > div.eachFileBottom > div.eachFileBottomBottom {
+            width: 50%;
+            height: 30px;
+            border: 1px solid snow;
+            margin: -3px auto;
+            border-radius: 6px;
+            line-height: 30px;
+            text-align: center;
+        }
+
+        div.eachFile>div.eachFileBottom>div.eachFileBottomBottom:hover{
+            cursor:pointer;
+        }
 
 
 

@@ -16,7 +16,10 @@
         </div>
         <div class="list">
             <div class="listBlock listSelect" data-listBlock="false" data-dir="root">
-                <div class="listValue">root</div>
+                <div class="listValue">
+                    root
+                    <div class="listBottom"></div>
+                </div>
                 <!--<div class="listBlock" data-isFile="false" data-dir="root\admin">
                     <div class="listValue">admin</div>
                 </div>-->
@@ -41,7 +44,38 @@
             <div class="bottom admin">删除目录</div>
         </div>
         <div class="box">
-
+            <div class="eachFile">
+                <div class="eachFileValue">
+                    文件名
+                </div>
+                <div class="eachFileCreate">
+                    创建时间
+                </div>
+                <div class="eachFileSize">
+                    大小(单位:字节)
+                </div>
+                <div class="eachFileBottom">
+                    按钮
+                </div>
+            </div>
+            <div class="showBox" data-fileName="/图片.file" data-dir="/admin/图片.file">
+                <div class="eachFile">
+                    <div class="eachFileValue">
+                        /图片.file
+                    </div>
+                    <div class="eachFileCreate">
+                        2020-10-17 19:36:34
+                    </div>
+                    <div class="eachFileSize">
+                        234766
+                    </div>
+                    <div class="eachFileBottom">
+                        <div class="eachFileBottomBottom">
+                            下载
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <div class="footer">
@@ -76,7 +110,123 @@
     var mouseBox = lt_code.getAll2(".title", lt_code.getAll(".main"));
     /**文件夹列表 */
     var lists = [];
-    
+    /**文件盒子 */
+    var mainBox = lt_code.getAll2(".showBox");
+
+    /**清除主盒子 */
+    var clearMainBox = function () {
+        mainBox.innerHTML = "";
+    };
+
+    /**
+     * 新文件行
+     * @param {string} fileName 文件名
+     * @param {number} size 文件大小
+     * @param {number} create 创建时间
+     * @param {boolean} isFile 是否是文件
+     */
+    var newEachFile = function (fileName, size, create, isFile) {
+        isFile = isFile == null ? true : isFile;
+
+        var eachFile = lt_code.newDom("div", {
+            class: "eachFile",
+
+        });
+
+        /**文件行文件名 */
+        var newEachFileValue = lt_code.newDom("div", {
+            class: "eachFileValue",
+
+        });
+
+        /**文件创建时间 */
+        var newEachFileCreate = lt_code.newDom("div", {
+            class: "eachFileCreate",
+
+        });
+
+        /**文件大小 */
+        var newEachFileSize = lt_code.newDom("div", {
+            class: "eachFileSize",
+
+        });
+
+        /**文件下载按钮所在 */
+        var newEachFileBottom = lt_code.newDom("div", {
+            class: "eachFileBottom",
+
+        });
+
+        /**文件下载按钮 */
+        var newEachFileBottomBottom = lt_code.newDom("div", {
+            class: "eachFileBottomBottom",
+
+        });
+
+        newEachFileBottomBottom.innerText = "下载";
+        newEachFileValue.innerText = fileName;
+        if (isFile) {
+            lt_code.addChild(newEachFileBottomBottom, newEachFileBottom);
+            newEachFileSize.innerText = size;
+            newEachFileCreate.innerText = new Date(create).format("yyyy-MM-dd hh:mm:ss");
+        } else {
+            newEachFileBottom.innerText = "文件夹";
+            newEachFileSize.innerText = "/";
+            newEachFileCreate.innerText = "/";
+        }
+        lt_code.addChild(newEachFileValue, eachFile);
+        lt_code.addChild(newEachFileCreate, eachFile);
+        lt_code.addChild(newEachFileSize, eachFile);
+        lt_code.addChild(newEachFileBottom, eachFile);
+        lt_code.addChild(eachFile, mainBox);
+    }
+
+    /**
+     * 查找目录
+     * @param dir
+     */
+    var searchDir = function (dir) {
+
+        //清空主盒子
+        clearMainBox();
+
+        /**上传数据 */
+        var up = {
+            n: "list",
+            isdir: "True",
+            dir: dir,
+        };
+
+        $(function () {
+            $.ajax({
+                type: "post",
+                url: "/file/",
+                data: JSON.stringify(up),
+                contentType: "application/json; charset=utf-8",
+                dataType: "text",
+                success: function (data) {
+                    eval("data = " + data);
+                    //console.log(data);
+                    for (var j = 0; j < data.length; j++) {
+                        console.log(data[j]);
+                        //清空内容数据
+                        clearMainBox();
+                        for (var x in data[j]) {
+                            if (data[j][x]=="False") {
+                                newEachFile(x, 0, 0, false);
+                            } else {
+
+                            }
+                        }
+                    }
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            });
+        });
+    }
+
     /**
      * 新文件夹行
      * @param {string} value 文件夹名称
@@ -84,23 +234,33 @@
      * @param {HTMLElement} father 父类结点
      */
     var newListBlock = function (value, isfile, father) {
-        console.log(father);
+        //console.log(father);
+
+        var newBottom = lt_code.newDom("div", {
+            class: "listBottom",
+
+        })
 
         var newValue = lt_code.newDom("div", {
             class: "listValue",
 
         });
         
-        newValue.onmousedown = function () {
-            var father = lt_code.getDomFather(this);
-            father.className = father.classList.length > 1 ? "listBlock" : "listBlock listSelect";
+        newBottom.onmousedown = function () {
+            var fatherDOM = lt_code.getDomFather(lt_code.getDomFather(this));
+            fatherDOM.className = fatherDOM.classList.length > 1 ? "listBlock" : "listBlock listSelect";
             //console.log(father.classList);
+        }
+
+        //显示文件夹内容在右边屏幕上
+        newValue.onmousedown = function () {
+
         }
 
         var newBlock = lt_code.newDom("div", {
             "data-listBlock": isfile,
             "data-dir": value,
-            class: "listBlock listSelect",
+            class: "listBlock",
 
         });
 
@@ -108,6 +268,7 @@
 
         newValue.innerHTML = value;
 
+        lt_code.addChild(newBottom, newValue);
         lt_code.addChild(newValue, newBlock);
         lt_code.addChild(newBlock, father);
         lists.push(newBlock);
@@ -131,8 +292,8 @@
         };
 
         lists.push(lt_code.getAll(".listBlock", 0));
-        lt_code.getAll(".listValue", 0).onmousedown = function () {
-            var father = lt_code.getDomFather(this);
+        lt_code.getAll(".listBottom", 0).onmousedown = function () {
+            var father = lt_code.getDomFather(lt_code.getDomFather(this));
             father.className = father.classList.length > 1 ? "listBlock" : "listBlock listSelect";
             //console.log(father.classList);
         };
@@ -146,6 +307,7 @@
                 /**上传数据 */
                 var up = {
                     n: "list",
+                    isdir:"True",
                     dir: dir
                 };
                 //获取目录
@@ -158,14 +320,14 @@
                         dataType: "text",
                         success: function (data) {
                             eval("data = " + data);
-                            console.log(data);
+                            //console.log(data);
                             for (var j = 0; j < data.length; j++) {
-                                console.log(data[j]);
+                                //console.log(data[j]);
                                 for (var x in data[j]) {
                                     if (data[j][x] == "False") {
                                         newListBlock(x, false, father);
                                     } else if (data[j][x] == "True") {
-
+                                        continue;
                                     }
                                 }
                             }
@@ -176,12 +338,12 @@
                     });
                 });
                 i++;
-            } else {
-                //lt_code.variable.runer.forEach(function (e) {
-                //    if (e['name'] == '遍历所有文件夹') {
-                //        clearInterval(e['num']);
-                //    }
-                //});
+            } else if(i>lists.length*2) {
+                lt_code.variable.runer.forEach(function (e) {
+                    if (e['name'] == '遍历所有文件夹') {
+                        clearInterval(e['num']);
+                    }
+                });
             }
         }, 100), "遍历所有文件夹");
         
