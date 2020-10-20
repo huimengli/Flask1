@@ -362,7 +362,7 @@ def file():
                     if value['isdir']=="True":
                         return fileSys.getFileList(value['dir']);
                     else:
-                        return fileSys.getFileList(value['dir']);
+                        return str(sys.files.getFile(fileSys.fileSteam,value['dir']));
                 except Exception as e:
                     print(e);
                     return fileSys.getFileList();

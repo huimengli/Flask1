@@ -113,6 +113,7 @@
     /**文件盒子 */
     var mainBox = lt_code.getAll2(".showBox");
 
+
     /**清除主盒子 */
     var clearMainBox = function () {
         mainBox.innerHTML = "";
@@ -124,12 +125,15 @@
      * @param {number} size 文件大小
      * @param {number} create 创建时间
      * @param {boolean} isFile 是否是文件
+     * @param {string} dir 文件路径
      */
-    var newEachFile = function (fileName, size, create, isFile) {
+    var newEachFile = function (fileName, size, create, isFile,dir) {
         isFile = isFile == null ? true : isFile;
 
         var eachFile = lt_code.newDom("div", {
             class: "eachFile",
+            "data-fileName": fileName,
+            "data-dir":dir,
 
         });
 
@@ -173,12 +177,49 @@
             newEachFileBottom.innerText = "文件夹";
             newEachFileSize.innerText = "/";
             newEachFileCreate.innerText = "/";
+            newEachFileValue.style.cursor = "pointer";
+            newEachFileValue.onmousedown = function () {
+                var dir = lt_code.getDomFather(this).dataset.dir;
+                searchDir(dir);
+            }
         }
         lt_code.addChild(newEachFileValue, eachFile);
         lt_code.addChild(newEachFileCreate, eachFile);
         lt_code.addChild(newEachFileSize, eachFile);
         lt_code.addChild(newEachFileBottom, eachFile);
         lt_code.addChild(eachFile, mainBox);
+    }
+
+    /**文件信息查询并创建 */
+    var newFileInfo = function (filename) {
+
+        /**上传信息 */
+        var info = {
+            n: "list",
+            isdir: "False",
+            dir: filename,
+        };
+
+        $.ajax({
+            type: "post",
+            url: "/file/",
+            data: JSON.stringify(info),
+            contentType: "application/json; charset=utf-8",
+            dataType: "text",
+            success: function (data) {
+                eval("data = " + data);
+                console.log(data);
+                var x = "";
+                data.forEach(function (i) {
+                    eval("x = " + i);
+                    console.log(x);
+                    newEachFile(x.name, x.size,lt_code.getNum(x.create), true, x.path);
+                });
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        });
     }
 
     /**
@@ -197,6 +238,7 @@
             dir: dir,
         };
 
+
         $(function () {
             $.ajax({
                 type: "post",
@@ -207,15 +249,15 @@
                 success: function (data) {
                     eval("data = " + data);
                     //console.log(data);
+                    //清空内容数据
+                    clearMainBox();
                     for (var j = 0; j < data.length; j++) {
                         console.log(data[j]);
-                        //清空内容数据
-                        clearMainBox();
                         for (var x in data[j]) {
                             if (data[j][x]=="False") {
-                                newEachFile(x, 0, 0, false);
+                                newEachFile(x.slice(dir.length), 0, 0, false,x);
                             } else {
-
+                                newFileInfo(x);
                             }
                         }
                     }
@@ -267,6 +309,10 @@
         value = father.dataset.dir == "root" ? value : value.slice(father.dataset.dir.length);
 
         newValue.innerHTML = value;
+        newValue.onmousedown = function () {
+            var dir = lt_code.getDomFather(this).dataset.dir;
+            searchDir(dir);
+        }
 
         lt_code.addChild(newBottom, newValue);
         lt_code.addChild(newValue, newBlock);
@@ -346,7 +392,10 @@
                 });
             }
         }, 100), "遍历所有文件夹");
-        
+        searchDir("");
+        lt_code.getAll(".listValue", 0).onmousedown = function () {
+            searchDir("");
+        }
     };
 </script>
 <script src="/static/js/file/file.js"></script>

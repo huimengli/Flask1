@@ -122,7 +122,7 @@ class files(object):
             "eachSize":self.eachSize,
             "package":self.package,
             "md5":self.md5,
-            "path":self.path,
+            "path":self.path[len(fileSystem.root):],
             "userid":self.userid,
             "level":self.level,
             "create":self.create,
@@ -140,7 +140,7 @@ class files(object):
             ret.append(x.toDict());
 
     @staticmethod
-    def getFile(files,fileName):
+    def getFile(thefiles,fileName):
         '''
         查询文件信息
 
@@ -148,10 +148,12 @@ class files(object):
         :param fileName:str 文件名
 
         '''
+        fileName = fileSystem.root+fileName;
+        print(fileName);
         ret = [];
-        for x in files:
-            if fileName==x.name:
-                ret.append(x);
+        for x in thefiles:
+            if fileName==x.path:
+                ret.append(x.toDict());
 
         return ret;
 
@@ -161,7 +163,7 @@ class fileSystem(object):
     '''
 
     # 当前目录
-    nowDir = os.getcwd();
+    nowDir = os.getcwd().replace('\\','/');
 
     # 根目录
     root = nowDir+"/Flask1/root";
