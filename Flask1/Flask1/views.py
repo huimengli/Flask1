@@ -366,7 +366,9 @@ def file():
                 except Exception as e:
                     print(e);
                     return fileSys.getFileList();
-                
+            elif value['n']=="newDir":
+
+                pass
 
         except Exception as e:
             raise e;

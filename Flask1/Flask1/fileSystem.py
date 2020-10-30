@@ -223,6 +223,7 @@ class fileSystem(object):
         except Exception as err:
             print(err);
             return False;
+        return;
 
     @staticmethod
     def getAllFromSql(tableName):
@@ -244,6 +245,10 @@ class fileSystem(object):
         '''
         fileInfo = files();
         return fileInfo;
+
+    @staticmethod
+    def newDir():
+        raise EOFError();
 
     def __init__(self,tableName):
         '''

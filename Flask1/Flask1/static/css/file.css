@@ -264,6 +264,98 @@ div.eachFile {
             cursor:pointer;
         }
 
+#alertInputBox.alertSelect {
+    width: 100%;
+    height: calc(200px - 90px - 10px - 3px);
+    display: flex;
+    align-items: center;
+}
+
+#alertInputBox.alertSelect>#alertInput{
+    width:200px;
+    margin:auto;
+}
+
+        .alertSelect>#alertBox{
+            height:300px;
+            top:calc(50vh - 150px);
+        }
+
+        .alertSelect>#alertBox>#alertValue{
+            border-bottom:3px double #999;
+        }
+
+#alertBack {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100vw;
+    height: 100vh;
+    z-index: 50;
+    background-color: rgba(0,0,0,0.4);
+}
+
+#alertBox {
+    width: 300px;
+    height: 200px;
+    margin: 0 auto;
+    position: relative;
+    top: calc(50vh - 100px);
+    background-color: white;
+    border: 3px double #999;
+    border-radius: 10px;
+    overflow:hidden;
+}
+
+#alertTitle {
+    width: 100%;
+    text-align: center;
+    border-bottom: 3px double #999;
+    font-size: 30px;
+    height: 50px;
+    line-height: 50px;
+    overflow:hidden;
+}
+
+#alertValue {
+    padding: 5px;
+    word-break: break-word;
+    display: flex;
+    height: calc(200px - 90px - 10px - 6px);
+    justify-content: space-around;
+    align-items: center;
+    overflow:hidden;
+}
+
+#alertYesBottom {
+    position: absolute;
+    left: 0px;
+    bottom: 0px;
+    width: 150px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    border-top: 3px double #999;
+    border-right: 3px double #999;
+    height:40px;
+    font-size:25px;
+    line-height:40px;
+}
+
+#alertNoBottom {
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+    width: 150px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    border-top: 3px double #999;
+    border-left: 3px double #999;
+    height: 40px;
+    font-size: 25px;
+    line-height: 40px;
+}
 
 
 

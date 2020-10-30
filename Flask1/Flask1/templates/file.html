@@ -39,7 +39,7 @@
             <div class="bottom admin">增加根目录</div>
             <div class="bottom admin user">新建目录</div>
             <div class="bottom admin user">上传文件</div>
-            <div class="bottom admin user guest">下载文件</div>
+            <!--<div class="bottom admin user guest">下载文件</div>-->
             <div class="bottom admin user">删除文件</div>
             <div class="bottom admin">删除目录</div>
         </div>
@@ -112,11 +112,215 @@
     var lists = [];
     /**文件盒子 */
     var mainBox = lt_code.getAll2(".showBox");
-
-
+    /**所有按钮 */
+    var mouseBottoms = lt_code.getAll2(".bottom", mouseBox);
+    /**历史记录 */
+    lt_code.history = {
+        /** 当前搜索的文件夹 */
+        now: "",
+        /** 上一级文件夹 */
+        back: "",
+        /** 历史记录 */
+        history: [],
+        /**
+         * 获取上一级
+         * @param {string} dir 当前路径
+         */
+        getBack : function (dir) {
+            var all = dir.split("/");
+            var ret = "";
+            if (all.length >= 2) {
+                for (var i = 0; i < all.length - 2; i++) {
+                    ret += all[i] + "/";
+                }
+                ret += all[all.length - 2];
+            } else {
+                ret = "";
+            }
+            return ret;
+        },
+        /**
+         * 新的搜索
+         * @param {string} dir 新的文件夹路径
+         */
+        newSearch: function (dir) {
+            this.history.push(this.now);
+            this.now = dir;
+            searchDir(dir);
+            this.back = this.getBack(dir);
+        },
+        /**返回上一次搜索 */
+        lastSearch: function () {
+            if (this.history.length > 0) {
+                this.now = this.history[this.history.length - 1];
+                this.history.pop();
+                searchDir(this.now);
+                this.back = this.getBack(this.now);
+            } else {
+                searchDir("");
+            }
+        },
+        /**返回上一级搜索 */
+        backSearch: function () {
+            this.newSearch(this.back);
+        }
+    };
+    
     /**清除主盒子 */
     var clearMainBox = function () {
         mainBox.innerHTML = "";
+    };
+
+    /**
+     * 新弹窗
+     * @param {string} title
+     * @param {string} title
+     * @param {Function} yesFuc
+     * @param {Function} noFuc
+     * @param {number} selectType 选择类型:1.文件选择,2.输入选择
+     * 
+     */
+    var newAlert = function (title, value, yesFuc, noFuc, selectType) {
+        /**弹窗背景 */
+        var alertBack = document.getElementById("alertBack") ? lt_code.getAll("#alertBack") :
+            function () {
+                var ret = lt_code.newDom("div", {
+                    id: "alertBack",
+                    class: selectType>0 ? "alertSelect" : "",
+
+                });
+
+                lt_code.addChild(ret);
+
+                return ret;
+            }();
+        /**弹窗内容框 */
+        var alertBox = document.getElementById("alertBox") ? lt_code.getAll("#alertBox") :
+            function () {
+                var ret = lt_code.newDom("div", {
+                    id: "alertBox",
+
+                });
+
+                lt_code.addChild(ret, alertBack);
+
+                return ret;
+            }();
+        /**弹窗标题 */
+        var alertTitle = document.getElementById("alertTitle") ? lt_code.getAll("#alertTitle") :
+            function () {
+                var ret = lt_code.newDom("div", {
+                    id: "alertTitle",
+
+                });
+
+                ret.innerText = title;
+
+                lt_code.addChild(ret, alertBox);
+
+                return ret;
+            }();
+        /**弹窗内容框 */
+        var alertValue = document.getElementById("alertValue") ? lt_code.getAll("#alertValue") :
+            function () {
+                var ret = lt_code.newDom("div", {
+                    id: "alertValue",
+
+                });
+
+                ret.innerText = value ? value : "";
+
+                lt_code.addChild(ret, alertBox);
+
+                return ret;
+            }();
+        /**确认按钮 */
+        var alertYesBottom = document.getElementById("alertYesBottom") ? lt_code.getAll("#alertYesBottom") :
+            function () {
+                var ret = lt_code.newDom("div", {
+                    id: "alertYesBottom",
+                    style: {
+                        "background-color": yesFuc ? "snow" : "#ccc",
+                        cursor: yesFuc ? "pointer" : "default",
+
+                    },
+
+                });
+
+                ret.innerText = "确认";
+
+                lt_code.addChild(ret, alertBox);
+
+                return ret;
+            }();
+        /**取消按钮 */
+        var alertNoBottom = document.getElementById("alertNoBottom") ? lt_code.getAll("#alertNoBottom") :
+            function () {
+                var ret = lt_code.newDom("div", {
+                    id: "alertNoBottom",
+                    style: {
+                        "background-color": "snow",
+                        cursor: "pointer",
+
+                    },
+
+                });
+
+                ret.onmousedown = noFuc ? noFuc : function () {
+                    lt_code.getDomFather(alertBack).removeChild(alertBack);
+                };
+
+                ret.innerText = "取消";
+
+                lt_code.addChild(ret, alertBox);
+
+                return ret;
+            }();
+
+
+        alertBack.style.display = "";
+        alertTitle.innerText = title;
+        alertValue.innerText = value ? value : "";
+        alertYesBottom.onmousedown = yesFuc ? yesFuc : null;
+        alertNoBottom.onmousedown = noFuc ? noFuc : function () {
+            lt_code.getDomFather(alertBack).removeChild(alertBack);
+        }
+        if (selectType==1) {
+            var alertInputBox = document.getElementById("alertInputBox") ? lt_code.getAll("#alertInputBox") :
+                function () {
+                    var ret = lt_code.newDom("div", {
+                        id: "alertInputBox",
+                        class: "alertSelect",
+
+
+                    });
+
+                    lt_code.addChild(ret, alertBox);
+
+                    return ret;
+                }();
+            var alertInput = document.getElementById("alertInput") ? lt_code.getAll("#alertInput") :
+                function () {
+                    var ret = lt_code.newDom("input", {
+                        id: "alertInput",
+                        type: selectType == 1 ? "file" :
+                            selectType == 2 ? "input" : "",
+                        style: {
+
+                        },
+                    });
+
+                    lt_code.addChild(ret, alertInputBox);
+
+                    return ret;
+                }();
+        } else {
+            document.getElementById("alertInputBox") ? function () {
+                var alertInputBox = lt_code.getAll("#alertInputBox");
+                lt_code.getDomFather(alertInputBox).removeChild(alertInputBox);
+            } : null;
+        }
+
     };
 
     /**
@@ -127,13 +331,13 @@
      * @param {boolean} isFile 是否是文件
      * @param {string} dir 文件路径
      */
-    var newEachFile = function (fileName, size, create, isFile,dir) {
+    var newEachFile = function (fileName, size, create, isFile, dir) {
         isFile = isFile == null ? true : isFile;
 
         var eachFile = lt_code.newDom("div", {
             class: "eachFile",
             "data-fileName": fileName,
-            "data-dir":dir,
+            "data-dir": dir,
 
         });
 
@@ -180,15 +384,25 @@
             newEachFileValue.style.cursor = "pointer";
             newEachFileValue.onmousedown = function () {
                 var dir = lt_code.getDomFather(this).dataset.dir;
-                searchDir(dir);
+                lt_code.history.newSearch(dir);
             }
         }
+
+        if (fileName == "/..") {
+            eachFile.title = "返回上一级";
+            //father = father.slice(0,father.length - fileName.length);
+            //eachFile.dataset.father = father;
+            newEachFileValue.onmousedown = function () {
+                lt_code.history.backSearch();
+            }
+        }
+
         lt_code.addChild(newEachFileValue, eachFile);
         lt_code.addChild(newEachFileCreate, eachFile);
         lt_code.addChild(newEachFileSize, eachFile);
         lt_code.addChild(newEachFileBottom, eachFile);
         lt_code.addChild(eachFile, mainBox);
-    }
+    };
 
     /**文件信息查询并创建 */
     var newFileInfo = function (filename) {
@@ -208,19 +422,19 @@
             dataType: "text",
             success: function (data) {
                 eval("data = " + data);
-                console.log(data);
+                //console.log(data);
                 var x = "";
                 data.forEach(function (i) {
                     eval("x = " + i);
-                    console.log(x);
-                    newEachFile(x.name, x.size,lt_code.getNum(x.create), true, x.path);
+                    //console.log(x);
+                    newEachFile(x.name, x.size, lt_code.getNum(x.create), true, x.path);
                 });
             },
             error: function (err) {
                 console.log(err);
             }
         });
-    }
+    };
 
     /**
      * 查找目录
@@ -251,11 +465,12 @@
                     //console.log(data);
                     //清空内容数据
                     clearMainBox();
+                    newEachFile("/..", 0, 0, false, "", dir);
                     for (var j = 0; j < data.length; j++) {
-                        console.log(data[j]);
+                        //console.log(data[j]);
                         for (var x in data[j]) {
-                            if (data[j][x]=="False") {
-                                newEachFile(x.slice(dir.length), 0, 0, false,x);
+                            if (data[j][x] == "False") {
+                                newEachFile(x.slice(dir.length), 0, 0, false, x);
                             } else {
                                 newFileInfo(x);
                             }
@@ -267,7 +482,7 @@
                 }
             });
         });
-    }
+    };
 
     /**
      * 新文件夹行
@@ -287,7 +502,7 @@
             class: "listValue",
 
         });
-        
+
         newBottom.onmousedown = function () {
             var fatherDOM = lt_code.getDomFather(lt_code.getDomFather(this));
             fatherDOM.className = fatherDOM.classList.length > 1 ? "listBlock" : "listBlock listSelect";
@@ -311,7 +526,7 @@
         newValue.innerHTML = value;
         newValue.onmousedown = function () {
             var dir = lt_code.getDomFather(this).dataset.dir;
-            searchDir(dir);
+            lt_code.history.newSearch(dir);
         }
 
         lt_code.addChild(newBottom, newValue);
@@ -319,7 +534,7 @@
         lt_code.addChild(newBlock, father);
         lists.push(newBlock);
 
-    }
+    };
 
     lt_code.variable.addRun(function () {
         return setInterval(function () {
@@ -392,10 +607,63 @@
                 });
             }
         }, 100), "遍历所有文件夹");
-        searchDir("");
+        lt_code.history.newSearch("");
         lt_code.getAll(".listValue", 0).onmousedown = function () {
-            searchDir("");
+            lt_code.history.newSearch("");
         }
+        //新建根目录
+        mouseBottoms[0].onmousedown = function () {
+
+        };
+        //新建目录
+        mouseBottoms[1].onmousedown = function () {
+            newAlert("新建目录", "请输入目录名称", function () {
+                /**输入值 */
+                var input = lt_code.getAll("#alertInput").value;
+                if (input.length > 20 ||/[\ `~!@#$%^&*()_\-+=<>?:"{}|,\.\/;'\\[\]·~！@#￥%……&*（）——\-+={}|《》？：“”]/.test(input)) {
+                    alert("文件名不能长于20字符\n也不允许输入奇怪的字符!");
+                } else {
+                    /**上传数据 */
+                    var up = {
+                        n: "newDir",
+                        name: input,
+                        dir: lt_code.history.now,
+
+                    };
+
+                    //新建文件夹
+                    $(function () {
+                        $.ajax({
+                            type: "post",
+                            url: "/file/",
+                            data: JSON.stringify(up),
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "text",
+                            success: function (data) {
+                                console.log(data);
+                                
+                            },
+                            error: function (err) {
+                                console.log(err);
+                            }
+                        });
+                    });
+                }
+
+            }, null, 2);
+        };
+        //上传文件
+        mouseBottoms[2].onmousedown = function () {
+
+        };
+        //删除文件
+        mouseBottoms[3].onmousedown = function () {
+
+        };
+        //删除目录
+        mouseBottoms[4].onmousedown = function () {
+
+        };
     };
 </script>
 <script src="/static/js/file/file.js"></script>
