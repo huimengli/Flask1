@@ -36,7 +36,7 @@
     <div class="main">
         <div class="title">
             <!--<div class="bottom">上一个目录</div>-->
-            <div class="bottom admin">增加根目录</div>
+            <div class="bottom admin user">后退</div>
             <div class="bottom admin user">新建目录</div>
             <div class="bottom admin user">上传文件</div>
             <!--<div class="bottom admin user guest">下载文件</div>-->
@@ -285,7 +285,7 @@
         alertNoBottom.onmousedown = noFuc ? noFuc : function () {
             lt_code.getDomFather(alertBack).removeChild(alertBack);
         }
-        if (selectType==1) {
+        if (selectType>0) {
             var alertInputBox = document.getElementById("alertInputBox") ? lt_code.getAll("#alertInputBox") :
                 function () {
                     var ret = lt_code.newDom("div", {
@@ -305,9 +305,14 @@
                         id: "alertInput",
                         type: selectType == 1 ? "file" :
                             selectType == 2 ? "input" : "",
-                        style: {
-
-                        },
+                        style: selectType == 1 ? {}:
+                            selectType == 2 ? {
+                            height: "30px",
+                            border: "1px solid #999",
+                            'border-radius': "5px",
+                            'padding-left': '10px',
+                            'padding-right': "10px",
+                        } : {},
                     });
 
                     lt_code.addChild(ret, alertInputBox);
@@ -611,24 +616,26 @@
         lt_code.getAll(".listValue", 0).onmousedown = function () {
             lt_code.history.newSearch("");
         }
-        //新建根目录
+        //后退
         mouseBottoms[0].onmousedown = function () {
-
+            lt_code.history.lastSearch();
         };
         //新建目录
         mouseBottoms[1].onmousedown = function () {
             newAlert("新建目录", "请输入目录名称", function () {
+                /**输入框 */
+                var input = lt_code.getAll("#alertInput");
                 /**输入值 */
-                var input = lt_code.getAll("#alertInput").value;
-                if (input.length > 20 ||/[\ `~!@#$%^&*()_\-+=<>?:"{}|,\.\/;'\\[\]·~！@#￥%……&*（）——\-+={}|《》？：“”]/.test(input)) {
+                var value = input.value;
+                if (value.length > 20 ||/[\ `~!@#$%^&*()_\-+=<>?:"{}|,\.\/;'\\[\]·~！@#￥%……&*（）——\-+={}|《》？：“”]/.test(value)) {
                     alert("文件名不能长于20字符\n也不允许输入奇怪的字符!");
                 } else {
                     /**上传数据 */
                     var up = {
                         n: "newDir",
-                        name: input,
+                        name: value,
                         dir: lt_code.history.now,
-
+                        uid: UID,
                     };
 
                     //新建文件夹
@@ -641,7 +648,14 @@
                             dataType: "text",
                             success: function (data) {
                                 console.log(data);
-                                
+                                if (data == "True") {
+                                    alert("创建成功!");
+                                    window.location.href = window.location.href;
+                                } else if (data == "Error") {
+                                    alert("错误!\n可能是因为没有权限!");
+                                } else {
+                                    alert("创建失败!");
+                                }
                             },
                             error: function (err) {
                                 console.log(err);
@@ -649,12 +663,81 @@
                         });
                     });
                 }
-
+                //关闭弹窗
+                var back = lt_code.getAll("#alertBack");
+                lt_code.getDomFather(back).removeChild(back);
             }, null, 2);
         };
         //上传文件
         mouseBottoms[2].onmousedown = function () {
+            newAlert("上传文件", "请选择文件", function () {
+                /**输入框 */
+                var input = lt_code.getAll("#alertInput");
 
+                if (input.files.length > 0) {
+                    /**上传的文件 */
+                    var file = input.files[0];
+
+                    if (file.size > 1024 * 1024 * 20) {
+                        alert("上传文件过大!\n最大支持20MB");
+                    } else {
+                        lt_code.test.fileToBase(input);
+                        var getReturn = setInterval(function () {
+                            var ret = lt_code.test.fileToBase.getReturn()||"";
+                            if (ret.length>0) {
+                                clearInterval(getReturn);
+                                //console.log(ret);
+                                /**上传的数据 */
+                                var up = {
+                                    n: "upFile",
+                                    name: file.name,
+                                    size: file.size,
+                                    md5:lt_code.md5(ret),
+                                    dir: lt_code.history.now,
+                                    create: file.lastModified,
+                                    value: ret,
+                                };
+
+                                //上传文件
+                                $(function () {
+                                    $.ajax({
+                                        type: "post",
+                                        url: "/file/",
+                                        data: JSON.stringify(up),
+                                        contentType: "application/json; charset=utf-8",
+                                        dataType: "text",
+                                        success: function (data) {
+                                            console.log(data);
+                                            if (data == "True") {
+                                                alert("文件上传成功!");
+                                                window.location.href = window.location.href;
+                                            } else if (data == "Error") {
+                                                alert("错误!\n可能是因为没有权限!");
+                                            } else if(data=="Alive") {
+                                                alert("错误!\n文件已经存在!");
+                                            }
+                                        },
+                                        error: function (err) {
+                                            console.log(err);
+                                        }
+                                    });
+                                });
+
+                            } else {
+                                newAlert("稍等", "正在读取中...");
+                            }
+                        }, 100);
+
+                    }
+
+                    //关闭弹窗
+                    var back = lt_code.getAll("#alertBack");
+                    lt_code.getDomFather(back).removeChild(back);
+                } else {
+                    alert("尚未选择文件!");
+                }
+
+            }, null, 1);
         };
         //删除文件
         mouseBottoms[3].onmousedown = function () {

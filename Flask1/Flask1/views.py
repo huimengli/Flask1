@@ -9,6 +9,7 @@ from random import randint;
 from Flask1.users import UserBasic as User;
 import json;
 import Flask1.fileSystem as sys;
+import math;
 
 myname = "绘梦璃";
 
@@ -253,7 +254,7 @@ def changeValue():
     if not name==None and not password==None:
         user = User.GetUser(User.SignOn(name,password));
 
-    if isinstance(user,User):
+    if isinstance(user,User) and not user==None:
         session['id'] = user.id;
         session['name'] = name;
         session['password'] = password;
@@ -314,16 +315,15 @@ def file():
     文件系统
     '''
 
-    
-    name = request.args.get("name");
-    password = request.args.get("password");
+    name = None;
+    password = None;
     user = None;
     if name==None or password==None:
         try:
             name = session['name'];
             password = session['password'];
-        except :
-            print;
+        except Exception as err:
+            print(err);
 
     if not name==None and not password==None and not name=='' and not password=='':
         id = User.SignOn(name,password);
@@ -331,10 +331,11 @@ def file():
         user = User.GetUser(id);
         print(user);
 
-    if isinstance(user,User):
+    if isinstance(user,User) and not user==None:
         session['id'] = user.id;
         session['name'] = name;
         session['password'] = password;
+
 
     values = request.get_data();
     
@@ -367,8 +368,36 @@ def file():
                     print(e);
                     return fileSys.getFileList();
             elif value['n']=="newDir":
+                #print(user.ToString());
+                if not isinstance(user,User) or user==None:
+                    return "Error";
+                else:
+                    if len(value['dir'])>1:
+                        return fileSys.newDir(value['dir'],value['name']);
+                    else:
+                        return "Error";
+            elif value['n']=="upFile":
+                if not isinstance(user,User) or user==None:
+                    return "Error";
+                else:
+                    files = fileSys.getAllFromSql("files");
+                    eachSize = 1024*1024*20;
+                    if eachSize>int(value['size']):
+                        eachSize = int(value['size']);
+                    package = math.ceil(int(value['size'])/(1024*1024*20));
+                    level = package;
+                    if user.type=="admin":
+                        level+=100;
+                    elif user.type=="basic":
+                        level+=10;
 
-                pass
+                    newFile = sys.files(len(files),value['name'],value['size'],str(eachSize),package,value['md5'],fileSys.root+value['dir']+"/"+value['name']+".file",user.id,level,value['create']);
+                    if newFile.upSql("files"):
+                        write = newFile.toDictNoCut();
+                        write['value'] = value['value'];
+                        return str(fileSys.newFile(newFile.path,write));
+                    else:
+                        return "False";
 
         except Exception as e:
             raise e;

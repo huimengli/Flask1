@@ -6,6 +6,7 @@ import sys
 import json
 import os;
 import Flask1.mySqlLink as Link;
+import hashlib;
 
 def fuc():
     '''
@@ -76,6 +77,21 @@ def fuc():
     
     return 0;
 
+def stringToMd5(string):
+    '''
+    字符串转md5
+    '''
+    return hashlib.md5(string.encode('utf-8')).hexdigest();
+
+def fileToMd5(fileName):
+    '''
+    文件转md5
+    '''
+    md5file=open(file,'rb');
+    md5=hashlib.md5(md5file.read()).hexdigest();
+    md5file.close();
+    return md5;
+
 class files(object):
     '''
     文件对象
@@ -111,9 +127,15 @@ class files(object):
         else:
             return "{}";
 
+    def toJsonString(self):
+        '''
+        转化为Json字符串
+        '''
+        return json.dumps(self.toDict());
+
     def toDict(self):
         '''
-        转化为列表
+        转化为json数组
         '''
         ret = {
             "id":self.id,
@@ -128,7 +150,37 @@ class files(object):
             "create":self.create,
         };
 
-        return json.dumps(ret);
+        return ret;
+
+    def toDictNoCut(self):
+        '''
+        转化为json数组(无切割)
+        '''
+        ret = {
+            "id":self.id,
+            "name":self.name,
+            "size":self.size,
+            "eachSize":self.eachSize,
+            "package":self.package,
+            "md5":self.md5,
+            "path":self.path,
+            "userid":self.userid,
+            "level":self.level,
+            "create":self.create,
+        };
+
+        return ret;
+
+    def toList(self):
+        '''
+        把数据转化成列表
+        '''
+        ret = [];
+        theDict = self.toDictNoCut();
+        for x in theDict:
+            ret.append(str(theDict[x]));
+
+        return ret;
 
     @staticmethod
     def toDicts(files):
@@ -138,6 +190,8 @@ class files(object):
         ret = [];
         for x in files:
             ret.append(x.toDict());
+
+        return ret;
 
     @staticmethod
     def getFile(thefiles,fileName):
@@ -152,10 +206,19 @@ class files(object):
         print(fileName);
         ret = [];
         for x in thefiles:
+            print(x.toJsonString());
             if fileName==x.path:
-                ret.append(x.toDict());
+                ret.append(x.toJsonString());
 
         return ret;
+
+    def upSql(self,tableName):
+        '''
+        上传文件数据到数据库
+        '''
+
+        listName = Link.getColumns(tableName);
+        return Link.addValue(tableName,listName,self.toList());
 
 class fileSystem(object):
     '''
@@ -205,25 +268,30 @@ class fileSystem(object):
 
         return ret;
 
-    @staticmethod
-    def newFile(filename,value=None):
+    
+    def newFile(self,filename,value=None):
         '''
         新建文件
         '''
         try:
-            if exists(filename):
-                file = open(filename,"a",encoding="utf8");
+            if fileSystem.exists(filename):
+                #file = open(filename,"a",encoding="utf8");
+                return "Alive";
             else:
                 file = open(filename,"w",encoding="utf8");
 
-            file.write(value);
+            if isinstance(value,str):
+                file.write(value);
+            elif isinstance(value,dict):
+                file.write(json.dumps(value));
             file.close();
-    
+            value.pop("value")
+            self.fileSteam.append(value);
             return True;
         except Exception as err:
             print(err);
             return False;
-        return;
+        return False;
 
     @staticmethod
     def getAllFromSql(tableName):
@@ -247,8 +315,21 @@ class fileSystem(object):
         return fileInfo;
 
     @staticmethod
-    def newDir():
-        raise EOFError();
+    def newDir(dir,newDirName):
+        '''
+        新建文件夹
+        '''
+        import re;
+        read = re.compile("""[\ `~!@#$%^&*()_\-+=<>?:"{}|,\.\/;'\\[\]·~！@#￥%……&*（）——\-+={}|《》？：“”]""");
+        if len(read.findall(newDirName))>0:
+            return "Error";
+        dir = fileSystem.root+"/"+dir;
+        if os.path.exists(dir+"/"+newDirName):
+            return "False";
+        else:
+            os.makedirs(dir+"/"+newDirName);
+            return "True";
+        return "False";
 
     def __init__(self,tableName):
         '''

@@ -3,6 +3,7 @@
 '''
 import re;
 import Flask1.mySqlLink as Link;
+import Flask1.fileSystem as fileSys;
 
 #用户数据文件存在位置
 USERFILEPATH = 'usersfile.txt';
@@ -180,6 +181,13 @@ class UserBasic(object):
         if not eof==None and eof == True:
             ret+="\n";
         return ret;
+
+    def getMd5(self):
+        '''
+        获取用户的md5值
+        '''
+        userStr = self.ToString();
+        return fileSys.stringToMd5(userStr);
 
     def ToList(self):
         '''
