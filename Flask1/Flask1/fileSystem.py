@@ -96,7 +96,7 @@ class files(object):
     '''
     文件对象
     '''
-    def __init__(self,id,name,size,eachSize,package,md5,path,userid,level,create):
+    def __init__(self,id,name,size,eachSize,package,md5,path,userid,level,create,delete):
         '''
         初始化
         '''
@@ -110,6 +110,7 @@ class files(object):
         self.userid = userid;
         self.level = level;
         self.create = create;
+        self.delete = delete;
 
         return;
 
@@ -148,6 +149,7 @@ class files(object):
             "userid":self.userid,
             "level":self.level,
             "create":self.create,
+            "delete":self.delete,
         };
 
         return ret;
@@ -167,13 +169,14 @@ class files(object):
             "userid":self.userid,
             "level":self.level,
             "create":self.create,
+            "delete":self.delete,
         };
 
         return ret;
 
     def toList(self):
         '''
-        把数据转化成列表
+        把数据转化成列表(内部使用)
         '''
         ret = [];
         theDict = self.toDictNoCut();
@@ -194,7 +197,7 @@ class files(object):
         return ret;
 
     @staticmethod
-    def getFile(thefiles,fileName):
+    def getFile(thefiles:list,fileName)->list:
         '''
         查询文件信息
 
@@ -216,9 +219,10 @@ class files(object):
         '''
         上传文件数据到数据库
         '''
-
+        if type(Link.getTable("files",["path"],"path='"+self.path+"'"))==list:
+            return "Alive";
         listName = Link.getColumns(tableName);
-        return Link.addValue(tableName,listName,self.toList());
+        return str(Link.addValue(tableName,listName,self.toList()));
 
 class fileSystem(object):
     '''
@@ -302,7 +306,7 @@ class fileSystem(object):
         ret = [];
         if not type(all)==bool and len(all)>0:
             for x in all:
-                ret.append(files(x[0],x[1],x[2],x[3],x[4],x[5],x[6],x[7],x[8],x[9]));
+                ret.append(files(x[0],x[1],x[2],x[3],x[4],x[5],x[6],x[7],x[8],x[9],x[10]));
 
         return ret;
 

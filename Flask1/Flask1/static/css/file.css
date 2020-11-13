@@ -251,13 +251,17 @@ div.eachFile {
     }
 
         div.eachFile > div.eachFileBottom > div.eachFileBottomBottom {
-            width: 50%;
+            width: 33%;
             height: 30px;
             border: 1px solid snow;
-            margin: -3px auto;
+            /*margin: -3px auto;*/
+            margin-top:-3px;
             border-radius: 6px;
             line-height: 30px;
-            text-align: center;
+            /* text-align: center; */
+            float: left;
+            /* margin: auto; */
+            margin-left: calc( ( 100% - 66% ) / 3);
         }
 
         div.eachFile>div.eachFileBottom>div.eachFileBottomBottom:hover{
@@ -355,6 +359,15 @@ div.eachFile {
     height: 40px;
     font-size: 25px;
     line-height: 40px;
+}
+
+.eachFile.dir > span.dir {
+    width: calc(70vw / 4 * 3 - 40px);
+    margin: auto;
+    height: 25px;
+    line-height: 25px;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
 

@@ -40,10 +40,13 @@
             <div class="bottom admin user">新建目录</div>
             <div class="bottom admin user">上传文件</div>
             <!--<div class="bottom admin user guest">下载文件</div>-->
-            <div class="bottom admin user">删除文件</div>
+            <!--<div class="bottom admin user">删除文件</div>-->
             <div class="bottom admin">删除目录</div>
         </div>
         <div class="box">
+            <div class="eachFile dir">
+                <div class="eachFileValue">当前文件夹:</div> <span title="当前文件夹" id="spanDir" class="dir"></span>
+            </div>
             <div class="eachFile">
                 <div class="eachFileValue">
                     文件名
@@ -70,8 +73,11 @@
                         234766
                     </div>
                     <div class="eachFileBottom">
-                        <div class="eachFileBottomBottom">
+                        <div class="eachFileBottomBottom" title="下载">
                             下载
+                        </div>
+                        <div class="eachFileBottomBottom" title="删除">
+                            删除
                         </div>
                     </div>
                 </div>
@@ -147,6 +153,7 @@
             this.history.push(this.now);
             this.now = dir;
             searchDir(dir);
+            dirSpan.innerText = "root"+this.now;
             this.back = this.getBack(dir);
         },
         /**返回上一次搜索 */
@@ -155,6 +162,7 @@
                 this.now = this.history[this.history.length - 1];
                 this.history.pop();
                 searchDir(this.now);
+                dirSpan.innerText = "root"+this.now;
                 this.back = this.getBack(this.now);
             } else {
                 searchDir("");
@@ -165,6 +173,8 @@
             this.newSearch(this.back);
         }
     };
+    /**显示当前目录 */
+    var dirSpan = lt_code.getAll("#spanDir");
     
     /**清除主盒子 */
     var clearMainBox = function () {
@@ -339,11 +349,12 @@
     var newEachFile = function (fileName, size, create, isFile, dir) {
         isFile = isFile == null ? true : isFile;
 
+        /**每个文件行 */
         var eachFile = lt_code.newDom("div", {
             class: "eachFile",
             "data-fileName": fileName,
             "data-dir": dir,
-
+            "data-isFile":isFile,
         });
 
         /**文件行文件名 */
@@ -373,13 +384,21 @@
         /**文件下载按钮 */
         var newEachFileBottomBottom = lt_code.newDom("div", {
             class: "eachFileBottomBottom",
+            title:"下载",
+        });
 
+        /**删除文件按钮 */
+        var newEachFileBottomBottom2 = lt_code.newDom("div", {
+            class: "eachFileBottomBottom",
+            title: "删除",
         });
 
         newEachFileBottomBottom.innerText = "下载";
+        newEachFileBottomBottom2.innerText = "删除";
         newEachFileValue.innerText = fileName;
         if (isFile) {
             lt_code.addChild(newEachFileBottomBottom, newEachFileBottom);
+            lt_code.addChild(newEachFileBottomBottom2, newEachFileBottom);
             newEachFileSize.innerText = size;
             newEachFileCreate.innerText = new Date(create).format("yyyy-MM-dd hh:mm:ss");
         } else {
@@ -501,7 +520,7 @@
         var newBottom = lt_code.newDom("div", {
             class: "listBottom",
 
-        })
+        });
 
         var newValue = lt_code.newDom("div", {
             class: "listValue",
@@ -512,12 +531,12 @@
             var fatherDOM = lt_code.getDomFather(lt_code.getDomFather(this));
             fatherDOM.className = fatherDOM.classList.length > 1 ? "listBlock" : "listBlock listSelect";
             //console.log(father.classList);
-        }
+        };
 
         //显示文件夹内容在右边屏幕上
         newValue.onmousedown = function () {
 
-        }
+        };
 
         var newBlock = lt_code.newDom("div", {
             "data-listBlock": isfile,
@@ -532,12 +551,37 @@
         newValue.onmousedown = function () {
             var dir = lt_code.getDomFather(this).dataset.dir;
             lt_code.history.newSearch(dir);
-        }
+        };
 
         lt_code.addChild(newBottom, newValue);
         lt_code.addChild(newValue, newBlock);
         lt_code.addChild(newBlock, father);
         lists.push(newBlock);
+
+    };
+
+    /**
+     * 下载文件
+     * @param {HTMLDivElement} fileLine 文件行
+     */
+    var downFile = function (fileLine) {
+        if (fileLine.dataset.isfile=="true") {
+            /**上传数据 */
+            var up = {
+                uid: UID,
+                dir: fileLine.dataset.dir,
+
+            };
+        } else {
+            alert("暂不支持下载文件夹!");
+        }
+    };
+
+    /**
+     * 删除文件
+     * @param {HTMLDivElement} fileLine
+     */
+    var deleteFile = function (fileLine) {
 
     };
 
@@ -680,6 +724,8 @@
 
                     if (file.size > 1024 * 1024 * 20) {
                         alert("上传文件过大!\n最大支持20MB");
+                    } else if (file.size == 0) {
+                        alert("上传文件为空文件!");
                     } else {
                         lt_code.test.fileToBase(input);
                         var getReturn = setInterval(function () {
@@ -739,14 +785,13 @@
 
             }, null, 1);
         };
-        //删除文件
-        mouseBottoms[3].onmousedown = function () {
-
-        };
         //删除目录
-        mouseBottoms[4].onmousedown = function () {
-
+        mouseBottoms[3].onmousedown = function () {
+            newAlert("确认删除", "你确认删除当前目录?\n目录: root" + lt_code.history.now, function () {
+                alert("错误!没有权限!");
+            }, null, 0);
         };
+
     };
 </script>
 <script src="/static/js/file/file.js"></script>

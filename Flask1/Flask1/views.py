@@ -391,13 +391,15 @@ def file():
                     elif user.type=="basic":
                         level+=10;
 
-                    newFile = sys.files(len(files),value['name'],value['size'],str(eachSize),package,value['md5'],fileSys.root+value['dir']+"/"+value['name']+".file",user.id,level,value['create']);
-                    if newFile.upSql("files"):
+                    newFile = sys.files(len(files),value['name'],value['size'],str(eachSize),package,value['md5'],fileSys.root+value['dir']+"/"+value['name']+".file",user.id,level,value['create'],0);
+                    upSql = newFile.upSql("files");
+                    if upSql=="True":
                         write = newFile.toDictNoCut();
                         write['value'] = value['value'];
+                        fileSys.fileSteam.append(newFile);
                         return str(fileSys.newFile(newFile.path,write));
                     else:
-                        return "False";
+                        return upSql;
 
         except Exception as e:
             raise e;
