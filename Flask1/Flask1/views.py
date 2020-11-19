@@ -392,6 +392,7 @@ def file():
                         level+=10;
 
                     newFile = sys.files(len(files),value['name'],value['size'],str(eachSize),package,value['md5'],fileSys.root+value['dir']+"/"+value['name']+".file",user.id,level,value['create'],0);
+                    print(newFile.toList());
                     upSql = newFile.upSql("files");
                     if upSql=="True":
                         write = newFile.toDictNoCut();
