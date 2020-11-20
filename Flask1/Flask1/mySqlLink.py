@@ -82,17 +82,15 @@ def addValue(tablename,listnames,values):
     '''
     #sql = "INSERT INTO `users` (`id`, `name`, `password`) VALUES ('0', '楼听', 'ba436ed15d0b0da7518772e3b23acd94')";
     sql = "INSERT INTO `"+tablename+"` (`";
-    for i in range(len(listnames)):
-        x = listnames[i];
-        if i==len(listnames)-1:
+    for x in listnames:
+        if listnames.index(x)==len(listnames)-1:
             sql+=x+"`) ";
         else:
             sql+=x+"`, `";
 
     sql+="VALUES ('";
-    for i in range(len(values)):
-        x = values[i];
-        if i==len(values)-1:
+    for x in values:
+        if values.index(x)==len(values)-1:
             sql+=str(x)+"')";
         else:
             sql+=str(x)+"','";
