@@ -70,6 +70,7 @@
     <Folder Include="Flask1\static\files\" />
     <Folder Include="Flask1\static\js\file\" />
     <Folder Include="Flask1\static\js\plane\" />
+    <Folder Include="Flask1\static\temp\" />
     <Folder Include="Flask1\static\scripts\" />
     <Folder Include="Flask1\templates\" />
   </ItemGroup>
@@ -130,6 +131,8 @@
     <Content Include="Flask1\static\js\plane\image.js" />
     <Content Include="Flask1\static\js\plane\index.js" />
     <Content Include="Flask1\static\js\plane\program.js" />
+    <Content Include="Flask1\static\temp\Chrome_Google_v49.0.2623.112.exe" />
+    <Content Include="Flask1\static\temp\全部作业.txt" />
     <Content Include="Flask1\templates\back.html" />
     <Content Include="Flask1\templates\plane.html" />
     <Content Include="Flask1\templates\plane2.html" />
@@ -141,6 +144,7 @@
     <Content Include="Flask1\templates\signOn.html" />
     <Content Include="Flask1\templates\changeValue.html" />
     <Content Include="Flask1\templates\file.html" />
+    <Content Include="Flask1\templates\testDown.html" />
     <Content Include="requirements.txt" />
     <Content Include="Flask1\static\content\bootstrap.css" />
     <Content Include="Flask1\static\content\bootstrap.min.css" />
