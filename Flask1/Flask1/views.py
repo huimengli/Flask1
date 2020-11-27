@@ -412,15 +412,6 @@ def file():
         'file.html',
         context={},
     );
-
-@app.route("/downTest/")
-def downTest():
-    context = {};
-
-    return render_template(
-        'testDown.html',
-        context=context,
-    );
     
 
 #@app.route('/')

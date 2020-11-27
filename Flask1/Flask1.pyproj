@@ -144,7 +144,6 @@
     <Content Include="Flask1\templates\signOn.html" />
     <Content Include="Flask1\templates\changeValue.html" />
     <Content Include="Flask1\templates\file.html" />
-    <Content Include="Flask1\templates\testDown.html" />
     <Content Include="requirements.txt" />
     <Content Include="Flask1\static\content\bootstrap.css" />
     <Content Include="Flask1\static\content\bootstrap.min.css" />
