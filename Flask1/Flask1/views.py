@@ -8,12 +8,12 @@ from Flask1 import app
 from random import randint;
 from Flask1.users import UserBasic as User;
 import json;
-import Flask1.fileSystem as sys;
+import Flask1.fileSystem as Fsys;
 import math;
 
 myname = "绘梦璃";
 
-fileSys = sys.fileSystem("files");
+fileSys = Fsys.fileSystem("files");
 
 @app.route("/")
 @app.route("/signOn/")
@@ -363,7 +363,7 @@ def file():
                     if value['isdir']=="True":
                         return fileSys.getFileList(value['dir']);
                     else:
-                        return str(sys.files.getFile(fileSys.fileSteam,value['dir']));
+                        return str(Fsys.files.getFile(fileSys.fileSteam,value['dir']));
                 except Exception as e:
                     print(e);
                     return fileSys.getFileList();
@@ -391,7 +391,8 @@ def file():
                     elif user.type=="basic":
                         level+=10;
 
-                    newFile = sys.files(len(files),value['name'],value['size'],str(eachSize),package,value['md5'],fileSys.root+value['dir']+"/"+value['name']+".file",user.id,level,value['create'],0);
+                    newFile = Fsys.files(len(files),value['name'],value['size'],str(eachSize),package,value['md5'],fileSys.root+value['dir']+"/"+value['name']+".file",user.id,level,value['create'],0);
+                    print(newFile.toDictNoCut());
                     upSql = newFile.upSql("files");
                     if upSql=="True":
                         write = newFile.toDictNoCut();
@@ -402,7 +403,9 @@ def file():
                         return upSql;
 
         except Exception as e:
-            raise e;
+            print(e);
+            print(e.__traceback__.tb_frame.f_globals["__file__"])  # 发生异常所在的文件
+            print(e.__traceback__.tb_lineno)                       # 发生异常所在的行数
     #else:
         return values;
 

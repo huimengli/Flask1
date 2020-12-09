@@ -132,6 +132,8 @@ class files(object):
         '''
         转化为Json字符串
         '''
+        if isinstance(self,dict):
+            return json.dumps(self);
         return json.dumps(self.toDict());
 
     def toDict(self):
