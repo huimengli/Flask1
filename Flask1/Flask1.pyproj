@@ -42,7 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Flask1\" />
-    <Folder Include="Flask1\obj\" />
+    <Folder Include="Flask1\static\obj\" />
     <Folder Include="Flask1\static\" />
     <Folder Include="Flask1\static\content\" />
     <Folder Include="Flask1\static\fonts\" />
@@ -76,7 +76,7 @@
     <Folder Include="Flask1\templates\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Flask1\obj\untitled.obj" />
+    <Content Include="Flask1\static\obj\untitled.obj" />
     <Content Include="Flask1\static\css\all.css" />
     <Content Include="Flask1\static\css\ChangeValue.css" />
     <Content Include="Flask1\static\css\Default.css" />
