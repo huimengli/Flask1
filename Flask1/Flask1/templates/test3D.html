@@ -1,13 +1,13 @@
 ﻿<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>测试页面</title>
-    <script src="JavaScriptCode/lt_code.js"></script>
-    <script src="three.js/build/three.js"></script>
-    <script src="three.js/examples/js/loaders/OBJLoader.js"></script>
-    <script src="three.js/examples/js/controls/OrbitControls.js"></script>
-    <script src="three.js/examples/js/libs/stats.min.js"></script>
-    <script src="three.js/examples/js/libs/dat.gui.min.js"></script>
-    <!--<base href="file:///D:/楼听/git/testForWeb3D/" />-->
+    <script src="/static/JavaScriptCode/lt_code.js"></script>
+    <script src="/static/js/jquery-3.3.1.js"></script>
+    <script src="/static/three.js/build/three.js"></script>
+    <script src="/static/three.js/examples/js/loaders/OBJLoader.js"></script>
+    <script src="/static/three.js/examples/js/controls/OrbitControls.js"></script>
+    <script src="/static/three.js/examples/js/libs/stats.min.js"></script>
+    <script src="/static/three.js/examples/js/libs/dat.gui.min.js"></script>
     <style>
         div.gui {
             position: fixed;
@@ -44,20 +44,21 @@
 
         div.line {
             width: 100%;
-            height: 30px;
+            min-height: 30px;
             background-color: transparent;
         }
 
             div.line:hover {
                 transition-duration: 0.3s;
                 background-color: black;
+                color:white;
             }
 
                 div.line:hover > div {
                     transition-duration: 0.3s;
                 }
 
-                div.line:hover div.title {
+                div.line:hover div {
                     color: white;
                 }
 
@@ -77,6 +78,11 @@
             line-height: 30px;
             color: black;
             overflow: hidden;
+        }
+
+        div.line.value{
+            height:25px;
+            min-height:25px;
         }
 
         div.value {
@@ -152,6 +158,21 @@
             left: 20px;
             float:left;
         }
+
+        /*横拉条*/
+        div.select {
+            overflow-x: scroll;
+            overflow-y: hidden;
+            height: 50px;
+            line-height: 30px;
+            text-align: center;
+        }
+
+        div.select > input[type=radio]{
+            margin:4px;
+            margin-left:8px;
+            cursor:pointer;
+        }
     </style>
 </head>
 <body>
@@ -219,7 +240,24 @@
             </div>
         </div>
         <div class="right">
+            <div class="line value">
+                模型
+            </div>
+            <div class="line">
+                <div class="select">
 
+                </div>
+            </div>
+            <div class="line value">
+                是否旋转
+            </div>
+            <div class="line">
+                <div class="select">    
+                    <input type="radio" name="isTrun" value="noTrun" />不旋转
+                    <input type="radio" name="isTrun" value="leftTrun" />逆时针
+                    <input type="radio" name="isTrun" value="rightTrun" />顺时针
+                </div class="select">
+            </div>
         </div>
     </div>
 </body>
@@ -228,7 +266,15 @@
     /**所有的GUI条 */
     var lines = lt_code.getAll(".line");
 
+    /**旋转y值 */
+    let trunY = 0.02;
 
+    /**缩放大小 */
+    let zoom = 0.015;
+
+    /**每次更改缩放多少 */
+    const trunZoom = 0.001; 
+    
     //初始化渲染器
     var renderer = new THREE.WebGLRenderer(); //实例化渲染器
     renderer.setSize(window.innerWidth, window.innerHeight); //设置宽和高
@@ -551,84 +597,172 @@
     /**模型运行挂载 */
     var run = 0;
 
-    //读取obj文件然后放置入场
-    loader.load("obj/17.js", function (loadedMesh) {
-        let texture_left = new THREE.TextureLoader().load("image/1000096.jpg");
-        texture_left.wrapS = THREE.RepeatWrapping;   //纹理水平方向的平铺方式
-        texture_left.wrapT = THREE.RepeatWrapping; //纹理垂直方向的平铺方式
+    /**导入的模型对象 */
+    var loadMesh;
 
-        let plane_left = new THREE.MeshLambertMaterial();
-        plane_left.map = texture_left;
-        plane_left.side = THREE.DoubleSide;
+    /**
+     * 读取obj模型并导入场景
+     * @param {string} objUrl 模型URL
+     */
+    var loadObj = function (objUrl) {
 
-        var material = new THREE.MeshLambertMaterial({ color: 0xff0000 });
-        //var material = new THREE.MeshNormalMaterial();
+        if (loadMesh != undefined) {
+            scene.remove(loadMesh);
+        }
 
-        console.log(loadedMesh);
+        //读取obj文件然后放置入场
+        loader.load(objUrl, function (loadedMesh) {
+            let texture_left = new THREE.TextureLoader().load("/static/images/Material/1000096.jpg");
+            texture_left.wrapS = THREE.RepeatWrapping;   //纹理水平方向的平铺方式
+            texture_left.wrapT = THREE.RepeatWrapping; //纹理垂直方向的平铺方式
 
-        // 加载完obj文件是一个场景组，遍历它的子元素，赋值纹理并且更新面和点的发现了
-        loadedMesh.children.forEach(function (child) {
-            //给每个子元素赋值纹理
-            child.material = plane_left;
-            //更新每个子元素的面和顶点的法向量
-            child.geometry.computeFaceNormals();
-            child.geometry.computeVertexNormals();
+            let plane_left = new THREE.MeshLambertMaterial();
+            plane_left.map = texture_left;
+            plane_left.side = THREE.DoubleSide;
 
-            //每个子部件产生阴影
-            child.castShadow = true;
-        });
+            var material = new THREE.MeshLambertMaterial({ color: 0xff0000 });
+            //var material = new THREE.MeshNormalMaterial();
 
-        /**画布对象 */
-        var cas = lt_code.getAll("canvas");
+            console.log(loadedMesh);
 
-        //鼠标移动模型
-        cas.onmousedown = function (e) {
-            //记录鼠标初始位置
-            var nowE = e;
-            //鼠标移动
-            cas.onmousemove = function (e) {
+            // 加载完obj文件是一个场景组，遍历它的子元素，赋值纹理并且更新面和点的发现了
+            loadedMesh.children.forEach(function (child) {
+                //给每个子元素赋值纹理
+                child.material = plane_left;
+                //更新每个子元素的面和顶点的法向量
+                child.geometry.computeFaceNormals();
+                child.geometry.computeVertexNormals();
+
+                //每个子部件产生阴影
+                child.castShadow = true;
+            });
+
+            /**画布对象 */
+            var cas = lt_code.getAll("canvas");
+
+            //鼠标移动模型
+            cas.onmousedown = function (e) {
+                //记录鼠标初始位置
+                var nowE = e;
+                //鼠标移动
+                cas.onmousemove = function (e) {
+                    //console.log(e);
+                    /**变动的x */
+                    var changeEX = e.screenX - nowE.screenX;
+
+                    /**变动的y */
+                    var changeEY = e.screenY - nowE.screenY;
+
+                    nowE = e;
+
+                    //修改模型位置
+                    loadedMesh.position.x += changeEX / 14;
+                    loadedMesh.position.z += changeEY / 10;
+                }
+            };
+            //鼠标抬起
+            cas.onmouseup = function () {
+                cas.onmousemove = function () { };
+            };
+
+            //鼠标滚轮
+            cas.onwheel = function (e) {
                 //console.log(e);
-                /**变动的x */
-                var changeEX = e.screenX - nowE.screenX;
-
-                /**变动的y */
-                var changeEY = e.screenY - nowE.screenY;
-
-                nowE = e;
-
-                //修改模型位置
-                loadedMesh.position.x += changeEX / 14;
-                loadedMesh.position.z += changeEY / 10;
+                if (e.deltaY>0) {
+                    zoom -= trunZoom;
+                } else {
+                    zoom += trunZoom;
+                }
+                loadedMesh.scale.set(zoom, zoom, zoom);
             }
+
+            //模型缩小
+            loadedMesh.scale.set(zoom, zoom, zoom);
+
+            //模型位置修改
+            loadedMesh.position.set(0, 0, 0);
+
+            ////模型是否产生阴影
+            //loadedMesh.castShadow = true;
+
+            //网格
+            //var mesh = new THREE.Mesh(loadedMesh, material);
+
+            //添加到场景当中
+            scene.add(loadedMesh);
+
+            //运行动画
+            //requestAnimationFrame(function () { console.log(this);}); //循环调用函数
+            run = setInterval(function () {
+                //loadedMesh.rotation.x += 0.01; //每帧网格模型的沿x轴旋转0.01弧度
+                loadedMesh.rotation.y += trunY; //每帧网格模型的沿y轴旋转0.02弧度
+
+                //渲染场景
+                renderer.render(scene, camera); //渲染界面
+            }, 30);
+
+            loadMesh = loadedMesh;
+        });
+    };
+
+    /**obj文件数据 */
+    var objInfo = {
+        "name": [
+            "13.js",
+            "17.js",
+            "18.js"
+        ],
+    };
+
+    /**模型选择行 */
+    var selectLine = lt_code.getAll2(".select", lines[11]);
+
+    /**第一个选择显示的模型 */
+    const firstSelect = 1;
+
+    //选择初始模型
+    loadObj("/static/obj/17.js");
+
+    //设置选择模型按钮
+    for (var i = 0; i < objInfo.name.length; i++) {
+
+        var select = lt_code.newDom("input", {
+            type: "radio",
+            value: objInfo.name[i].toString(),
+            name: "selectObj",
+            class:"selectObj",
+        });
+        
+        selectLine.appendChild(select);
+        selectLine.innerHTML += objInfo.name[i].split(".")[0]+".obj";
+    }
+    for (var i = 0; i < objInfo.name.length; i++) {
+        var select = lt_code.getAll(".selectObj", i, selectLine);
+        select.onmousedown = function () {
+            loadObj("/static/obj/" + this.value);
         }
-        //鼠标抬起
-        cas.onmouseup = function () {
-            cas.onmousemove = function () { };
+        if (firstSelect==i) {
+            select.click();
         }
+    }
 
-        //模型缩小
-        loadedMesh.scale.set(0.015, 0.015, 0.015);
+    /**模型旋转行 */
+    var trunLine = lt_code.getAll2(".select", lines[13]);
+    /**选择按钮 */
+    var trunBottom = lt_code.getAll2("input", trunLine);
+    trunBottom[0].onmousedown = function () {
+        trunY = 0;
+    };
+    trunBottom[1].onmousedown = function () {
+        trunY = 0.02;
+    };
+    trunBottom[2].onmousedown = function () {
+        trunY = -0.02;
+    };
+    for (var i = 0; i < trunBottom.length; i++) {
+        if (firstSelect==i) {
+            trunBottom[i].click();
+        }
+    }
 
-        //模型位置修改
-        loadedMesh.position.set(0, 0, 0);
-
-        ////模型是否产生阴影
-        //loadedMesh.castShadow = true;
-
-        //网格
-        //var mesh = new THREE.Mesh(loadedMesh, material);
-
-        //添加到场景当中
-        scene.add(loadedMesh);
-
-        //运行动画
-        //requestAnimationFrame(function () { console.log(this);}); //循环调用函数
-        run = setInterval(function () {
-            //loadedMesh.rotation.x += 0.01; //每帧网格模型的沿x轴旋转0.01弧度
-            loadedMesh.rotation.y += 0.02; //每帧网格模型的沿y轴旋转0.02弧度
-
-            //渲染场景
-            renderer.render(scene, camera); //渲染界面
-        }, 30);
-    });
 </script>

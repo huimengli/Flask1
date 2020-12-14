@@ -415,6 +415,17 @@ def file():
         'file.html',
         context={},
     );
+
+@app.route("/web3D/")
+@app.route("/Web3D/")
+def web3D():
+    '''
+    网站3D测试
+    '''
+
+    return render_template(
+        'test3D.html',
+    );
     
 
 #@app.route('/')
