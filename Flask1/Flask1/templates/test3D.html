@@ -276,7 +276,11 @@
     const trunZoom = 0.001; 
     
     //初始化渲染器
-    var renderer = new THREE.WebGLRenderer(); //实例化渲染器
+    var renderer = new THREE.WebGLRenderer({
+        //抗锯齿处理
+        antialias: true,
+        alpha: true
+    }); //实例化渲染器
     renderer.setSize(window.innerWidth, window.innerHeight); //设置宽和高
 
     //告诉渲染器需要阴影效果
