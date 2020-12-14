@@ -76,6 +76,9 @@
     <Folder Include="Flask1\templates\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Flask1\static\obj\13.js" />
+    <Content Include="Flask1\static\obj\17.js" />
+    <Content Include="Flask1\static\obj\18.js" />
     <Content Include="Flask1\static\obj\untitled.obj" />
     <Content Include="Flask1\static\css\all.css" />
     <Content Include="Flask1\static\css\ChangeValue.css" />

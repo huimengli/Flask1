@@ -1,0 +1,634 @@
+﻿<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>测试页面</title>
+    <script src="JavaScriptCode/lt_code.js"></script>
+    <script src="three.js/build/three.js"></script>
+    <script src="three.js/examples/js/loaders/OBJLoader.js"></script>
+    <script src="three.js/examples/js/controls/OrbitControls.js"></script>
+    <script src="three.js/examples/js/libs/stats.min.js"></script>
+    <script src="three.js/examples/js/libs/dat.gui.min.js"></script>
+    <!--<base href="file:///D:/楼听/git/testForWeb3D/" />-->
+    <style>
+        div.gui {
+            position: fixed;
+            top: 0px;
+            left: 0px;
+            width: 100vw;
+            height: 0px;
+        }
+
+        .gui > div {
+            overflow-x: hidden;
+            overflow-y: scroll;
+        }
+
+        .gui div.left {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background-color: rgba(75, 75, 75, 0.50);
+            top: 0;
+            left: 0;
+            float: left;
+        }
+
+        .gui div.right {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background-color: rgba(75, 75, 75, 0.50);
+            top: 0;
+            right: 0;
+            float: left;
+        }
+
+        div.line {
+            width: 100%;
+            height: 30px;
+            background-color: transparent;
+        }
+
+            div.line:hover {
+                transition-duration: 0.3s;
+                background-color: black;
+            }
+
+                div.line:hover > div {
+                    transition-duration: 0.3s;
+                }
+
+                div.line:hover div.title {
+                    color: white;
+                }
+
+                div.line:hover div.all {
+                    color: white;
+                }
+
+                div.line:hover div.value {
+                    background-color: black;
+                }
+
+        /*条标题*/
+        div.title {
+            width: 100px;
+            text-align: center;
+            float: left;
+            line-height: 30px;
+            color: black;
+            overflow: hidden;
+        }
+
+        div.value {
+            width: 100%;
+            height: 25px;
+            line-height: 25px;
+            text-align: center;
+            background-color: rgba(0,0,0,0.2);
+            color: white;
+        }
+
+        /*滑块条*/
+        div.huadongtiao {
+            float: left;
+            width: 180px;
+            height: 30px;
+            overflow: hidden;
+            position: relative;
+        }
+
+            /*滑块槽*/
+            div.huadongtiao::before {
+                content: "";
+                position: absolute;
+                width: 110px;
+                height: 10px;
+                background: #ccc;
+                left: 25px;
+                top: calc((30px - 10px)/2);
+                border-radius: 5px;
+            }
+
+        /*已划槽*/
+        div.yihuacao {
+            position: absolute;
+            z-index: 1;
+            height: 8px;
+            background-color: green;
+            top: calc((30px - 8px)/2);
+            left: 26px;
+            border-radius: 4px;
+        }
+
+        /*滑块*/
+        div.huakuai {
+            width: 14px;
+            height: 14px;
+            position: absolute;
+            left: 25px;
+            top: calc((30px - 14px)/2);
+            background-color: white;
+            border-radius: 7px;
+            z-index: 10;
+        }
+
+        /*总值显示位置*/
+        div.all {
+            width: 100px;
+            height: 30px;
+            float: left;
+            /*text-align:center;*/
+            line-height: 30px;
+            text-indent: 25px;
+        }
+
+        /*总值颜色样式*/
+        div.acolor {
+            width: 16px;
+            height: 16px;
+            border: 1px solid black;
+            top: calc((30px - 18px)/2);
+            position: relative;
+            left: 20px;
+            float:left;
+        }
+    </style>
+</head>
+<body>
+    <div class="gui">
+        <div class="left">
+            <div class="line value">
+                <div class="value">环境光照</div>
+            </div>
+            <div class="line">
+                <div class="title">R</div>
+                <div class="huadongtiao">
+                    <div class="yihuacao"></div>
+                    <div class="huakuai"></div>
+                </div>
+            </div>
+            <div class="line">
+                <div class="title">G</div>
+                <div class="huadongtiao">
+                    <div class="yihuacao"></div>
+                    <div class="huakuai"></div>
+                </div>
+            </div>
+            <div class="line">
+                <div class="title">B</div>
+                <div class="huadongtiao">
+                    <div class="yihuacao"></div>
+                    <div class="huakuai"></div>
+                </div>
+            </div>
+            <div class="line">
+                <div class="title">ALL</div>
+                <div class="all">
+                </div>
+                <div class="acolor"></div>
+            </div>
+            <div class="line value">
+                <div class="value">全局光照</div>
+            </div>
+            <div class="line">
+                <div class="title">R</div>
+                <div class="huadongtiao">
+                    <div class="yihuacao"></div>
+                    <div class="huakuai"></div>
+                </div>
+            </div>
+            <div class="line">
+                <div class="title">G</div>
+                <div class="huadongtiao">
+                    <div class="yihuacao"></div>
+                    <div class="huakuai"></div>
+                </div>
+            </div>
+            <div class="line">
+                <div class="title">B</div>
+                <div class="huadongtiao">
+                    <div class="yihuacao"></div>
+                    <div class="huakuai"></div>
+                </div>
+            </div>
+            <div class="line">
+                <div class="title">ALL</div>
+                <div class="all">
+                </div>
+                <div class="acolor"></div>
+            </div>
+        </div>
+        <div class="right">
+
+        </div>
+    </div>
+</body>
+</html>
+<script>
+    /**所有的GUI条 */
+    var lines = lt_code.getAll(".line");
+
+
+    //初始化渲染器
+    var renderer = new THREE.WebGLRenderer(); //实例化渲染器
+    renderer.setSize(window.innerWidth, window.innerHeight); //设置宽和高
+
+    //告诉渲染器需要阴影效果
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap; // 默认的是，没有设置的这个清晰 THREE.PCFShadowMap
+
+    document.body.appendChild(renderer.domElement); //添加到dom
+
+    //初始化场景
+    var scene = new THREE.Scene(); //实例化场景
+
+    //初始化相机
+    var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 200);
+    //修改相机位置相机
+    camera.position.set(0, 40, 60);
+    //修改相机角度
+    camera.rotation.set(-45 / 360 * Math.PI, 0, 0);
+
+    //创建obj文件读取器
+    var loader = new THREE.OBJLoader();
+
+    //环境光照
+    var ambientLight = new THREE.AmbientLight("#999999");
+    scene.add(ambientLight);
+
+    //环境光GUI界面设置
+    !function () {
+        /**环境光值显示位置 */
+        var aAll = lt_code.getAll2(".all", lines[4]);
+
+        /**环境光红色值 */
+        var aValueR = lt_code.from16To10(99);
+        /**环境光绿色值 */
+        var aValueG = lt_code.from16To10(99);
+        /**环境光蓝色值 */
+        var aValueB = lt_code.from16To10(99);
+        /**环境光总值 */
+        var aValueAll = "rgb(" + aValueR + "," + aValueG + "," + aValueB + ")";
+
+        /**环境光红光滑块 */
+        var aHR = lt_code.getAll2(".huakuai", lines[1]);
+        /**环境光绿光滑块 */
+        var aHG = lt_code.getAll2(".huakuai", lines[2]);
+        /**环境光蓝光滑块 */
+        var aHB = lt_code.getAll2(".huakuai", lines[3]);
+
+        /**环境光红光已划块 */
+        var aHTR = lt_code.getAll2(".yihuacao", lines[1]);
+        /**环境光绿光已划块 */
+        var aHTG = lt_code.getAll2(".yihuacao", lines[2]);
+        /**环境光蓝光已划块 */
+        var aHTB = lt_code.getAll2(".yihuacao", lines[3]);
+
+        //设定初始值
+        aHR.style.left = (25 + aValueR / 255 * 100).toString() + "px";
+        aHG.style.left = (25 + aValueG / 255 * 100).toString() + "px";
+        aHB.style.left = (25 + aValueB / 255 * 100).toString() + "px";
+        aHTR.style.width = (aValueR / 255 * 100 + 3).toString() + "px";
+        aHTG.style.width = (aValueG / 255 * 100 + 3).toString() + "px";
+        aHTB.style.width = (aValueB / 255 * 100 + 3).toString() + "px";
+        aAll.innerHTML = lt_code.color_change(aValueAll);
+        var acolor = lt_code.getAll2(".acolor", lt_code.getDomFather(aAll));
+        acolor.style.backgroundColor = aValueAll;
+
+        //动态修改数据
+        aHR.onmousedown = function (e) {
+            var nowE = e;
+            aHR.onmousemove = function (e) {
+                /**修改的x值 */
+                var changeX = -(nowE.screenX - e.screenX) / 100 * 255;
+                nowE = e;
+                /**移动后的值 */
+                var move = aValueR + changeX;
+                if (move < 0) {
+                    aValueR = 0;
+                } else if (move > 255) {
+                    aValueR = 255;
+                } else {
+                    aValueR = move;
+                }
+                aValueR = lt_code.getNum(aValueR);
+                aHR.style.left = lt_code.getNum(25 + aValueR / 255 * 100).toString() + "px";
+                aHTR.style.width = lt_code.getNum(aValueR / 255 * 100 + 3).toString() + "px";
+                aValueAll = "rgb(" + aValueR + "," + aValueG + "," + aValueB + ")";
+                ambientLight.color.set(aValueAll);
+                aAll.innerHTML = lt_code.color_change(aValueAll);
+                var acolor = lt_code.getAll2(".acolor", lt_code.getDomFather(aAll));
+                acolor.style.backgroundColor = aValueAll;
+            }
+            lt_code.getDomFather(aHR).onmouseleave = function () { aHR.onmousemove = function () { }; };
+        }
+        aHR.onmouseup = function () { aHR.onmousemove = function () { }; };
+        aHG.onmousedown = function (e) {
+            var nowE = e;
+            aHG.onmousemove = function (e) {
+                /**修改的x值 */
+                var changeX = -(nowE.screenX - e.screenX) / 100 * 255;
+                nowE = e;
+                /**移动后的值 */
+                var move = aValueG + changeX;
+                if (move < 0) {
+                    aValueG = 0;
+                } else if (move > 255) {
+                    aValueG = 255;
+                } else {
+                    aValueG = move;
+                }
+                aValueG = lt_code.getNum(aValueG);
+                aHG.style.left = lt_code.getNum(25 + aValueG / 255 * 100).toString() + "px";
+                aHTG.style.width = lt_code.getNum(aValueG / 255 * 100 + 3).toString() + "px";
+                aValueAll = "rgb(" + aValueR + "," + aValueG + "," + aValueB + ")";
+                ambientLight.color.set(aValueAll);
+                aAll.innerHTML = lt_code.color_change(aValueAll);
+                var acolor = lt_code.getAll2(".acolor", lt_code.getDomFather(aAll));
+                acolor.style.backgroundColor = aValueAll;
+            }
+            lt_code.getDomFather(aHG).onmouseleave = function () { aHG.onmousemove = function () { }; };
+        }
+        aHG.onmouseup = function () { aHG.onmousemove = function () { }; };
+        aHB.onmousedown = function (e) {
+            var nowE = e;
+            aHB.onmousemove = function (e) {
+                /**修改的x值 */
+                var changeX = -(nowE.screenX - e.screenX) / 100 * 255;
+                nowE = e;
+                /**移动后的值 */
+                var move = aValueB + changeX;
+                if (move < 0) {
+                    aValueB = 0;
+                } else if (move > 255) {
+                    aValueB = 255;
+                } else {
+                    aValueB = move;
+                }
+                aValueB = lt_code.getNum(aValueB);
+                aHB.style.left = lt_code.getNum(25 + aValueB / 255 * 100).toString() + "px";
+                aHTB.style.width = lt_code.getNum(aValueB / 255 * 100 + 3).toString() + "px";
+                aValueAll = "rgb(" + aValueR + "," + aValueG + "," + aValueB + ")";
+                ambientLight.color.set(aValueAll);
+                aAll.innerHTML = lt_code.color_change(aValueAll);
+                var acolor = lt_code.getAll2(".acolor", lt_code.getDomFather(aAll));
+                acolor.style.backgroundColor = aValueAll;
+            }
+            lt_code.getDomFather(aHB).onmouseleave = function () { aHB.onmousemove = function () { }; };
+        }
+        aHB.onmouseup = function () { aHB.onmousemove = function () { }; };
+
+    }();
+
+    //直接光照
+    var directionalLight = new THREE.DirectionalLight("#ffeecc");
+    directionalLight.position.set(-40, 60, -10);
+
+    //直接光GUI界面设置
+    !function () {
+        /**直接光值显示位置 */
+        var aAll = lt_code.getAll2(".all", lines[9]);
+
+        /**直接光红色值 */
+        var aValueR = lt_code.from16To10("ff");
+        /**直接光绿色值 */
+        var aValueG = lt_code.from16To10("ff");
+        /**直接光蓝色值 */
+        var aValueB = lt_code.from16To10("ff");
+        /**直接光总值 */
+        var aValueAll = "rgb(" + aValueR + "," + aValueG + "," + aValueB + ")";
+
+        /**直接光红光滑块 */
+        var aHR = lt_code.getAll2(".huakuai", lines[6]);
+        /**直接光绿光滑块 */
+        var aHG = lt_code.getAll2(".huakuai", lines[7]);
+        /**直接光蓝光滑块 */
+        var aHB = lt_code.getAll2(".huakuai", lines[8]);
+
+        /**直接光红光已划块 */
+        var aHTR = lt_code.getAll2(".yihuacao", lines[6]);
+        /**直接光绿光已划块 */
+        var aHTG = lt_code.getAll2(".yihuacao", lines[7]);
+        /**直接光蓝光已划块 */
+        var aHTB = lt_code.getAll2(".yihuacao", lines[8]);
+
+        //设定初始值
+        aHR.style.left = (25 + aValueR / 255 * 100).toString() + "px";
+        aHG.style.left = (25 + aValueG / 255 * 100).toString() + "px";
+        aHB.style.left = (25 + aValueB / 255 * 100).toString() + "px";
+        aHTR.style.width = (aValueR / 255 * 100 + 3).toString() + "px";
+        aHTG.style.width = (aValueG / 255 * 100 + 3).toString() + "px";
+        aHTB.style.width = (aValueB / 255 * 100 + 3).toString() + "px";
+        aAll.innerHTML = lt_code.color_change(aValueAll);
+        var acolor = lt_code.getAll2(".acolor", lt_code.getDomFather(aAll));
+        acolor.style.backgroundColor = aValueAll;
+
+        //动态修改数据
+        aHR.onmousedown = function (e) {
+            var nowE = e;
+            aHR.onmousemove = function (e) {
+                /**修改的x值 */
+                var changeX = -(nowE.screenX - e.screenX) / 100 * 255;
+                nowE = e;
+                /**移动后的值 */
+                var move = aValueR + changeX;
+                if (move < 0) {
+                    aValueR = 0;
+                } else if (move > 255) {
+                    aValueR = 255;
+                } else {
+                    aValueR = move;
+                }
+                aValueR = lt_code.getNum(aValueR);
+                aHR.style.left = lt_code.getNum(25 + aValueR / 255 * 100).toString() + "px";
+                aHTR.style.width = lt_code.getNum(aValueR / 255 * 100 + 3).toString() + "px";
+                aValueAll = "rgb(" + aValueR + "," + aValueG + "," + aValueB + ")";
+                directionalLight.color.set(aValueAll);
+                aAll.innerHTML = lt_code.color_change(aValueAll);
+                var acolor = lt_code.getAll2(".acolor", lt_code.getDomFather(aAll));
+                acolor.style.backgroundColor = aValueAll;
+            }
+            lt_code.getDomFather(aHR).onmouseleave = function () { aHR.onmousemove = function () { }; };
+        }
+        aHR.onmouseup = function () { aHR.onmousemove = function () { }; };
+        aHG.onmousedown = function (e) {
+            var nowE = e;
+            aHG.onmousemove = function (e) {
+                /**修改的x值 */
+                var changeX = -(nowE.screenX - e.screenX) / 100 * 255;
+                nowE = e;
+                /**移动后的值 */
+                var move = aValueG + changeX;
+                if (move < 0) {
+                    aValueG = 0;
+                } else if (move > 255) {
+                    aValueG = 255;
+                } else {
+                    aValueG = move;
+                }
+                aValueG = lt_code.getNum(aValueG);
+                aHG.style.left = lt_code.getNum(25 + aValueG / 255 * 100).toString() + "px";
+                aHTG.style.width = lt_code.getNum(aValueG / 255 * 100 + 3).toString() + "px";
+                aValueAll = "rgb(" + aValueR + "," + aValueG + "," + aValueB + ")";
+                directionalLight.color.set(aValueAll);
+                aAll.innerHTML = lt_code.color_change(aValueAll);
+                var acolor = lt_code.getAll2(".acolor", lt_code.getDomFather(aAll));
+                acolor.style.backgroundColor = aValueAll;
+            }
+            lt_code.getDomFather(aHG).onmouseleave = function () { aHG.onmousemove = function () { }; };
+        }
+        aHG.onmouseup = function () { aHG.onmousemove = function () { }; };
+        aHB.onmousedown = function (e) {
+            var nowE = e;
+            aHB.onmousemove = function (e) {
+                /**修改的x值 */
+                var changeX = -(nowE.screenX - e.screenX) / 100 * 255;
+                nowE = e;
+                /**移动后的值 */
+                var move = aValueB + changeX;
+                if (move < 0) {
+                    aValueB = 0;
+                } else if (move > 255) {
+                    aValueB = 255;
+                } else {
+                    aValueB = move;
+                }
+                aValueB = lt_code.getNum(aValueB);
+                aHB.style.left = lt_code.getNum(25 + aValueB / 255 * 100).toString() + "px";
+                aHTB.style.width = lt_code.getNum(aValueB / 255 * 100 + 3).toString() + "px";
+                aValueAll = "rgb(" + aValueR + "," + aValueG + "," + aValueB + ")";
+                directionalLight.color.set(aValueAll);
+                aAll.innerHTML = lt_code.color_change(aValueAll);
+                var acolor = lt_code.getAll2(".acolor", lt_code.getDomFather(aAll));
+                acolor.style.backgroundColor = aValueAll;
+            }
+            lt_code.getDomFather(aHB).onmouseleave = function () { aHB.onmousemove = function () { }; };
+        }
+        aHB.onmouseup = function () { aHB.onmousemove = function () { }; };
+
+    }();
+
+    directionalLight.shadow.camera.near = 20; //产生阴影的最近距离
+    directionalLight.shadow.camera.far = 200; //产生阴影的最远距离
+    directionalLight.shadow.camera.left = -50; //产生阴影距离位置的最左边位置
+    directionalLight.shadow.camera.right = 50; //最右边
+    directionalLight.shadow.camera.top = 50; //最上边
+    directionalLight.shadow.camera.bottom = -50; //最下面
+
+    //这两个值决定使用多少像素生成阴影 默认512
+    directionalLight.shadow.mapSize.height = 1024;
+    directionalLight.shadow.mapSize.width = 1024;
+
+    //告诉平行光需要开启阴影投射
+    directionalLight.castShadow = true;
+
+    scene.add(directionalLight);
+
+    //底部平面
+    var planeGeometry = new THREE.PlaneGeometry(5000, 5000, 20, 20);
+    var planeMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff });
+
+    var planeWell = new THREE.PlaneGeometry(5000, 5000, 20, 20);
+
+    //底板网格
+    var plane = new THREE.Mesh(planeGeometry, planeMaterial);
+    plane.rotation.x = -0.5 * Math.PI;
+    plane.position.y = -0;
+
+    //竖版网格
+    var planeWellMesh = new THREE.Mesh(planeWell, planeMaterial);
+
+    //修改位置
+    planeWellMesh.position.z = -20;
+
+    //告诉平面需要接收阴影
+    plane.receiveShadow = true;
+    planeWellMesh.receiveShadow = true;
+
+    scene.add(plane);
+    scene.add(planeWellMesh);
+
+    /**模型运行挂载 */
+    var run = 0;
+
+    //读取obj文件然后放置入场
+    loader.load("obj/17.js", function (loadedMesh) {
+        let texture_left = new THREE.TextureLoader().load("image/1000096.jpg");
+        texture_left.wrapS = THREE.RepeatWrapping;   //纹理水平方向的平铺方式
+        texture_left.wrapT = THREE.RepeatWrapping; //纹理垂直方向的平铺方式
+
+        let plane_left = new THREE.MeshLambertMaterial();
+        plane_left.map = texture_left;
+        plane_left.side = THREE.DoubleSide;
+
+        var material = new THREE.MeshLambertMaterial({ color: 0xff0000 });
+        //var material = new THREE.MeshNormalMaterial();
+
+        console.log(loadedMesh);
+
+        // 加载完obj文件是一个场景组，遍历它的子元素，赋值纹理并且更新面和点的发现了
+        loadedMesh.children.forEach(function (child) {
+            //给每个子元素赋值纹理
+            child.material = plane_left;
+            //更新每个子元素的面和顶点的法向量
+            child.geometry.computeFaceNormals();
+            child.geometry.computeVertexNormals();
+
+            //每个子部件产生阴影
+            child.castShadow = true;
+        });
+
+        /**画布对象 */
+        var cas = lt_code.getAll("canvas");
+
+        //鼠标移动模型
+        cas.onmousedown = function (e) {
+            //记录鼠标初始位置
+            var nowE = e;
+            //鼠标移动
+            cas.onmousemove = function (e) {
+                //console.log(e);
+                /**变动的x */
+                var changeEX = e.screenX - nowE.screenX;
+
+                /**变动的y */
+                var changeEY = e.screenY - nowE.screenY;
+
+                nowE = e;
+
+                //修改模型位置
+                loadedMesh.position.x += changeEX / 14;
+                loadedMesh.position.z += changeEY / 10;
+            }
+        }
+        //鼠标抬起
+        cas.onmouseup = function () {
+            cas.onmousemove = function () { };
+        }
+
+        //模型缩小
+        loadedMesh.scale.set(0.015, 0.015, 0.015);
+
+        //模型位置修改
+        loadedMesh.position.set(0, 0, 0);
+
+        ////模型是否产生阴影
+        //loadedMesh.castShadow = true;
+
+        //网格
+        //var mesh = new THREE.Mesh(loadedMesh, material);
+
+        //添加到场景当中
+        scene.add(loadedMesh);
+
+        //运行动画
+        //requestAnimationFrame(function () { console.log(this);}); //循环调用函数
+        run = setInterval(function () {
+            //loadedMesh.rotation.x += 0.01; //每帧网格模型的沿x轴旋转0.01弧度
+            loadedMesh.rotation.y += 0.02; //每帧网格模型的沿y轴旋转0.02弧度
+
+            //渲染场景
+            renderer.render(scene, camera); //渲染界面
+        }, 30);
+    });
+</script>
