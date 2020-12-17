@@ -211,10 +211,11 @@ class files(object):
         print(fileName);
         ret = [];
         for x in thefiles:
-            print(x.toJsonString());
-            if fileName==x.path:
+            #print(x.toJsonString());
+            if isinstance(x,files) and fileName==x.path:
                 ret.append(x.toJsonString());
-
+            elif isinstance(x,dict) and fileName == x['path']:
+                ret.append(json.dumps(x));
         return ret;
 
     def upSql(self,tableName):
@@ -292,7 +293,7 @@ class fileSystem(object):
                 file.write(json.dumps(value));
             file.close();
             value.pop("value")
-            self.fileSteam.append(value);
+            #self.fileSteam.append(value);
             return True;
         except Exception as err:
             print(err);

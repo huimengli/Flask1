@@ -314,7 +314,7 @@ def file():
     '''
     文件系统
     '''
-
+    print("\n");
     name = None;
     password = None;
     user = None;
@@ -327,9 +327,9 @@ def file():
 
     if not name==None and not password==None and not name=='' and not password=='':
         id = User.SignOn(name,password);
-        print(id);
+        #print(id);
         user = User.GetUser(id);
-        print(user);
+        #print(user);
 
     if isinstance(user,User) and not user==None:
         session['id'] = user.id;
@@ -342,7 +342,7 @@ def file():
     #print(values);
     
     if len(values)>0:
-        print(values);
+        #print(values);
         value = json.loads(values);
         #print(values.decode("utf8"));
         try:
@@ -359,14 +359,14 @@ def file():
             elif value['n']=="test":
                 return fileSys.fileSteam[0].getValue();
             elif value['n']=="list":
-                try:
-                    if value['isdir']=="True":
-                        return fileSys.getFileList(value['dir']);
-                    else:
-                        return str(Fsys.files.getFile(fileSys.fileSteam,value['dir']));
-                except Exception as e:
-                    print(e);
-                    return fileSys.getFileList();
+                #try:
+                if value['isdir']=="True":
+                    return fileSys.getFileList(value['dir']);
+                else:
+                    return str(Fsys.files.getFile(fileSys.fileSteam,value['dir']));
+                #except Exception as e:
+                #    print(e);
+                #    return fileSys.getFileList();
             elif value['n']=="newDir":
                 #print(user.ToString());
                 if not isinstance(user,User) or user==None:
@@ -403,9 +403,10 @@ def file():
                         return upSql;
 
         except Exception as e:
-            print(e);
-            print(e.__traceback__.tb_frame.f_globals["__file__"])  # 发生异常所在的文件
-            print(e.__traceback__.tb_lineno)                       # 发生异常所在的行数
+            #print("错误内容:"+str(e));
+            #print("错误文件:"+str(e.__traceback__.tb_frame.f_globals["__file__"]))  # 发生异常所在的文件
+            #print("错误行数:"+str(e.__traceback__.tb_lineno))                       # 发生异常所在的行数
+            raise e;
     #else:
         return values;
 
