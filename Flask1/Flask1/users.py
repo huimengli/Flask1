@@ -253,7 +253,6 @@ class UserBasic(object):
         Link.addValues("users",Link.getColumns("users"),values);
         return;
 
-
     @staticmethod
     def CreateAllUser():
         '''

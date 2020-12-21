@@ -227,6 +227,24 @@ class files(object):
         listName = Link.getColumns(tableName);
         return str(Link.addValue(tableName,listName,self.toList()));
 
+    def sqlDelete(self,tableName):
+        '''
+        仅删除数据库数据
+        '''
+        if self.delete==0:
+            self.delete=1;
+            if type(Link.getTable("files",["path"],"path='"+self.path+"'"))==list:
+                return Link.changeValue(tableName,"delete",self.delete,"id",self.id);
+
+        return;
+
+    def changeSql(self,tableName):
+        '''
+        修改数据库文件信息
+        '''
+        listNames = Link.getColumns(tableName);
+        return str(Link.changeValues(tableName,listNames,self.toDictNoCut(),"id",self.id));
+
 class fileSystem(object):
     '''
     文件系统
@@ -250,6 +268,18 @@ class fileSystem(object):
         文件是否存在
         '''
         return os.path.exists(filename);
+
+    @staticmethod
+    def getFile(filename)->files:
+        '''
+        获取文件
+        '''
+        for x in fileSteam:
+            if x.path==filename:
+                return x;
+
+        return files();
+
 
     @staticmethod
     def getAllFiles(dirpath):

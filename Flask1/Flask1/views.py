@@ -388,8 +388,12 @@ def file():
                     level = package;
                     if user.type=="admin":
                         level+=100;
+                    elif user.type=="general":
+                        level+=20;
+                    elif user.type=="staff":
+                        level+=50;
                     elif user.type=="basic":
-                        level+=10;
+                        level+=0;
 
                     newFile = Fsys.files(len(files),value['name'],value['size'],str(eachSize),package,value['md5'],fileSys.root+value['dir']+"/"+value['name']+".file",user.id,level,value['create'],0);
                     print(newFile.toDictNoCut());
@@ -401,6 +405,33 @@ def file():
                         return str(fileSys.newFile(newFile.path,write));
                     else:
                         return upSql;
+
+            elif value['n']=="downFile":
+                dir = fileSys.root+value["dir"];
+                if not fileSys.exists(dir):
+                    file = fileSys.getFile(dir);
+                    return "Alive";
+                else:
+                    file = fileSys.getFile(dir);
+                    if not isinstance(user,User) or user==None:
+                        if file.level<1:
+                            return file.getValue();
+                        else:
+                            return "Error";
+                    else:
+                        if user.type=="admin":
+                            return file.getValue();
+                        elif user.type=="staff" and file.level<70:
+                            return file.getValue();
+                        elif user.type=="general" and file.level<40:
+                            return file.getValue();
+                        elif user.type=="basic" and file.level<10:
+                            return file.getValue();
+                        else:
+                            return "Error";
+
+
+
 
         except Exception as e:
             #print("错误内容:"+str(e));

@@ -401,6 +401,9 @@
             lt_code.addChild(newEachFileBottomBottom2, newEachFileBottom);
             newEachFileSize.innerText = size;
             newEachFileCreate.innerText = new Date(create).format("yyyy-MM-dd hh:mm:ss");
+            newEachFileBottomBottom.onmouseup = function () {
+                downFile(eachFile);
+            }
         } else {
             newEachFileBottom.innerText = "文件夹";
             newEachFileSize.innerText = "/";
@@ -568,10 +571,42 @@
         if (fileLine.dataset.isfile=="true") {
             /**上传数据 */
             var up = {
+                n:"downFile",
                 uid: UID,
                 dir: fileLine.dataset.dir,
 
             };
+
+            $(function () {
+                $.ajax({
+                    type: "post",
+                    url: "/file/",
+                    data: JSON.stringify(up),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "text",
+                    success: function (data) {
+                        eval("data = " + data);
+                        //console.log(data);
+                        //清空内容数据
+                        clearMainBox();
+                        newEachFile("/..", 0, 0, false, "", dir);
+                        for (var j = 0; j < data.length; j++) {
+                            //console.log(data[j]);
+                            for (var x in data[j]) {
+                                if (data[j][x] == "False") {
+                                    newEachFile(x.slice(dir.length), 0, 0, false, x);
+                                } else {
+                                    newFileInfo(x);
+                                }
+                            }
+                        }
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    }
+                });
+            });
+
 
             console.log(up);
         } else {
