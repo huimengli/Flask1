@@ -404,6 +404,9 @@
             newEachFileBottomBottom.onmouseup = function () {
                 downFile(eachFile);
             }
+            newEachFileBottomBottom2.onmouseup = function () {
+                deleteFile(eachFile);
+            }
         } else {
             newEachFileBottom.innerText = "文件夹";
             newEachFileSize.innerText = "/";
@@ -590,17 +593,25 @@
                         if (data.length>10) {
                             eval("x = " + data);
                             lt_code.test.downFile(x.value, x.name);
+                            alert("文件已经开始下载!");
                         } else {
-                            console.assert(data);
+                            //console.assert(data);
+                            if (data=="False") {
+                                alert("下载失败!");
+                            } else if (data=="Alive") {
+                                alert("文件不存在!");
+                            } else if (data=="Error") {
+                                alert("没有下载权限!");
+                            }
                         }
                     },
                     error: function (err) {
                         console.log(err);
+                        alert("未知错误,下载失败!");
                     }
                 });
             });
-
-
+            
             console.log(up);
         } else {
             alert("暂不支持下载文件夹!");
@@ -612,7 +623,45 @@
      * @param {HTMLDivElement} fileLine
      */
     var deleteFile = function (fileLine) {
+        if (fileLine.dataset.isfile=="true") {
+            /**上传数据 */
+            var up = {
+                n: "deleteFile",
+                uid: UID,
+                dir: fileLine.dataset.dir,
+            };
 
+            newAlert("警告!", "是否要删除文件:\n\"" + up.dir + "\"", function () {
+                $(function () {
+                    $.ajax({
+                        type: "post",
+                        url: "/file/",
+                        data: JSON.stringify(up),
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "text",
+                        success: function (data) {
+                            console.log(data);
+                            if (data=="False") {
+                                alert("删除失败!");
+                            } else if (data=="True") {
+                                alert("删除成功!");
+                                window.location.href = window.location.href;
+                            } else if (data=="Error") {
+                                alert("没有权限!");
+                            } else if (data=="Alive") {
+                                alert("文件不存在!");
+                            }
+                        },
+                        error: function (err) {
+                            console.log(err);
+                        }
+                    });
+                });
+            }); 
+            
+        } else {
+            alert("不允许删除目录!");
+        }
     };
 
     lt_code.variable.addRun(function () {

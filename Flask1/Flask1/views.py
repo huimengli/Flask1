@@ -363,10 +363,11 @@ def file():
                 if value['isdir']=="True":
                     return fileSys.getFileList(value['dir']);
                 else:
-                    return str(Fsys.files.getFile(fileSys.fileSteam,value['dir']));
+                    return str(Fsys.files.getFileNoDelete(fileSys.fileSteam,value['dir']));
                 #except Exception as e:
                 #    print(e);
                 #    return fileSys.getFileList();
+
             elif value['n']=="newDir":
                 #print(user.ToString());
                 if not isinstance(user,User) or user==None:
@@ -376,6 +377,7 @@ def file():
                         return fileSys.newDir(value['dir'],value['name']);
                     else:
                         return "Error";
+
             elif value['n']=="upFile":
                 if not isinstance(user,User) or user==None:
                     return "Error";
@@ -414,24 +416,44 @@ def file():
                 else:
                     file = fileSys.getFile(dir);
                     if not isinstance(user,User) or user==None:
-                        if file.level<1:
+                        if file.level<=1:
                             return file.getValue();
                         else:
                             return "Error";
                     else:
                         if user.type=="admin":
                             return file.getValue();
-                        elif user.type=="staff" and file.level<70:
+                        elif user.type=="staff" and file.level<=70:
                             return file.getValue();
-                        elif user.type=="general" and file.level<40:
+                        elif user.type=="general" and file.level<=40:
                             return file.getValue();
-                        elif user.type=="basic" and file.level<10:
+                        elif user.type=="basic" and file.level<=10:
                             return file.getValue();
                         else:
                             return "Error";
 
+            elif value['n']=="deleteFile":
+                dir = fileSys.root+value['dir'];
+                if not fileSys.exists(dir):
+                    return "Alive";
+                else:
+                    file = fileSys.getFile(dir);
+                    print(file.toDictNoCut());
+                    if not isinstance(user,User) or user ==None:
+                        return "Error";
+                    else:
+                        if user.type=="admin":
+                            return file.sqlDelete(Fsys.files.tableName);
+                        elif user.type=="staff" and file.level<=70:
+                            return file.sqlDelete(Fsys.files.tableName);
+                        elif user.type=="general" and file.level<=40:
+                            return file.sqlDelete(Fsys.files.tableName);
+                        elif user.type=="basic" and file.level<=10:
+                            return file.sqlDelete(Fsys.files.tableName);
+                        else:
+                            return "Error";
 
-
+                return "False";
 
         except Exception as e:
             #print("错误内容:"+str(e));
