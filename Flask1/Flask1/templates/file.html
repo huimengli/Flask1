@@ -580,6 +580,10 @@
 
             };
 
+            var run = setInterval(function () {
+                newAlert("稍等", "正在下载中...");
+            },100);
+
             $(function () {
                 $.ajax({
                     type: "post",
@@ -588,12 +592,13 @@
                     contentType: "application/json; charset=utf-8",
                     dataType: "text",
                     success: function (data) {
+                        clearInterval(run);
+                        lt_code.getDomFather(lt_code.getAll("#alertBack")).removeChild(alertBack);
                         console.log(data);
                         var x = {};
                         if (data.length>10) {
                             eval("x = " + data);
                             lt_code.test.downFile(x.value, x.name);
-                            alert("文件已经开始下载!");
                         } else {
                             //console.assert(data);
                             if (data=="False") {
