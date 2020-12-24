@@ -269,12 +269,11 @@ class fileSystem(object):
         '''
         return os.path.exists(filename);
 
-    @staticmethod
-    def getFile(filename)->files:
+    def getFile(self,filename)->files:
         '''
         获取文件
         '''
-        for x in fileSteam:
+        for x in self.fileSteam:
             if x.path==filename:
                 return x;
 
