@@ -593,8 +593,10 @@
                     dataType: "text",
                     success: function (data) {
                         clearInterval(run);
-                        var alertBack = lt_code.getAll("#alertBack");
-                        lt_code.getDomFather(alertBack).removeChild(alertBack);
+                        var alertBack = document.getElementById("alertBack");
+                        if (alertBack) {
+                            lt_code.getDomFather(alertBack).removeChild(alertBack);
+                        }
                         console.log(data);
                         var x = {};
                         if (data.length>10) {
