@@ -96,6 +96,9 @@ class files(object):
     '''
     文件对象
     '''
+
+    tableName = "files";
+
     def __init__(self,id,name,size,eachSize,package,md5,path,userid,level,create,delete):
         '''
         初始化
@@ -218,23 +221,50 @@ class files(object):
                 ret.append(json.dumps(x));
         return ret;
 
+    @staticmethod
+    def getFileNoDelete(thefiles:list,fileName)->list:
+        '''
+        查询文件信息(不包含已经删除的文件)
+
+        :param files:list[files] 所有已经从数据库中拉取出的
+        :param fileName:str 文件名
+
+        '''
+        fileName = fileSystem.root+fileName;
+        print(fileName);
+        ret = [];
+        for x in thefiles:
+            #print(x.toJsonString());
+            if isinstance(x,files) and fileName==x.path and int(x.delete)<1:
+                ret.append(x.toJsonString());
+            elif isinstance(x,dict) and fileName == x['path'] and int(x['delete'])<1:
+                ret.append(json.dumps(x));
+        return ret;
+
     def upSql(self,tableName):
         '''
         上传文件数据到数据库
         '''
-        if type(Link.getTable("files",["path"],"path='"+self.path+"'"))==list:
+        if type(Link.getTable("files",["path"],"path='"+self.path+"'"))==tuple:
             return "Alive";
         listName = Link.getColumns(tableName);
         return str(Link.addValue(tableName,listName,self.toList()));
 
     def sqlDelete(self,tableName):
         '''
-        仅删除数据库数据
+        仅删除数据库数据(表层不显示)
         '''
-        if self.delete==0:
-            self.delete=1;
-            if type(Link.getTable("files",["path"],"path='"+self.path+"'"))==list:
-                return Link.changeValue(tableName,"delete",self.delete,"id",self.id);
+        if self.delete==0 or self.delete=="0":
+            self.delete="1";
+            if type(Link.getTable("files",["md5"],"`md5`='"+self.md5+"'"))==tuple:
+                return str(Link.changeValue(tableName,"delete",self.delete,"id",self.id));
+
+        return "False";
+
+    def trueDelete(self,tableName):
+        '''
+        文件完全删除(未写完)
+        '''
 
         return;
 
@@ -269,12 +299,11 @@ class fileSystem(object):
         '''
         return os.path.exists(filename);
 
-    @staticmethod
-    def getFile(filename)->files:
+    def getFile(self,filename)->files:
         '''
         获取文件
         '''
-        for x in fileSteam:
+        for x in self.fileSteam:
             if x.path==filename:
                 return x;
 
