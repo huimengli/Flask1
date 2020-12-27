@@ -13,12 +13,13 @@ class chinese(object) :
     @staticmethod
     def setCode(time, input):
         time = str(time);
-        count = len(time);
+        lenght = len(time);
         input = str(input);
-        ret = ""
-        for x in input:
-            i = input.index(x)
-            ret += chinese.setCodeOne(int(time[(count - 1) - (i % count)]),x)
+        print(lenght);
+        ret = "";
+        for i in range(len(input)):
+            x = input[i];
+            ret += chinese.setCodeOne(int(time[(lenght - 1) - (i % lenght)]),x)
         return ret
         
     @staticmethod
@@ -67,7 +68,7 @@ class chinese(object) :
     @staticmethod
     def getCode(time, value) :
         time = str(time);
-        count = len(time);
+        lenght = len(time);
         ret = re.compile(r"[A-Z\d]+[a-z]+").findall(value);
         #[...value.matchAll(/[A - Z\d]+[a - z] + /g)];
         values = []
@@ -75,9 +76,9 @@ class chinese(object) :
             values.append(x)
 
         ret = "";
-        for x in values:
-            i = values.index(x);
-            ret+=chr(chinese.getCodeOne(int(time[count - 1 - i % count]),x));
+        for i in range(len(values)):
+            x = values[i];
+            ret+=chr(chinese.getCodeOne(int(time[lenght - 1 - i % lenght]),x));
   
         return ret;
         
