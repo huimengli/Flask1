@@ -6,6 +6,7 @@ import sys
 import json
 import os;
 import Flask1.mySqlLink as Link;
+import Flask1.zlibTool as zTool;
 import hashlib;
 
 def fuc():
@@ -124,10 +125,26 @@ class files(object):
         if os.path.exists(self.path):
             file = open(self.path,"r",encoding="utf8");
             val = file.read();
+            #ret = zTool.decode(val);
             #print(val);
             #value = json.loads(val);
             file.close();
-            return str(val);
+            return val;
+        else:
+            return "{}";
+
+    def getValueZlib(self):
+        '''
+        获取文件内容(从压缩文件中)
+        '''
+        if os.path.exists(self.path):
+            file = open(self.path,"rb");
+            val = file.read();
+            ret = zTool.decode(val);
+            #print(val);
+            #value = json.loads(val);
+            file.close();
+            return ret;
         else:
             return "{}";
 
@@ -299,6 +316,24 @@ class fileSystem(object):
         '''
         return os.path.exists(filename);
 
+    def existsSql(self,file)->bool:
+        '''
+        文件是否存在于数据库中
+        '''
+        for x in self.fileSteam:
+            if x.path == file.path:
+                if fileSystem.exists(file.path):
+                    return True;
+        return False;
+            
+    def getFileInfo(self,path)->dict:
+        '''
+        获取文件信息
+        '''
+        file = self.getFile(path);
+        ret = file.toDict();
+        return ret;
+
     def getFile(self,filename)->files:
         '''
         获取文件
@@ -308,7 +343,6 @@ class fileSystem(object):
                 return x;
 
         return files();
-
 
     @staticmethod
     def getAllFiles(dirpath):
@@ -334,7 +368,6 @@ class fileSystem(object):
 
         return ret;
 
-    
     def newFile(self,filename,value=None):
         '''
         新建文件
@@ -347,9 +380,37 @@ class fileSystem(object):
                 file = open(filename,"w",encoding="utf8");
 
             if isinstance(value,str):
-                file.write(value);
+                write = zTool.encode(value);
+                file.write(write);
             elif isinstance(value,dict):
-                file.write(json.dumps(value));
+                write = zTool.encode(json.dumps(value));
+                file.write(write);
+            file.close();
+            value.pop("value")
+            #self.fileSteam.append(value);
+            return True;
+        except Exception as err:
+            print(err);
+            return False;
+        return False;
+    
+    def newFileZlib(self,filename,value=None):
+        '''
+        新建文件(压缩存储)
+        '''
+        try:
+            if fileSystem.exists(filename):
+                #file = open(filename,"a",encoding="utf8");
+                return "Alive";
+            else:
+                file = open(filename,"wb");
+
+            if isinstance(value,str):
+                write = zTool.encode(value);
+                file.write(write);
+            elif isinstance(value,dict):
+                write = zTool.encode(json.dumps(value));
+                file.write(write);
             file.close();
             value.pop("value")
             #self.fileSteam.append(value);
@@ -372,13 +433,13 @@ class fileSystem(object):
 
         return ret;
 
-    @staticmethod
-    def getFileInfo(fileName):
-        '''
-        获取文件信息
-        '''
-        fileInfo = files();
-        return fileInfo;
+    #@staticmethod
+    #def getFileInfo(fileName):
+    #    '''
+    #    获取文件信息
+    #    '''
+    #    fileInfo = files();
+    #    return fileInfo;
 
     @staticmethod
     def newDir(dir,newDirName):
@@ -412,6 +473,18 @@ class fileSystem(object):
         '''
         if fileSystem.exists(filename)==false:
             f = open(filename,"w",encoding="utf8");
+            f.write(value);
+            f.close();
+            return True;
+        else:return False;
+        return False;
+
+    def upFileZlib(filename,value):
+        '''
+        上传文件到服务器
+        '''
+        if fileSystem.exists(filename)==false:
+            f = open(filename,"wb");
             f.write(value);
             f.close();
             return True;

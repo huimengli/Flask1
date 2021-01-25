@@ -404,12 +404,44 @@ def file():
                         write = newFile.toDictNoCut();
                         write['value'] = value['value'];
                         fileSys.fileSteam.append(newFile);
-                        return str(fileSys.newFile(newFile.path,write));
+                        return str(fileSys.newFileZlib(newFile.path,write));
                     else:
                         return upSql;
 
+            elif value['n']=="upFileTest":
+                if not isinstance(user,User) or user==None:
+                    return "Error";
+                else:
+                    files = fileSys.getAllFromSql("files");
+                    eachSize = 1024*1024*20;
+                    if eachSize>int(value['size']):
+                        eachSize = int(value['size']);
+                    package = math.ceil(int(value['size'])/(1024*1024*20));
+                    level = package;
+                    if user.type=="admin":
+                        level+=100;
+                    elif user.type=="general":
+                        level+=20;
+                    elif user.type=="staff":
+                        level+=50;
+                    elif user.type=="basic":
+                        level+=0;
+
+                    newFile = Fsys.files(len(files),value['name'],value['size'],str(eachSize),package,value['md5'],fileSys.root+value['dir']+"/"+value['name']+".file",user.id,level,value['create'],0);
+                    return str(fileSys.existsSql(newFile));
+
+            elif value['n']=="getFileInfo":
+                dir = fileSys.root+value["dir"]+".file";
+                print(dir);
+                if fileSys.exists(dir):
+                    file = fileSys.getFile(dir);
+                    return str(file.toDict());
+
+                return "Error";
+
             elif value['n']=="downFile":
                 dir = fileSys.root+value["dir"];
+                print(dir);
                 if not fileSys.exists(dir):
                     file = fileSys.getFile(dir);
                     return "Alive";
@@ -417,18 +449,18 @@ def file():
                     file = fileSys.getFile(dir);
                     if not isinstance(user,User) or user==None:
                         if file.level<=1:
-                            return file.getValue();
+                            return file.getValueZlib();
                         else:
                             return "Error";
                     else:
                         if user.type=="admin":
-                            return file.getValue();
+                            return file.getValueZlib();
                         elif user.type=="staff" and file.level<=70:
-                            return file.getValue();
+                            return file.getValueZlib();
                         elif user.type=="general" and file.level<=40:
-                            return file.getValue();
+                            return file.getValueZlib();
                         elif user.type=="basic" and file.level<=10:
-                            return file.getValue();
+                            return file.getValueZlib();
                         else:
                             return "Error";
 

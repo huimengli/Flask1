@@ -36,6 +36,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Flask1\users.py" />
+    <Compile Include="Flask1\zlibTool.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="runserver.py" />
     <Compile Include="Flask1\__init__.py" />
     <Compile Include="Flask1\views.py" />

@@ -302,9 +302,9 @@ div.eachFile {
 #alertBox {
     width: 300px;
     height: 200px;
-    margin: 0 auto;
     position: relative;
     top: calc(50vh - 100px);
+    left:calc((100vw - 300px)/2);
     background-color: white;
     border: 3px double #999;
     border-radius: 10px;
@@ -361,6 +361,59 @@ div.eachFile {
     line-height: 40px;
 }
 
+#fileBox {
+    width: 700px;
+    height: 600px;
+    background-color: snow;
+    position: absolute;
+    top: calc((100vh - 600px)/2);
+    left: calc((100vw - 700px)/2);
+    z-index: 100;
+    border: 3px double #999;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+#fileTitle {
+    height: 70px;
+    font-size: 30px;
+    font-weight: 600;
+    text-align: center;
+    line-height: 70px;
+    border-bottom: 3px double #999;
+}
+
+.fileValue {
+    width: calc(50% - 3px / 2);
+    height: 457px;
+    border-bottom: 3px double #999;
+    float:left;
+    overflow:hidden;
+}
+
+#fileValue1{
+    border-right:3px double #999;
+}
+
+#fileValue2{
+
+}
+
+.fileBottom {
+    float: left;
+    width: calc(100%/4 - 3px*3/4);
+    border-right: 3px double #999;
+    height: 70px;
+    text-align: center;
+    line-height: 70px;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.fileBottom:last-child{
+    border-right:none;
+}
+
 .eachFile.dir > span.dir {
     width: calc(70vw / 4 * 3 - 40px);
     margin: auto;
@@ -370,5 +423,25 @@ div.eachFile {
     padding-right: 20px;
 }
 
+.fileValue .valueTitle {
+    height: 40px;
+    text-align: center;
+    line-height: 40px;
+    font-size: 20px;
+    border-bottom: 1px solid #999;
+}
 
+.fileValue .valueLine{
+    height:30px;
+    line-height:30px;
+    overflow:hidden;
+}
+
+.fileValue .valueLine>div{
+    float:left;
+}
+
+.fileValue .valueLineTitle{
+    padding-left:5px;
+}
 
