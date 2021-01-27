@@ -3,7 +3,7 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" />
-    <title>文件管理</title>
+    <title>{{context.name}}-{{context.title}}</title>
     <script src="/static/JavaScriptCode/lt_code.js"></script>
     <link href="/static/css/all.css" rel="stylesheet" />
     <link href="/static/css/file.css" rel="stylesheet" />
@@ -939,7 +939,7 @@
                     newValueLine("文件签名&nbsp;:&nbsp;", file.md5, valuebox,true);
                     newValueLine("文件体积&nbsp;:&nbsp;", file1.size > file2.size ? "老文件大" : file1.size < file2.size ? "新文件大" :"大小相同",valuebox);
                     newValueLine("签名比较&nbsp;:&nbsp;", file1.md5 == file2.md5 ? "文件没有区别" :"文件内容不同", valuebox);
-                    newValueLine("时间比较&nbsp;:&nbsp;", file1.create < file2.create ? "老文件更新" : file1.create > file2.create ? "新文件更新" :"创建时间相同", valuebox,true);
+                    newValueLine("时间比较&nbsp;:&nbsp;", file1.create > file2.create ? "老文件更新" : file1.create < file2.create ? "新文件更新" :"创建时间相同", valuebox,true);
                     newValueLine("请注意&nbsp;:&nbsp;", "可能会由于权限不够无法覆盖", valuebox);
                 }();
         }
@@ -949,10 +949,8 @@
             lt_code.getDomFather(alertBack).removeChild(alertBack);
         };
         file1Bottom.onmousedown = file1Fuc ? file1Fuc : function () {
-            file1Bottom.style.cursor = "";
-            file1Bottom.style.backgroundColor = "#ccc";
-            return function () { };
-        }();
+            lt_code.getDomFather(alertBack).removeChild(alertBack);
+        };
         file2Bottom.onmousedown = file2Fuc ? file2Fuc : function () {
             file2Bottom.style.cursor = "";
             file2Bottom.style.backgroundColor = "#ccc";
@@ -1173,11 +1171,11 @@
                                             //}
                                             if (data == "True") {
                                                 //文件存在
-                                                console.trace("文件存在,还没写");
+                                                //console.trace("文件存在,还没写");
                                                 //进入文件比对操作界面
                                                 newAlert("注意", "文件\"" + upTest.name + "\"已存在!\n是否打开重复文件操作界面?", function () {
                                                     /**后台已有文件 */
-                                                    var oldFile = "";
+                                                    var oldFile = {};
                                                     $.ajax({
                                                         type: "post",
                                                         url: "/file/",
@@ -1195,8 +1193,35 @@
                                                                 path: upTest.dir + "/" + upTest.name,
                                                                 create: upTest.create,
                                                             };
-                                                            fileCompare(oldFile, newFile, function () {
-
+                                                            fileCompare(oldFile, newFile, null, function () {
+                                                                if (upOver.md5 == oldFile.md5) {
+                                                                    alert("文件完全相同\n没有修改必要");
+                                                                } else {
+                                                                    $.ajax({
+                                                                        type: "post",
+                                                                        url: "/file/",
+                                                                        data: JSON.stringify(upOver),
+                                                                        contentType: "application/json; charset=utf-8",
+                                                                        dataType: "text",
+                                                                        success: function (data) {
+                                                                            console.log(data);
+                                                                            if (data == "True") {
+                                                                                alert("文件覆盖成功!");
+                                                                                window.location.href = window.location.href;
+                                                                            } else if (data == "Error") {
+                                                                                alert("错误!\n可能是因为没有权限!");
+                                                                            } else if (data == "Alive") {
+                                                                                alert("错误!\n要覆盖的文件不存在!");
+                                                                            } else if (data == "False") {
+                                                                                alert("上传失败!");
+                                                                            }
+                                                                            console.trace("覆盖代码有错误,尚未修改完成");
+                                                                        },
+                                                                        error: function (err) {
+                                                                            console.log(err);
+                                                                        }
+                                                                    });
+                                                                }
                                                             })
                                                         },
                                                         error: function (err) {
@@ -1228,7 +1253,6 @@
                                                         console.log(err);
                                                     }
                                                 });
-
                                             } else if (data=="Error") {
                                                 console.error("数据错误!\n没有权限!");
                                                 alert("数据错误!\n没有权限!");

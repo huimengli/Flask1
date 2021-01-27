@@ -342,7 +342,7 @@ class fileSystem(object):
             if x.path==filename:
                 return x;
 
-        return files();
+        return files(-1,"empty",0,"0",1,"","",-1,1,0,1);
 
     @staticmethod
     def getAllFiles(dirpath):
@@ -466,6 +466,13 @@ class fileSystem(object):
         self.fileSteam = fileSystem.getAllFromSql(tableName);
 
         return;
+
+    def streamUpdate(self):
+        '''
+        刷新stream,并返回全部文件列表
+        '''
+        self.fileSteam = self.getAllFromSql(self.tableName);
+        return self.fileSteam;
 
     def upFile(filename,value):
         '''

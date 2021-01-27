@@ -11,9 +11,12 @@ import json;
 import Flask1.fileSystem as Fsys;
 import math;
 
-myname = "绘梦璃";
+myname = "个人网盘";
 
 fileSys = Fsys.fileSystem("files");
+
+#主页面
+indexWeb = "file";
 
 @app.route("/")
 @app.route("/signOn/")
@@ -47,7 +50,7 @@ def signOn():
         session['id'] = id;
         session['name'] = name;
         session['password'] = password;
-        return redirect(url_for("index"));
+        return redirect(url_for(indexWeb));
     
     return render_template(
         'signOn.html',
@@ -87,7 +90,7 @@ def signIn():
             session['name'] = name;
             session['password'] = password;
 
-        return redirect(url_for("index"));
+        return redirect(url_for(indexWeb));
 
     return render_template(
         'signIn.html',
@@ -314,6 +317,9 @@ def file():
     '''
     文件系统
     '''
+    context = {};
+    context['name'] = myname;
+    context['title'] = "文件管理";
     print("\n");
     name = None;
     password = None;
@@ -356,8 +362,11 @@ def file():
                 session['id'] = "";
                 redirect(url_for("signOn"));
                 return "exit";
-            elif value['n']=="test":
-                return fileSys.fileSteam[0].getValue();
+
+            #下载测试
+            #elif value['n']=="test":
+            #    return fileSys.fileSteam[0].getValue();
+
             elif value['n']=="list":
                 #try:
                 if value['isdir']=="True":
@@ -382,20 +391,13 @@ def file():
                 if not isinstance(user,User) or user==None:
                     return "Error";
                 else:
-                    files = fileSys.getAllFromSql("files");
+                    files = fileSys.streamUpdate();
                     eachSize = 1024*1024*20;
                     if eachSize>int(value['size']):
                         eachSize = int(value['size']);
                     package = math.ceil(int(value['size'])/(1024*1024*20));
                     level = package;
-                    if user.type=="admin":
-                        level+=100;
-                    elif user.type=="general":
-                        level+=20;
-                    elif user.type=="staff":
-                        level+=50;
-                    elif user.type=="basic":
-                        level+=0;
+                    level += user.AddLevel();
 
                     newFile = Fsys.files(len(files),value['name'],value['size'],str(eachSize),package,value['md5'],fileSys.root+value['dir']+"/"+value['name']+".file",user.id,level,value['create'],0);
                     print(newFile.toDictNoCut());
@@ -412,20 +414,13 @@ def file():
                 if not isinstance(user,User) or user==None:
                     return "Error";
                 else:
-                    files = fileSys.getAllFromSql("files");
+                    files = fileSys.streamUpdate();
                     eachSize = 1024*1024*20;
                     if eachSize>int(value['size']):
                         eachSize = int(value['size']);
                     package = math.ceil(int(value['size'])/(1024*1024*20));
                     level = package;
-                    if user.type=="admin":
-                        level+=100;
-                    elif user.type=="general":
-                        level+=20;
-                    elif user.type=="staff":
-                        level+=50;
-                    elif user.type=="basic":
-                        level+=0;
+                    level+=user.AddLevel();
 
                     newFile = Fsys.files(len(files),value['name'],value['size'],str(eachSize),package,value['md5'],fileSys.root+value['dir']+"/"+value['name']+".file",user.id,level,value['create'],0);
                     return str(fileSys.existsSql(newFile));
@@ -438,6 +433,41 @@ def file():
                     return str(file.toDict());
 
                 return "Error";
+
+            elif value['n']=="upFileOver":
+                dir = fileSys.root+value["dir"]+".file";
+                print(dir);
+                if not isinstance(user,User) or user==None:
+                    return "Error";
+                else:
+                    fileSys.streamUpdate();
+                    file = fileSys.getFile(dir);
+                    if file.id>=0 and fileSys.exists(dir):
+                        fileIndex = fileSys.fileSteam.index(file);
+                        eachSize = 1024*1024*20;
+                        if eachSize>int(value['size']):
+                            eachSize = int(value['size']);
+                        package = math.ceil(int(value['size'])/(1024*1024*20));
+                        level = package;
+                        level += user.AddLevel();
+                        if user.ChackLevel(file.level):
+                            file.path = dir;
+                            file.name = value['name'];
+                            file.size = value['size'];
+                            file.create = value['create'];
+                            file.md5 = value['md5'];
+                            file.package = package;
+                            file.level = level;
+                            file.userid = user.id;
+                            upSql = file.changeSql(fileSys.tableName);
+                            if upSql=="True":
+                                write = file.toDictNoCut();
+                                fileSys.fileSteam[fileIndex] = file;
+                                return str(fileSys.newFileZlib(file.path,write));
+                        else:
+                            return "Error";
+                    else:
+                        return "Alive";
 
             elif value['n']=="downFile":
                 dir = fileSys.root+value["dir"];
@@ -499,7 +529,7 @@ def file():
 
     return render_template(
         'file.html',
-        context={},
+        context=context,
     );
 
 @app.route("/web3D/")

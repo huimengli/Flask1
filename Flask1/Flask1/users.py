@@ -364,6 +364,60 @@ class UserBasic(object):
 
         return;
 
+    def ChackLevel(self,level)->bool:
+        '''
+        检测等级是否允许
+        '''
+        def admin():
+            return True;
+        def staff():
+            if level<=70:
+                return True;
+            else:
+                return False;
+        def general():
+            if level<=40:
+                return True;
+            else:
+                return False;
+        def basic():
+            if level<=10:
+                return True;
+            else:
+                return False;
+        def default():
+            return False;
+        switch = {
+            "admin":admin,
+            "staff":staff,
+            "general":general,
+            "basic":basic,
+            }
+        return switch.get(self.type,default)();
+        
+    def AddLevel(self,type=None)->int:
+        '''
+        增加用户等级
+        '''
+        type = type and type or self.type;
+        def admin():
+            return 100;
+        def staff():
+            return 50;
+        def general():
+            return 20;
+        def basic():
+            return 0;
+        def default():
+            raise "error";
+        switch = {
+            "admin":admin,
+            "staff":staff,
+            "general":general,
+            "basic":basic,
+            };
+        return switch.get(type,default)();
+
 
 
 
