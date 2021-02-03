@@ -399,7 +399,7 @@ def file():
                     level = package;
                     level += user.AddLevel();
 
-                    newFile = Fsys.files(len(files),value['name'],value['size'],str(eachSize),package,value['md5'],fileSys.root+value['dir']+"/"+value['name']+".file",user.id,level,value['create'],0);
+                    newFile = Fsys.files(len(files),value['name'],value['size'],str(eachSize),package,value['md5'],fileSys.root+value['dir']+"/"+value['name']+".file",user.id,level,value['create'],value['uptime'],0);
                     print(newFile.toDictNoCut());
                     upSql = newFile.upSql("files");
                     if upSql=="True":
@@ -422,7 +422,7 @@ def file():
                     level = package;
                     level+=user.AddLevel();
 
-                    newFile = Fsys.files(len(files),value['name'],value['size'],str(eachSize),package,value['md5'],fileSys.root+value['dir']+"/"+value['name']+".file",user.id,level,value['create'],0);
+                    newFile = Fsys.files(len(files),value['name'],value['size'],str(eachSize),package,value['md5'],fileSys.root+value['dir']+"/"+value['name']+".file",user.id,level,value['create'],value['uptime'],0);
                     return str(fileSys.existsSql(newFile));
 
             elif value['n']=="getFileInfo":
@@ -435,15 +435,17 @@ def file():
                 return "Error";
 
             elif value['n']=="upFileOver":
-                dir = fileSys.root+value["dir"]+".file";
+                dir = fileSys.root+value['dir']+"/"+value["name"]+".file";
                 print(dir);
                 if not isinstance(user,User) or user==None:
                     return "Error";
                 else:
                     fileSys.streamUpdate();
                     file = fileSys.getFile(dir);
-                    if file.id>=0 and fileSys.exists(dir):
+                    print(file.toDict());
+                    if int(file.id)>=0:
                         fileIndex = fileSys.fileSteam.index(file);
+                        print(fileIndex);
                         eachSize = 1024*1024*20;
                         if eachSize>int(value['size']):
                             eachSize = int(value['size']);
@@ -454,20 +456,23 @@ def file():
                             file.path = dir;
                             file.name = value['name'];
                             file.size = value['size'];
+                            file.eachSize = eachSize;
                             file.create = value['create'];
                             file.md5 = value['md5'];
                             file.package = package;
                             file.level = level;
                             file.userid = user.id;
                             upSql = file.changeSql(fileSys.tableName);
-                            if upSql=="True":
+                            if upSql==True or upSql=="True":
+                                #print("True");
                                 write = file.toDictNoCut();
+                                write['value'] = value['value'];
                                 fileSys.fileSteam[fileIndex] = file;
-                                return str(fileSys.newFileZlib(file.path,write));
-                        else:
-                            return "Error";
-                    else:
-                        return "Alive";
+                                return str(fileSys.overFileZlib(file.path,write));
+                            elif upSql=="Error":return "SystemError";  
+                            else:return str(upSql);
+                        else:return "Error";
+                    else:return "Alive";
 
             elif value['n']=="downFile":
                 dir = fileSys.root+value["dir"];
@@ -483,13 +488,7 @@ def file():
                         else:
                             return "Error";
                     else:
-                        if user.type=="admin":
-                            return file.getValueZlib();
-                        elif user.type=="staff" and file.level<=70:
-                            return file.getValueZlib();
-                        elif user.type=="general" and file.level<=40:
-                            return file.getValueZlib();
-                        elif user.type=="basic" and file.level<=10:
+                        if user.ChackLevel(file.level):
                             return file.getValueZlib();
                         else:
                             return "Error";

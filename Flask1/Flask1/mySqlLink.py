@@ -133,7 +133,7 @@ def changeValues(tableName,listNames:list,newValues:list,keyName,keyValue)->bool
     sql = "UPDATE `files` SET `name`=' 1', `size`='1', `eachSize`='1' WHERE (`id`='6') LIMIT 1";
     sql = "UPDATE `"+tableName+"` SET `";
     if isinstance(listNames,list) and isinstance(newValues,list):
-        for x in round(len(listNames)-1):
+        for x in range(len(listNames)-1):
             sql+=str(listNames[x])+"`='"+str(newValues[x])+"', `";
         sql+= str(listNames[len(listNames)-1]) +"`='"+ newValues[len(listNames)-1] +"' WHERE (`"+str(keyName)+"`='"+ str(keyValue) +"')";
     else:

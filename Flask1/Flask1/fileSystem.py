@@ -100,7 +100,7 @@ class files(object):
 
     tableName = "files";
 
-    def __init__(self,id,name,size,eachSize,package,md5,path,userid,level,create,delete):
+    def __init__(self,id,name,size,eachSize,package,md5,path,userid,level,create,uptime,delete):
         '''
         初始化
         '''
@@ -114,6 +114,7 @@ class files(object):
         self.userid = userid;
         self.level = level;
         self.create = create;
+        self.uptime = uptime;
         self.delete = delete;
 
         return;
@@ -171,6 +172,7 @@ class files(object):
             "userid":self.userid,
             "level":self.level,
             "create":self.create,
+            "uptime":self.uptime,
             "delete":self.delete,
         };
 
@@ -191,6 +193,7 @@ class files(object):
             "userid":self.userid,
             "level":self.level,
             "create":self.create,
+            "uptime":self.uptime,
             "delete":self.delete,
         };
 
@@ -290,7 +293,7 @@ class files(object):
         修改数据库文件信息
         '''
         listNames = Link.getColumns(tableName);
-        return str(Link.changeValues(tableName,listNames,self.toDictNoCut(),"id",self.id));
+        return str(Link.changeValues(tableName,listNames,self.toList(),"id",self.id));
 
 class fileSystem(object):
     '''
@@ -412,7 +415,34 @@ class fileSystem(object):
                 write = zTool.encode(json.dumps(value));
                 file.write(write);
             file.close();
-            value.pop("value")
+            #value.pop("value")
+            #self.fileSteam.append(value);
+            return True;
+        except Exception as err:
+            print(err);
+            return False;
+        return False;
+
+    def overFileZlib(self,filename,value=None):
+        '''
+        覆盖文件(压缩存储)
+        '''
+        try:
+            if fileSystem.exists(filename):
+                #file = open(filename,"a",encoding="utf8");
+                #return "Alive";
+                file = open(filename,"wb");
+            else:
+                return "Alive";
+
+            if isinstance(value,str):
+                write = zTool.encode(value);
+                file.write(write);
+            elif isinstance(value,dict):
+                write = zTool.encode(json.dumps(value));
+                file.write(write);
+            file.close();
+            #value.pop("value")
             #self.fileSteam.append(value);
             return True;
         except Exception as err:
@@ -429,7 +459,7 @@ class fileSystem(object):
         ret = [];
         if not type(all)==bool and len(all)>0:
             for x in all:
-                ret.append(files(x[0],x[1],x[2],x[3],x[4],x[5],x[6],x[7],x[8],x[9],x[10]));
+                ret.append(files(x[0],x[1],x[2],x[3],x[4],x[5],x[6],x[7],x[8],x[9],x[10],x[11]));
 
         return ret;
 

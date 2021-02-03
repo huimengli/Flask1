@@ -24,7 +24,7 @@
                     <div class="listValue">admin</div>
                 </div>-->
             </div>
-            
+
         </div>
         <div class="icon">
             <img class="icon" src="#" alt="Alternate Text" />
@@ -103,7 +103,7 @@
     /**文件系统功能目录 */
     var title = lt_code.getAll(".menu");
     /**目录表头模块 */
-    var icon = lt_code.getAll(".icon",0);
+    var icon = lt_code.getAll(".icon", 0);
     /**文件表头图片 */
     var iconImg = lt_code.getAll2(".icon", icon);
     /**表头内容 */
@@ -132,7 +132,7 @@
          * 获取上一级
          * @param {string} dir 当前路径
          */
-        getBack : function (dir) {
+        getBack: function (dir) {
             var all = dir.split("/");
             var ret = "";
             if (all.length >= 2) {
@@ -153,7 +153,7 @@
             this.history.push(this.now);
             this.now = dir;
             searchDir(dir);
-            dirSpan.innerText = "root"+this.now;
+            dirSpan.innerText = "root" + this.now;
             this.back = this.getBack(dir);
         },
         /**返回上一次搜索 */
@@ -162,7 +162,7 @@
                 this.now = this.history[this.history.length - 1];
                 this.history.pop();
                 searchDir(this.now);
-                dirSpan.innerText = "root"+this.now;
+                dirSpan.innerText = "root" + this.now;
                 this.back = this.getBack(this.now);
             } else {
                 searchDir("");
@@ -175,7 +175,7 @@
     };
     /**显示当前目录 */
     var dirSpan = lt_code.getAll("#spanDir");
-    
+
     /**清除主盒子 */
     var clearMainBox = function () {
         mainBox.innerHTML = "";
@@ -189,15 +189,15 @@
      * @param {Function} [noFuc] 取消执行的函数
      * @param {Function} [elseFuc] 其他按钮需要执行的函数(感觉用不上了)
      * @param {number} [selectType] 选择类型:1.文件选择,2.输入选择
-     * 
+     *
      */
-    var newAlert = function (title, value, yesFuc, noFuc, selectType,elseFuc) {
+    var newAlert = function (title, value, yesFuc, noFuc, selectType, elseFuc) {
         /**弹窗背景 */
         var alertBack = document.getElementById("alertBack") ? lt_code.getAll("#alertBack") :
             function () {
                 var ret = lt_code.newDom("div", {
                     id: "alertBack",
-                    class: selectType>0 ? "alertSelect" : "",
+                    class: selectType > 0 ? "alertSelect" : "",
 
                 });
 
@@ -318,7 +318,7 @@
         alertNoBottom.onmousedown = noFuc ? noFuc : function () {
             lt_code.getDomFather(alertBack).removeChild(alertBack);
         };
-        if (selectType>0) {
+        if (selectType > 0) {
             var alertInputBox = document.getElementById("alertInputBox") ? lt_code.getAll("#alertInputBox") :
                 function () {
                     var ret = lt_code.newDom("div", {
@@ -338,14 +338,14 @@
                         id: "alertInput",
                         type: selectType == 1 ? "file" :
                             selectType == 2 ? "input" : "",
-                        style: selectType == 1 ? {}:
+                        style: selectType == 1 ? {} :
                             selectType == 2 ? {
-                            height: "30px",
-                            border: "1px solid #999",
-                            'border-radius': "5px",
-                            'padding-left': '10px',
-                            'padding-right': "10px",
-                        } : {},
+                                height: "30px",
+                                border: "1px solid #999",
+                                'border-radius': "5px",
+                                'padding-left': '10px',
+                                'padding-right': "10px",
+                            } : {},
                     });
 
                     lt_code.addChild(ret, alertInputBox);
@@ -377,7 +377,7 @@
             class: "eachFile",
             "data-fileName": fileName,
             "data-dir": dir,
-            "data-isFile":isFile,
+            "data-isFile": isFile,
         });
 
         /**文件行文件名 */
@@ -407,7 +407,7 @@
         /**文件下载按钮 */
         var newEachFileBottomBottom = lt_code.newDom("div", {
             class: "eachFileBottomBottom",
-            title:"下载",
+            title: "下载",
         });
 
         /**删除文件按钮 */
@@ -594,10 +594,10 @@
      * @param {HTMLDivElement} fileLine 文件行
      */
     var downFile = function (fileLine) {
-        if (fileLine.dataset.isfile=="true") {
+        if (fileLine.dataset.isfile == "true") {
             /**上传数据 */
             var up = {
-                n:"downFile",
+                n: "downFile",
                 uid: UID,
                 dir: fileLine.dataset.dir,
 
@@ -605,7 +605,7 @@
 
             var run = setInterval(function () {
                 newAlert("稍等", "正在下载中...");
-            },100);
+            }, 100);
 
             $(function () {
                 $.ajax({
@@ -620,19 +620,27 @@
                         if (alertBack) {
                             lt_code.getDomFather(alertBack).removeChild(alertBack);
                         }
-                        console.log(data);
+                        //console.log(data);
                         var x = {};
-                        if (data.length>10) {
+                        if (data.length > 10) {
                             eval("x = " + data);
-                            lt_code.test.downFile(x.value, x.name);
+                            if (!x.value) {
+                                alert("下载失败\n后台没有传出数据!");
+                                console.error("后台没有传出数据");
+                                return;
+                            }
+                            let value = x.value.split(",");
+                            const key = lt_code.base64.chinese.getCode(x.uptime, value[2]);
+                            value = lt_code.base64.change.decode(value[0] + "," + value[1], key);
+                            lt_code.test.downFile(value, x.name);
                             alert("下载成功!");
                         } else {
                             //console.assert(data);
-                            if (data=="False") {
+                            if (data == "False") {
                                 alert("下载失败!");
-                            } else if (data=="Alive") {
+                            } else if (data == "Alive") {
                                 alert("文件不存在!");
-                            } else if (data=="Error") {
+                            } else if (data == "Error") {
                                 alert("没有下载权限!");
                             }
                         }
@@ -643,8 +651,7 @@
                     }
                 });
             });
-            
-            console.log(up);
+            //console.log(up);
         } else {
             alert("暂不支持下载文件夹!");
         }
@@ -655,7 +662,7 @@
      * @param {HTMLDivElement} fileLine
      */
     var deleteFile = function (fileLine) {
-        if (fileLine.dataset.isfile=="true") {
+        if (fileLine.dataset.isfile == "true") {
             /**上传数据 */
             var up = {
                 n: "deleteFile",
@@ -673,14 +680,14 @@
                         dataType: "text",
                         success: function (data) {
                             console.log(data);
-                            if (data=="False") {
+                            if (data == "False") {
                                 alert("删除失败!");
-                            } else if (data=="True") {
+                            } else if (data == "True") {
                                 alert("删除成功!");
                                 window.location.href = window.location.href;
-                            } else if (data=="Error") {
+                            } else if (data == "Error") {
                                 alert("没有权限!");
-                            } else if (data=="Alive") {
+                            } else if (data == "Alive") {
                                 alert("文件不存在!");
                             }
                         },
@@ -689,8 +696,8 @@
                         }
                     });
                 });
-            }); 
-            
+            });
+
         } else {
             alert("不允许删除目录!");
         }
@@ -705,7 +712,7 @@
      * @param {Function} allFuc
      * @param {Function} noFuc
      */
-    var fileCompare = function (file1,file2,file1Fuc,file2Fuc,allFuc,noFuc) {
+    var fileCompare = function (file1, file2, file1Fuc, file2Fuc, allFuc, noFuc) {
         /**弹窗背景 */
         var alertBack = document.getElementById("alertBack") ? lt_code.getAll("#alertBack") :
             function () {
@@ -750,7 +757,7 @@
             function () {
                 var ret = lt_code.newDom("div", {
                     id: "fileValue1",
-                    class:"fileValue",
+                    class: "fileValue",
                 });
 
                 ret.innerText = file1 ? file1 : "";
@@ -778,7 +785,7 @@
             function () {
                 var ret = lt_code.newDom("div", {
                     id: "file1Bottom",
-                    class:"fileBottom",
+                    class: "fileBottom",
                     style: {
                         "background-color": "snow",
                         cursor: "pointer",
@@ -870,7 +877,7 @@
          * @param {HTMLDivElement} valuebox 文件盒
          * @param {boolean} isold 是否是老文件
          */
-        var showFile = function (file,valuebox,isold) {
+        var showFile = function (file, valuebox, isold) {
             //清空内容框
             valuebox.innerHTML = "";
             /**新标题 */
@@ -878,7 +885,7 @@
                 class: "valueTitle",
 
             });
-            valueTitle.innerText = isold?"老文件:"+file.name:"新文件:"+file.name;
+            valueTitle.innerText = isold ? "老文件:" + file.name : "新文件:" + file.name;
             /**
              * 新内容行
              * @param {string} title
@@ -886,7 +893,7 @@
              * @param {HTMLDivElement} valuebox
              * @param {boolean} [haveLine]
              */
-            var newValueLine = function (title, value, valuebox,haveLine) {
+            var newValueLine = function (title, value, valuebox, haveLine) {
                 /**内容行 */
                 var line = lt_code.newDom("div", {
                     class: "valueLine",
@@ -923,27 +930,27 @@
             isold ? function () {
                 newValueLine("文件ID&nbsp;:&nbsp;", file.id, valuebox);
                 newValueLine("文件名&nbsp;:&nbsp;", file.name, valuebox);
-                newValueLine("文件大小&nbsp;:&nbsp;", file.size.toString()+"字节", valuebox);
-                newValueLine("文件包大小&nbsp;:&nbsp;", file.eachSize.toString()+"字节", valuebox);
+                newValueLine("文件大小&nbsp;:&nbsp;", file.size.toString() + "字节", valuebox);
+                newValueLine("文件包大小&nbsp;:&nbsp;", file.eachSize.toString() + "字节", valuebox);
                 newValueLine("文件包数量&nbsp;:&nbsp;", file.package.toString(), valuebox);
                 newValueLine("文件路径&nbsp;:&nbsp;", file.path, valuebox);
                 newValueLine("文件等级&nbsp;:&nbsp;", file.level, valuebox);
                 newValueLine("创建时间&nbsp;:&nbsp;", new Date(lt_code.getNum(file.create)).format("yyyy-MM-dd hh:mm:ss"), valuebox);
-                newValueLine("文件签名&nbsp;:&nbsp;",file.md5, valuebox);
+                newValueLine("文件签名&nbsp;:&nbsp;", file.md5, valuebox);
 
             }() : function () {
-                    newValueLine("文件名&nbsp;:&nbsp;", file.name, valuebox);
-                    newValueLine("文件大小&nbsp;:&nbsp;", file.size.toString() + "字节", valuebox);
-                    newValueLine("文件路径&nbsp;:&nbsp;", file.path, valuebox);
-                    newValueLine("创建时间&nbsp;:&nbsp;", new Date(file.create).format("yyyy-MM-dd hh:mm:ss"), valuebox);
-                    newValueLine("文件签名&nbsp;:&nbsp;", file.md5, valuebox,true);
-                    newValueLine("文件体积&nbsp;:&nbsp;", file1.size > file2.size ? "老文件大" : file1.size < file2.size ? "新文件大" :"大小相同",valuebox);
-                    newValueLine("签名比较&nbsp;:&nbsp;", file1.md5 == file2.md5 ? "文件没有区别" :"文件内容不同", valuebox);
-                    newValueLine("时间比较&nbsp;:&nbsp;", file1.create > file2.create ? "老文件更新" : file1.create < file2.create ? "新文件更新" :"创建时间相同", valuebox,true);
-                    newValueLine("请注意&nbsp;:&nbsp;", "可能会由于权限不够无法覆盖", valuebox);
-                }();
+                newValueLine("文件名&nbsp;:&nbsp;", file.name, valuebox);
+                newValueLine("文件大小&nbsp;:&nbsp;", file.size.toString() + "字节", valuebox);
+                newValueLine("文件路径&nbsp;:&nbsp;", file.path, valuebox);
+                newValueLine("创建时间&nbsp;:&nbsp;", new Date(file.create).format("yyyy-MM-dd hh:mm:ss"), valuebox);
+                newValueLine("文件签名&nbsp;:&nbsp;", file.md5, valuebox, true);
+                newValueLine("文件体积&nbsp;:&nbsp;", file1.size > file2.size ? "老文件大" : file1.size < file2.size ? "新文件大" : "大小相同", valuebox);
+                newValueLine("签名比较&nbsp;:&nbsp;", file1.md5 == file2.md5 ? "文件没有区别" : "文件内容不同", valuebox);
+                newValueLine("时间比较&nbsp;:&nbsp;", file1.create > file2.create ? "老文件更新" : file1.create < file2.create ? "新文件更新" : "创建时间相同", valuebox, true);
+                newValueLine("请注意&nbsp;:&nbsp;", "可能会由于权限不够无法覆盖", valuebox);
+            }();
         }
-        
+
         alertBack.style.display = "";
         fileNoBottom.onmousedown = noFuc ? noFuc : function () {
             lt_code.getDomFather(alertBack).removeChild(alertBack);
@@ -964,16 +971,16 @@
             return function () { };
         }();
 
-        if (file1&&file2) {
-            showFile(file1, fileValue1,true);
-            showFile(file2, fileValue2,false);
+        if (file1 && file2) {
+            showFile(file1, fileValue1, true);
+            showFile(file2, fileValue2, false);
         }
     };
 
     lt_code.variable.addRun(function () {
         return setInterval(function () {
             body.clientWidth / body.clientHeight < 1470 / 935 ? body.style.backgroundSize = "auto 100%" : body.style.backgroundSize = "100% auto";
-        },100);
+        }, 100);
     }(), "背景图片适应");
 
     window.onload = function () {
@@ -994,7 +1001,7 @@
         };
         var i = 0;
         lt_code.variable.addRun(setInterval(function () {
-            if (i<lists.length) {
+            if (i < lists.length) {
                 /**父类结点 */
                 var father = lists[i];
                 /**真实路径 */
@@ -1002,7 +1009,7 @@
                 /**上传数据 */
                 var up = {
                     n: "list",
-                    isdir:"True",
+                    isdir: "True",
                     dir: dir
                 };
                 //获取目录
@@ -1033,7 +1040,7 @@
                     });
                 });
                 i++;
-            } else if(i>lists.length*2) {
+            } else if (i > lists.length * 2) {
                 lt_code.variable.runer.forEach(function (e) {
                     if (e['name'] == '遍历所有文件夹') {
                         clearInterval(e['num']);
@@ -1056,7 +1063,7 @@
                 var input = lt_code.getAll("#alertInput");
                 /**输入值 */
                 var value = input.value;
-                if (value.length > 20 ||/[\ `~!@#$%^&*()_\-+=<>?:"{}|,\.\/;'\\[\]·~！@#￥%……&*（）——\-+={}|《》？：“”]/.test(value)) {
+                if (value.length > 20 || /[\ `~!@#$%^&*()_\-+=<>?:"{}|,\.\/;'\\[\]·~！@#￥%……&*（）——\-+={}|《》？：“”]/.test(value)) {
                     alert("文件名不能长于20字符\n也不允许输入奇怪的字符!");
                 } else {
                     /**上传数据 */
@@ -1114,18 +1121,23 @@
                     } else {
                         lt_code.test.fileToBase(input);
                         var getReturn = setInterval(function () {
-                            var ret = lt_code.test.fileToBase.getReturn()||"";
-                            if (ret.length>0) {
+                            var ret = lt_code.test.fileToBase.getReturn() || "";
+                            if (ret.length > 0) {
                                 clearInterval(getReturn);
+                                var time = new Date().getTime();
+                                const key = lt_code.base64.base64change.getKey();
+                                const keyUp = lt_code.base64.chinese.setCode(time, key);
+                                ret = lt_code.base64.change.encode(ret, key) + "," + keyUp;
                                 //console.log(ret);
                                 /**上传测试 */
                                 var upTest = {
                                     n: "upFileTest",
                                     name: file.name,
                                     size: file.size,
-                                    md5:lt_code.md5(ret),
+                                    md5: lt_code.md5(ret),
                                     dir: lt_code.history.now,
                                     create: file.lastModified,
+                                    uptime: time,
                                 };
 
                                 /**上传的数据 */
@@ -1133,9 +1145,10 @@
                                     n: "upFile",
                                     name: file.name,
                                     size: file.size,
-                                    md5:lt_code.md5(ret),
+                                    md5: lt_code.md5(ret),
                                     dir: lt_code.history.now,
                                     create: file.lastModified,
+                                    uptime: time,
                                     value: ret,
                                 };
 
@@ -1144,9 +1157,10 @@
                                     n: "upFileOver",
                                     name: file.name,
                                     size: file.size,
-                                    md5:lt_code.md5(ret),
+                                    md5: lt_code.md5(ret),
                                     dir: lt_code.history.now,
                                     create: file.lastModified,
+                                    uptime: time,
                                     value: ret,
                                 };
 
@@ -1160,15 +1174,7 @@
                                         contentType: "application/json; charset=utf-8",
                                         dataType: "text",
                                         success: function (data) {
-                                            console.log(data);
-                                            //if (data == "True") {
-                                            //    alert("文件上传成功!");
-                                            //    window.location.href = window.location.href;
-                                            //} else if (data == "Error") {
-                                            //    alert("错误!\n可能是因为没有权限!");
-                                            //} else if(data=="Alive") {
-                                            //    alert("错误!\n文件已经存在!");
-                                            //}
+                                            //console.log(data);
                                             if (data == "True") {
                                                 //文件存在
                                                 //console.trace("文件存在,还没写");
@@ -1179,11 +1185,11 @@
                                                     $.ajax({
                                                         type: "post",
                                                         url: "/file/",
-                                                        data: '{"n":"getFileInfo","dir":"'+upTest.dir+"/"+upTest.name+'"}',
+                                                        data: '{"n":"getFileInfo","dir":"' + upTest.dir + "/" + upTest.name + '"}',
                                                         contentType: "application/json; charset=utf-8",
                                                         dataType: "text",
                                                         success: function (data) {
-                                                            console.log(data);
+                                                            //console.log(data);
                                                             eval("oldFile=" + data);
                                                             /**新创建的文件 */
                                                             var newFile = {
@@ -1204,10 +1210,13 @@
                                                                         contentType: "application/json; charset=utf-8",
                                                                         dataType: "text",
                                                                         success: function (data) {
-                                                                            console.log(data);
+                                                                            //console.log(data);
                                                                             if (data == "True") {
                                                                                 alert("文件覆盖成功!");
                                                                                 window.location.href = window.location.href;
+                                                                            } else if (data == "SystemError") {
+                                                                                alert("后台系统出错!\n请联系管理员!");
+                                                                                //console.trace("后台系统出错");
                                                                             } else if (data == "Error") {
                                                                                 alert("错误!\n可能是因为没有权限!");
                                                                             } else if (data == "Alive") {
@@ -1215,7 +1224,6 @@
                                                                             } else if (data == "False") {
                                                                                 alert("上传失败!");
                                                                             }
-                                                                            console.trace("覆盖代码有错误,尚未修改完成");
                                                                         },
                                                                         error: function (err) {
                                                                             console.log(err);
@@ -1230,7 +1238,7 @@
                                                     });
 
                                                 });
-                                            } else if (data =="False") {
+                                            } else if (data == "False") {
                                                 //文件不存在,直接上传,用老模块
                                                 $.ajax({
                                                     type: "post",
@@ -1239,13 +1247,13 @@
                                                     contentType: "application/json; charset=utf-8",
                                                     dataType: "text",
                                                     success: function (data) {
-                                                        console.log(data);
+                                                        //console.log(data);
                                                         if (data == "True") {
                                                             alert("文件上传成功!");
                                                             window.location.href = window.location.href;
                                                         } else if (data == "Error") {
                                                             alert("错误!\n可能是因为没有权限!");
-                                                        } else if(data=="Alive") {
+                                                        } else if (data == "Alive") {
                                                             alert("错误!\n文件已经存在!");
                                                         }
                                                     },
@@ -1253,7 +1261,7 @@
                                                         console.log(err);
                                                     }
                                                 });
-                                            } else if (data=="Error") {
+                                            } else if (data == "Error") {
                                                 console.error("数据错误!\n没有权限!");
                                                 alert("数据错误!\n没有权限!");
                                             }
