@@ -352,11 +352,13 @@
 
                     return ret;
                 }();
+            alertBack.className = "alertSelect";
         } else {
             document.getElementById("alertInputBox") ? function () {
                 var alertInputBox = lt_code.getAll("#alertInputBox");
                 lt_code.getDomFather(alertInputBox).removeChild(alertInputBox);
             } : null;
+            alertBack.className = "";
         }
 
     };
@@ -600,7 +602,7 @@
                 n: "downFile",
                 uid: UID,
                 dir: fileLine.dataset.dir,
-
+                uptime: new Date().getTime(),
             };
 
             var run = setInterval(function () {
@@ -629,10 +631,13 @@
                                 console.error("后台没有传出数据");
                                 return;
                             }
+                            console.log(x.value);
                             let value = x.value.split(",");
-                            const key = lt_code.base64.chinese.getCode(x.uptime, value[2]);
-                            value = lt_code.base64.change.decode(value[0] + "," + value[1], key);
-                            lt_code.test.downFile(value, x.name);
+                            let key = /([^\+]+)\+/.exec(value[1]);
+                            let down = value[1].substring(key[1].length + 1);
+                            key = lt_code.base64.else.getCode(x.uptime, key[1]);
+                            down = lt_code.base64.change.getCode(down, key);
+                            lt_code.test.downFile(value[0] + "," + down, x.name);
                             alert("下载成功!");
                         } else {
                             //console.assert(data);
@@ -1124,17 +1129,19 @@
                             var ret = lt_code.test.fileToBase.getReturn() || "";
                             if (ret.length > 0) {
                                 clearInterval(getReturn);
-                                var time = new Date().getTime();
+                                const md5 = lt_code.md5(ret);
+                                const time = new Date().getTime();
+                                const values = ret.split(",");
                                 const key = lt_code.base64.base64change.getKey();
                                 const keyUp = lt_code.base64.chinese.setCode(time, key);
-                                ret = lt_code.base64.change.encode(ret, key) + "," + keyUp;
+                                ret = values[0] + "," + keyUp + "+" + lt_code.base64.change.setCode(values[1], key);
                                 //console.log(ret);
                                 /**上传测试 */
                                 var upTest = {
                                     n: "upFileTest",
                                     name: file.name,
                                     size: file.size,
-                                    md5: lt_code.md5(ret),
+                                    md5: md5,
                                     dir: lt_code.history.now,
                                     create: file.lastModified,
                                     uptime: time,
@@ -1145,7 +1152,7 @@
                                     n: "upFile",
                                     name: file.name,
                                     size: file.size,
-                                    md5: lt_code.md5(ret),
+                                    md5: md5,
                                     dir: lt_code.history.now,
                                     create: file.lastModified,
                                     uptime: time,
@@ -1157,7 +1164,7 @@
                                     n: "upFileOver",
                                     name: file.name,
                                     size: file.size,
-                                    md5: lt_code.md5(ret),
+                                    md5: md5,
                                     dir: lt_code.history.now,
                                     create: file.lastModified,
                                     uptime: time,
@@ -1230,7 +1237,59 @@
                                                                         }
                                                                     });
                                                                 }
-                                                            })
+                                                            }, function () {
+                                                                var fileBox = lt_code.getAll("#fileBox");
+                                                                lt_code.getDomFather(fileBox).removeChild(fileBox);
+                                                                newAlert("请改名!", "原名:'"+newFile.name+"'\n请输入文件的新名称", function () {
+                                                                    /**输入框 */
+                                                                    var input = lt_code.getAll("#alertInput");
+                                                                    /**输入值 */
+                                                                    var value = input.value;
+                                                                    if (value.length > 20 || /[\ `~!@#$%^&*()_\-+=<>?:"{}|,\/;'\\[\]·~！@#￥%……&*（）——\-+={}|《》？：“”]/.test(value)) {
+                                                                        alert("文件名不能长于20字符\n也不允许输入奇怪的字符!");
+                                                                    } else {
+                                                                        //修改上传数据
+                                                                        up = {
+                                                                            n: "upFile",
+                                                                            name: value,
+                                                                            size: file.size,
+                                                                            md5: md5,
+                                                                            dir: lt_code.history.now,
+                                                                            create: file.lastModified,
+                                                                            uptime: time,
+                                                                            value: ret,
+                                                                        };
+
+                                                                        //改过名了,直接用老模块上传
+                                                                        $.ajax({
+                                                                            type: "post",
+                                                                            url: "/file/",
+                                                                            data: JSON.stringify(up),
+                                                                            contentType: "application/json; charset=utf-8",
+                                                                            dataType: "text",
+                                                                            success: function (data) {
+                                                                                //console.log(data);
+                                                                                if (data == "True") {
+                                                                                    alert("文件上传成功!");
+                                                                                    window.location.href = window.location.href;
+                                                                                } else if (data == "Error") {
+                                                                                    alert("错误!\n可能是因为没有权限!");
+                                                                                } else if (data == "Alive") {
+                                                                                    alert("错误!\n文件已经存在!");
+                                                                                }
+                                                                            },
+                                                                            error: function (err) {
+                                                                                console.log(err);
+                                                                            }
+                                                                        });
+                                                                    }
+                                                                    //关闭弹窗
+                                                                    var back = lt_code.getAll("#alertBack");
+                                                                    lt_code.getDomFather(back).removeChild(back);
+
+                                                                },null,2);
+                                                            },
+                                                            )
                                                         },
                                                         error: function (err) {
                                                             console.log(err);
