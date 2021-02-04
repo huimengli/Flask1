@@ -631,7 +631,6 @@
                                 console.error("后台没有传出数据");
                                 return;
                             }
-                            console.log(x.value);
                             let value = x.value.split(",");
                             let key = /([^\+]+)\+/.exec(value[1]);
                             let down = value[1].substring(key[1].length + 1);
