@@ -319,10 +319,10 @@ class UserBasic(object):
     def GetHeadPhoto(self):
         '''获取头像'''
         ret = Link.getTable("headphoto","headphoto","id="+str(self.id));
-        if ret==None:
+        if ret==None or ret==False:
             return "";
         else:
-            return ret;
+            return ret[0];
 
     def UpHeadPhoto(self,photo):
         '''上传头像'''

@@ -354,8 +354,19 @@ def file():
         try:
             if value['n']=='name':
                 return user.name;
+
             elif value['n']=='id':
                 return str(user.id);
+
+            elif value['n']=="headPhoto":
+                return user.GetHeadPhoto();
+
+            elif value['n']=="type":
+                return user.type;
+
+            elif value['n']=="nameAndType":
+                return '{"name":"'+str(user.name)+'","type":"'+str(user.type)+'"}';
+
             elif value['n']=="exit":
                 session['name'] = "";
                 session['password'] = "";
@@ -363,19 +374,12 @@ def file():
                 redirect(url_for("signOn"));
                 return "exit";
 
-            #下载测试
-            #elif value['n']=="test":
-            #    return fileSys.fileSteam[0].getValue();
-
             elif value['n']=="list":
                 #try:
                 if value['isdir']=="True":
                     return fileSys.getFileList(value['dir']);
                 else:
                     return str(Fsys.files.getFileNoDelete(fileSys.fileSteam,value['dir']));
-                #except Exception as e:
-                #    print(e);
-                #    return fileSys.getFileList();
 
             elif value['n']=="newDir":
                 #print(user.ToString());
