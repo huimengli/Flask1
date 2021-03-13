@@ -520,6 +520,10 @@ def file():
 
                 return "False";
 
+            elif value['n']=="upHeadPhoto":
+
+                pass
+
         except Exception as e:
             #print("错误内容:"+str(e));
             #print("错误文件:"+str(e.__traceback__.tb_frame.f_globals["__file__"]))  # 发生异常所在的文件

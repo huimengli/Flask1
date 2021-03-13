@@ -194,5 +194,7 @@ def getCount(tablename):
         return 0;
 
 def close():
-    # 关闭数据库连接
+    ''' 
+    关闭数据库连接
+    '''
     link.close();
