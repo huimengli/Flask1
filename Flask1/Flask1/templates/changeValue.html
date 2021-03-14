@@ -66,7 +66,7 @@
                         <div class="button">修改</div>
                     </div>
                 </div>
-                <!--<div class="listOne">
+                <div class="listOne">
                     <div class="listLeft">
                         <div>用户头像</div>
                     </div>
@@ -76,7 +76,7 @@
                     <div class="listRight">
                         <div class="button">修改</div>
                     </div>
-                </div>-->
+                </div>
             </div>
         </div>
         <div class="close">
@@ -110,7 +110,7 @@
     <div class="back">
         <div class="innerBack">
 
-            <div>是否删除当前头像?</div>
+            <div>是否修改当前头像?</div>
             <input class="true" type="button" value="确认" />
             <input class="false" type="button" value="取消" />
         </div>
@@ -222,27 +222,25 @@
         headPhotoImg.src = lt_code.variable.images.headPortrait[0];
 
         //读取头像
-        //$(function () {
-        //    $.ajax({
-        //        type: "post",
-        //        url: "ChangeValue.aspx/GetNowUser",
-        //        data: '{n:"headPhoto"}',
-        //        contentType: "application/json; charset=utf-8",
-        //        dataType: "text",
-        //        success: function (data) {
-        //            //console.log(data);
-        //            data = JSON.parse(data);
-        //            if (data.d == "") {
-        //                displayImg();
-        //            } else {
-        //                headPhotoImg.src = data.d;
-        //            }
-        //        },
-        //        error: function (err) {
-        //            console.error(err);
-        //        }
-        //    });
-        //});
+        $(function () {
+            $.ajax({
+                type: "post",
+                url: "/file/",
+                data: '{"n":"headPhoto"}',
+                contentType: "application/json; charset=utf-8",
+                dataType: "text",
+                success: function (data) {
+                    if (data.length > 0) {
+                        headPhotoImg.src = data;
+                    } else {
+                        displayImg();
+                    }
+                },
+                error: function (err) {
+                    console.error(err);
+                }
+            });
+        });
 
         /**
          * 上传图片函数
@@ -361,7 +359,7 @@
     !function () {
         var closeButton = lt_code.getAll(".close", 0);
         closeButton.onmousedown = function () {
-            window.location.href = "/index/";
+            window.location.href = "/file/";
         }
     }();
 
@@ -436,7 +434,7 @@
         } else {
             alert("请输入新的姓名!");
         }
-    }
+    };
     yes[1].onmousedown = function () {
         var old = lt_code.getAll("input", 0, changeValue[1]);
         var ne = lt_code.getAll("input", 1, changeValue[1]);
@@ -469,29 +467,401 @@
         } else {
             alert("请输入旧密码和新密码");
         }
-    }
+    };
     yes[2].onmousedown = function () {
-        //$.ajax({
-        //    type: "post",
-        //    url: "ChangeValue.aspx/DisableHead",
-        //    data: '{}',
-        //    contentType: "application/json; charset=utf-8",
-        //    dataType: "text",
-        //    success: function (data) {
-        //        //console.log(data);
-        //        data = JSON.parse(data);
-        //        if (data.d == true) {
-        //            alert("修改成功");
-        //            window.location.href = "ChangeValue.aspx";
-        //        } else {
-        //            alert("修改失败");
+        ///**删除头图并且生成一个上传头图的按钮 */
+        //var upHeadPhoto = function () {
+        //    iconImg.style.display = "none";
+        //    var inner = icon.innerHTML;
+        //    icon.innerHTML = "";
+        //    var upBottom = lt_code.newDom("div", {
+        //        class: "iconUp",
+        //        style: {
+        //            cursor: "pointer",
         //        }
-        //    },
-        //    error: function (err) {
-        //        console.error(err);
-        //    }
+        //    });
+
+        //    upBottom.innerText = "上传\n头像";
+
+        //    lt_code.addChild(upBottom, icon);
+        //    icon.innerHTML += inner;
+
+        //    lt_code.getAll(".iconUp").onmousedown = function () {
+        //        upTheHeadPhoto();
+        //    };
+        //}
+
+        //$(function () {
+        //    $.ajax({
+        //        type: "post",
+        //        url: "/file/",
+        //        data: '{"n":"headPhoto"}',
+        //        contentType: "application/json; charset=utf-8",
+        //        dataType: "text",
+        //        success: function (data) {
+        //            //console.log(data);
+        //            if (data.length > 0) {
+        //                iconImg.src = data;
+        //            } else {
+        //                if (iconVal.innerText !== "尚未登录") {
+        //                    upHeadPhoto();
+        //                }
+        //            }
+        //        },
+        //        error: function (err) {
+        //            console.log(err);
+        //            iconImg.src = lt_code.variable.images.icons[0];
+        //        }
+        //    });
         //});
-    }
+        upTheHeadPhoto();
+        changeValue[2].style.display = "none";
+    };
+
+
+    /**上传头像 */
+    var upTheHeadPhoto = function () {
+
+        //固定参数
+        /**画布宽高 */
+        const WH = 1000;
+        /**缩放比率 */
+        const ZOOM = 5;
+
+        //所有部件
+        /**上传头像的框 */
+        var box = lt_code.newDom("div", {
+            id: "upHeadPhoto",
+
+        });
+        /**关闭按钮 */
+        var close = lt_code.newDom("div", {
+            id: "upHeadPhotoClose",
+
+        });
+        /**上传头像的真实按钮 */
+        var input = lt_code.newDom("input", {
+            id: "upHeadPhotoInput",
+            type: "file",
+            style: {
+                display: "none",
+            }
+        });
+        /**上传头像的虚假按钮 */
+        var inputDiv = lt_code.newDom("div", {
+            class: "upHeadPhotoBottom",
+
+        });
+        /**裁切图片的盒子 */
+        var cutBox = lt_code.newDom("div", {
+            id: "upHeadPhotoCutBox",
+            title: "移动滑块来裁切\n滚轮调整大小",
+            style: {
+                display: "none",
+                width: "80px",
+                height: "80px",
+                border: "1px solid #999",
+                left: "50px",
+                top: "50px",
+            }
+        });
+        /**显示上传图片并裁剪的画布 */
+        var inputCanvas = lt_code.newDom("canvas", {
+            class: "upHeadPhotoCanvas",
+            id: "upHeadPhotoCanvasIn",
+            width: WH,
+            height: WH,
+            style: {
+                zoom: "0.2",
+                left:"250px",
+                top:"250px",
+            }
+        });
+        /**输出图片显示框 */
+        var outBox = lt_code.newDom("div", {
+            id: "upHeadPhotoCanvasOutBox",
+            style: {
+
+            }
+        });
+        /**输出图片显示框内容 */
+        var outBoxValue = lt_code.newDom("span", {
+
+        });
+        /**显示裁剪完图片的画布 */
+        var outputImg = lt_code.newDom("img", {
+            class: "upHeadPhotoCanvas",
+            id: "upHeadPhotoCanvasOut",
+            width: 80,
+            height: 80,
+
+        });
+        /**上传头像 */
+        var upBottom = lt_code.newDom("div", {
+            class: "upHeadPhotoBottom",
+            style: {
+                left: "350px",
+            },
+        });
+
+        //画布
+        /**裁切用画布 */
+        var ctx = lt_code.getCtx(inputCanvas);
+        /**头像预览画布 */
+        //var ctx2 = lt_code.getCtx(outputCanvas);
+
+        //预设值设定
+        /**左边界 */
+        const LEFT = 51;
+        /**顶部边界 */
+        const TOP = 51;
+        /**右边界 */
+        const RIGHT = 251;
+        /**底部边界 */
+        const BOTTOM = 251;
+
+        //添加框在body中
+        lt_code.addChild(box);
+        lt_code.addChild(close, box);
+        lt_code.addChild(input, box);
+        lt_code.addChild(inputCanvas, box);
+        lt_code.addChild(outBox, box);
+        lt_code.addChild(outputImg, outBox);
+        lt_code.addChild(outBoxValue, outBox);
+        lt_code.addChild(inputDiv, box);
+        lt_code.addChild(upBottom, box);
+        lt_code.addChild(cutBox, box);
+
+        //修改一些内容
+        //close.innerText = "X";
+        close.onmousedown = function () {
+            lt_code.removeChild(box);
+        };
+        inputDiv.innerText = "上传图片";
+        upBottom.innerText = "保存头像";
+        outBoxValue.innerText = "头像预览";
+
+        //功能性函数
+        /**
+         * 获取切割图片的数据
+         * @param {CanvasRenderingContext2D} ctx 第一块画布
+         * @param {number} zoom 缩放比率
+         */
+        var getCut = function (ctx, zoom) {
+            zoom = zoom ? zoom : 1;
+            /**左距离 */
+            var left = zoom*(cutBox.offsetLeft - LEFT);
+            /**右距离 */
+            var width = zoom * (cutBox.offsetWidth);
+            /**顶部距离 */
+            var top = zoom * (cutBox.offsetTop - TOP);
+            /**底部距离 */
+            var height = zoom * (cutBox.offsetHeight);
+            /**裁切数据 */
+            var data = ctx.getImageData(left, top, width, height);
+            //console.log(data);
+            /**临时canvas画布 */
+            var tempCas = lt_code.newDom("canvas", {
+                id: "upHeadPhotoTempCanvas",
+                width: data.width,
+                height: data.height,
+                style: {
+                    opacity: "1",
+                },
+            });
+            lt_code.addChild(tempCas);
+            /**临时画布对象 */
+            var tempCtx = lt_code.getCtx(tempCas);
+            tempCtx.putImageData(data, 0, 0);
+            data = tempCas.toDataURL();
+            lt_code.removeChild(tempCas);
+            //console.log(data);
+            outputImg.src = data;
+        }
+        inputDiv.onmousedown = function () {
+            input.click();
+        };
+        input.onchange = function () {
+            if (this.value.length > 0) {
+                lt_code.test.fileToBase(this);
+                var run = setInterval(function () {
+                    var ret = lt_code.test.fileToBase.getReturn() || "";
+                    //删除裁剪框
+                    cutBox.style.display = "none";
+                    if (ret.length > 0 && ret.length < 10) {
+                        clearInterval(run);
+                        alert("上传文件为空");
+                    } else if (ret.length > 10) {
+                        clearInterval(run);
+                        //显示裁剪
+                        cutBox.style.display = "block";
+                        var imgDom = lt_code.newDom("img", {
+                            src: ret,
+                            style: {
+                                opacity: 0,
+                            },
+                        });
+                        lt_code.addChild(imgDom);
+                        setTimeout(function () {
+                            /**图片的宽度 */
+                            var imgW = imgDom.offsetWidth;
+                            /**图片的高度 */
+                            var imgH = imgDom.offsetHeight;
+                            lt_code.removeChild(imgDom);
+
+                            //console.log(imgW);
+                            //console.log(imgH);
+
+                            /**图片查看宽度 */
+                            var nowW = 0;
+                            /**图片查看高度 */
+                            var nowH = 0;
+
+                            if (imgW == 0 || imgH == 0) {
+                                alert("图片宽高识别失败...");
+                                nowH = WH;
+                                nowW = WH;
+                            } else {
+                                if (imgH > imgW) {
+                                    nowH = WH;
+                                    nowW = lt_code.getNum(imgW / imgH * WH);
+                                } else if (imgH < imgW) {
+                                    nowW = WH;
+                                    nowH = lt_code.getNum(imgH / imgW * WH);
+                                } else {
+                                    nowH = WH;
+                                    nowW = WH;
+                                }
+                            }
+
+                            /**图片距离左边的距离 */
+                            var left = lt_code.getNum((WH - nowW) / 2);
+                            /**图片距离顶部的距离 */
+                            var top = lt_code.getNum((WH - nowH) / 2);
+
+                            //开始绘制图片
+                            ctx.clearRect(0, 0, WH, WH);
+                            ctx.beginPath();
+                            ctx.drawImage(imgDom, left, top, nowW, nowH);
+                            ctx.closePath();
+
+                            //裁切一部分到显示框上去
+                            getCut(ctx,ZOOM);
+                        }, 100);
+                    }
+                }, 40);
+            }
+        };
+        cutBox.onmousedown = function (e) {
+            cutBox.onmousemove = function (me) {
+                /**鼠标移动的x */
+                var moveX = me.offsetX - e.offsetX;
+                /**鼠标移动的y */
+                var moveY = me.offsetY - e.offsetY;
+
+                //e = me;
+
+                //console.log("x:" + moveX + ";y:" + moveY);
+
+                /**框距离左边的距离 */
+                var left = lt_code.getNum(this.style.left);
+                /**框距离右边的距离 */
+                var top = lt_code.getNum(this.style.top);
+                /**框的宽度 */
+                var width = lt_code.getNum(this.offsetWidth);
+                /**框的高度 */
+                var height = lt_code.getNum(this.offsetHeight);
+
+                this.style.left = left + moveX > RIGHT - width ? (RIGHT - width) + "px" : left + moveX < LEFT ? LEFT + "px" : (left + moveX).toString() + "px";
+                this.style.top = top + moveY > BOTTOM - height ? (BOTTOM - height) + "px" : top + moveY < TOP ? TOP + "px" : (top + moveY).toString() + "px";
+            }
+        };
+        cutBox.onmouseup = function () {
+            cutBox.onmousemove = function () { };
+            getCut(ctx,ZOOM);
+        };
+        box.onmouseout = function () {
+            cutBox.onmousemove = function () { };
+        };
+        cutBox.onwheel = function (e) {
+            //console.log(e);
+            /**框距离左边的距离 */
+            var L = this.offsetLeft;
+            /**框距离顶部的距离 */
+            var T = this.offsetTop;
+            /**框的宽度(2是边框占长) */
+            var W = this.offsetWidth - 2;
+            /**框的高度(2是边框占长) */
+            var H = this.offsetHeight - 2;
+            if (e.wheelDelta > 0) {
+                W = W + 2 > 198 ? 198 : W + 2;
+                H = H + 2 > 198 ? 198 : H + 2;
+                L = L - 1 < LEFT ? LEFT : L - 1;
+                T = T - 1 < TOP ? TOP : T - 1;
+            }
+            if (e.wheelDelta < 0) {
+                W = W - 2 < 20 ? 20 : W - 2;
+                H = H - 2 < 20 ? 20 : H - 2;
+                L = L + 1 < LEFT ? LEFT : L + 1;
+                T = T + 1 < TOP ? TOP : T + 1;
+            }
+            if (L < LEFT) {
+                L = LEFT;
+            }
+            if (L + W > RIGHT) {
+                L = RIGHT - W - 2;
+            }
+            if (T < TOP) {
+                T = TOP;
+            }
+            if (T + H > BOTTOM) {
+                T = BOTTOM - H - 2;
+            }
+            this.style.top = T + "px";
+            this.style.left = L + "px";
+            this.style.width = W + "px";
+            this.style.height = H + "px";
+            getCut(ctx,ZOOM);
+        };
+
+        //上传头像
+        upBottom.onmousedown = function () {
+            //console.log(outputImg.src);
+            /**上传数据 */
+            var up = {
+                n: "upHeadPhoto",
+                value: outputImg.src,
+            };
+
+            $(function () {
+                $.ajax({
+                    type: "post",
+                    url: "/file/",
+                    data: JSON.stringify(up),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "text",
+                    success: function (data) {
+                        console.log(data);
+                        if (data == "True") {
+                            alert("头像上传成功!");
+                            window.location.href = window.location.href;
+                        } else if (data == "Error") {
+                            alert("用户尚未登录!");
+                            window.location.href = "/signOn/";
+                        } else if (data == "False") {
+                            alert("上传头像失败!");
+                        }
+                    },
+                    error: function (err) {
+                        console.error(err);
+                    }
+                });
+            });
+
+        };
+    };
+
+
 </script>
 {% endblock %}
 

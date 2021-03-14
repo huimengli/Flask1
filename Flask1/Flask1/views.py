@@ -237,7 +237,7 @@ def changeValue():
     '''
     context = {};
     context['name'] = myname;
-    context['title'] = "修改信息";
+    context['title'] = "个人中心";
     context['username'] = "none";
     context['userid'] = "none";
 
@@ -521,8 +521,13 @@ def file():
                 return "False";
 
             elif value['n']=="upHeadPhoto":
-
-                pass
+                if not isinstance(user,User) or user==None:
+                    return "Error";
+                else:
+                    if user.UpHeadPhoto(value['value']):
+                        return "True";
+                    else:
+                        return str(user.ChangeHeadPhoto(value['value']));
 
         except Exception as e:
             #print("错误内容:"+str(e));

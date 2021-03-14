@@ -327,7 +327,14 @@ class UserBasic(object):
     def UpHeadPhoto(self,photo):
         '''上传头像'''
         print(len(photo));
-        return Link.addValue("headphoto",Link.getColumns("headphoto"),[str(self.id),photo]);
+        ret = False;
+        try:
+            ret = Link.addValue("headphoto",Link.getColumns("headphoto"),[str(self.id),photo]);
+        except Exception as err:
+            ret = self.ChangeHeadPhoto(photo);
+            print(err);
+            print(ret);
+        return ret;
 
     def ChangeHeadPhoto(self,photo):
         '''更新头像'''

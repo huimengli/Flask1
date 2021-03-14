@@ -80,7 +80,7 @@ def addValue(tablename,listnames,values):
     '''
     向表中添加数据
     '''
-    #sql = "INSERT INTO `users` (`id`, `name`, `password`) VALUES ('0', '楼听', 'ba436ed15d0b0da7518772e3b23acd94')";
+    #sql = "INSERT INTO `users` (`id`, `name`, `password`) VALUES ('0', 'name', 'ba436ed15d0b0da7518772e3b23acd94')";
     sql = "INSERT INTO `"+tablename+"` (`";
     for i in range(len(listnames)):
         x = listnames[i];

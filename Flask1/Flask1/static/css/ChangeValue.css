@@ -6,6 +6,9 @@
     background-position: center 0;
     background-repeat: no-repeat;
     background-size: auto 120%;
+    position:fixed;
+    top:0;
+    left:0;
 }
 
 .person {
@@ -103,7 +106,7 @@
 }
 
 .zhongxing {
-    height: 200px;
+    height: 250px;
     overflow: hidden;
     transition-duration: 0.3s;
 }
@@ -213,3 +216,124 @@
     color:black;
 }
 
+
+#upHeadPhoto {
+    width: 600px;
+    height: 400px;
+    background-color: rgba(255,255,255,0.8);
+    position: absolute;
+    z-index: 1;
+    left: calc((100vw - 602px)/2);
+    top: calc((100vh - 402px)/2);
+    border: 1px solid rgba(153,153,153,0.8);
+}
+
+#upHeadPhotoClose {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    width: 50px;
+    height: 30px;
+    text-align: center;
+    line-height: 30px;
+    background-color: white;
+    transition-duration: 0.3s;
+}
+
+    #upHeadPhotoClose::before {
+        content: "";
+        width: 30px;
+        height: 4px;
+        background-color: red;
+        position: absolute;
+        left: 10px;
+        display: block;
+        top: 8px;
+        transition-duration: 0.3s;
+    }
+
+    #upHeadPhotoClose::after {
+        content: "";
+        width: 30px;
+        height: 4px;
+        background-color: red;
+        position: absolute;
+        left: 10px;
+        display: block;
+        top: 18px;
+        transition-duration: 0.3s;
+    }
+
+    #upHeadPhotoClose:hover {
+        background-color: red;
+        cursor: pointer;
+    }
+
+        #upHeadPhotoClose:hover::before {
+            transform: rotateZ(45deg);
+            top: 13px;
+            background-color: black;
+        }
+
+        #upHeadPhotoClose:hover::after {
+            transform: rotateZ(-45deg);
+            top: 13px;
+            background-color: black;
+        }
+
+.upHeadPhotoBottom {
+    width: 200px;
+    height: 60px;
+    border: 1px dashed #ccc;
+    position: absolute;
+    left: 50px;
+    top: 290px;
+    font-size: 30px;
+    font-weight: 600;
+    text-align: center;
+    line-height: 60px;
+    cursor: pointer;
+}
+
+
+
+.upHeadPhotoCanvas {
+    border: 1px dashed #ccc;
+}
+
+#upHeadPhotoCanvasIn {
+    position: relative;
+    left: 50px;
+    top: 50px;
+    float: left;
+}
+
+#upHeadPhotoCanvasOut {
+    border-radius: 40px;
+    position: relative;
+    left: 60px;
+    top: 20px;
+}
+
+#upHeadPhotoCanvasOutBox {
+    width: 200px;
+    height: 200px;
+    position: relative;
+    float: left;
+    top: 50px;
+    border: 1px dashed #ccc;
+    left: 149px;
+}
+
+    #upHeadPhotoCanvasOutBox > span {
+        position: absolute;
+        width: 100px;
+        text-align: center;
+        bottom: 30px;
+        font-size: 25px;
+        left: 50px;
+    }
+
+#upHeadPhotoCutBox {
+    position: absolute;
+}

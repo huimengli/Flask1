@@ -1010,6 +1010,43 @@
             this.style.height = H + "px";
             getCut(ctx);
         };
+
+        //上传头像
+        upBottom.onmousedown = function () {
+            //console.log(outputImg.src);
+            /**上传数据 */
+            var up = {
+                n: "upHeadPhoto",
+                uid: UID,
+                value: outputImg.src,
+            };
+
+            $(function () {
+                $.ajax({
+                    type: "post",
+                    url: "/file/",
+                    data: JSON.stringify(up),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "text",
+                    success: function (data) {
+                        console.log(data);
+                        if (data == "True") {
+                            alert("头像上传成功!");
+                            window.location.href = window.location.href;
+                        } else if(data=="Error") {
+                            alert("用户尚未登录!");
+                            window.location.href = "/signOn/";
+                        } else if (data =="False") {
+                            alert("上传头像失败!");
+                        }
+                    },
+                    error: function (err) {
+                        console.error(err);
+                    }
+                });
+            });
+
+        };
     };
 
     /**
@@ -1662,7 +1699,7 @@
             /**新建用户 */
             var newUser = function (username) {
                 var ret = lt_code.newDom("a", {
-                    href: "#",
+                    href: "/changeValue/",
                     id: "user",
                     title: "个人中心",
 
@@ -1695,6 +1732,11 @@
                         break;
                     default:
                         iconVal.innerText = "尚未登录";
+                        iconVal.onmousedown = function () {
+                            window.location.href = "/signOn/";
+                        };
+                        iconVal.title = "登录";
+                        iconVal.style.cursor = "pointer";
                 }
             };
 
@@ -1729,14 +1771,17 @@
                     dataType: "text",
                     success: function (data) {
                         //console.log(data);
-                        if (data.length>0) {
+                        if (data.length > 0) {
                             iconImg.src = data;
                         } else {
-                            upHeadPhoto();
+                            if (iconVal.innerText !== "尚未登录") {
+                                upHeadPhoto();
+                            }
                         }
                     },
                     error: function (err) {
                         console.log(err);
+                        iconImg.src = lt_code.variable.images.icons[0];
                     }
                 });
             });
@@ -1756,6 +1801,7 @@
                     },
                     error: function (err) {
                         console.log(err);
+                        showNameAndType("");
                     }
                 });
             });
