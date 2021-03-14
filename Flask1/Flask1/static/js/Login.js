@@ -1,15 +1,15 @@
-﻿//居中显示登录框
-!function () {
-    var height = window.innerHeight;
+﻿////居中显示登录框
+//!function () {
+//    var height = window.innerHeight;
 
-    //console.log(height);
+//    //console.log(height);
 
-    var loadIn = lt_code.getAll(".loadIn");
+//    var loadIn = lt_code.getAll(".loadIn");
 
-    var margin_top_value = (height - loadIn.offsetHeight) / 2;
+//    var margin_top_value = (height - loadIn.offsetHeight) / 2;
 
-    loadIn.style.margin = margin_top_value + "px auto";
-}();
+//    loadIn.style.margin = margin_top_value + "px auto";
+//}();
 
 //网页背景
 !function () {
@@ -48,9 +48,10 @@
     //父类的样式赋值
     father.style.height = (loadIn.offsetHeight + 60) + "px";
     father.style.position = "relative";
-    father.style.top = "-20px";
+    father.style.top = "calc((100vh - 415px)/2)";
+    father.style.left = "calc((100vw - 444px)/2)";
     father.style.width = (loadIn.offsetWidth + 40) + "px";
-    father.style.margin = (lt_code.getNum(loadIn.style.margin.replace(/[^\d\.]/ig, "")) - 20) + "px auto";
+    //father.style.margin = (lt_code.getNum(loadIn.style.margin.replace(/[^\d\.]/ig, "")) - 20) + "px auto";
     father.style.backgroundColor = "rgba(255,255,255,0.6)";
     //子类的样式赋值
     loadIn.style.position = "absolute";
@@ -60,51 +61,51 @@
 
 }();
 
-//如果改变分辨率
-!function () {
-    /**之前的高度 */
-    var old_height = height | 0;
-    /**之前的宽度 */
-    var old_width = width | 0;
-    /**现在的高度 */
-    var height = window.innerHeight;
-    /**现在的宽度 */
-    var width = window.innerWidth;
-    //开始判读
-    setInterval(function () {
-        if (old_height !== height || old_width !== width) {
-            change_background();
-        }
-    }, 200);
+////如果改变分辨率
+//!function () {
+//    /**之前的高度 */
+//    var old_height = height | 0;
+//    /**之前的宽度 */
+//    var old_width = width | 0;
+//    /**现在的高度 */
+//    var height = window.innerHeight;
+//    /**现在的宽度 */
+//    var width = window.innerWidth;
+//    //开始判读
+//    setInterval(function () {
+//        if (old_height !== height || old_width !== width) {
+//            change_background();
+//        }
+//    }, 200);
 
-    /**改变背景的函数 */
-    var change_background = function () {
-        /**网页背景图片 */
-        var background = lt_code.getAll("#background");
+//    /**改变背景的函数 */
+//    var change_background = function () {
+//        /**网页背景图片 */
+//        var background = lt_code.getAll("#background");
 
-        background.style.position = "absolute";
-        background.style.float = "left";
-        /**图片距离左边的距离 */
-        var backgroundLeft = 0;
-        /**图片距离头部的距离 */
-        var backgroundTop = 0;
-        /**图片的缩放比 */
-        var Scaling = null;
+//        background.style.position = "absolute";
+//        background.style.float = "left";
+//        /**图片距离左边的距离 */
+//        var backgroundLeft = 0;
+//        /**图片距离头部的距离 */
+//        var backgroundTop = 0;
+//        /**图片的缩放比 */
+//        var Scaling = null;
 
-        if (Scaling) {
-            background.style.width = background.offsetWidth * Scaling + "px";
-            background.style.height = background.offsetHeight * Scaling + "px";
-        } else {
-            background.style.width = window.innerWidth + "px";
-            background.style.height = window.innerHeight + "px";
-        }
+//        if (Scaling) {
+//            background.style.width = background.offsetWidth * Scaling + "px";
+//            background.style.height = background.offsetHeight * Scaling + "px";
+//        } else {
+//            background.style.width = window.innerWidth + "px";
+//            background.style.height = window.innerHeight + "px";
+//        }
 
-        background.style.top = backgroundTop + "px";
-        background.style.left = backgroundLeft + "px";
-        background.style.zIndex = "-1";
-    }
+//        background.style.top = backgroundTop + "px";
+//        background.style.left = backgroundLeft + "px";
+//        background.style.zIndex = "-1";
+//    }
 
-}();
+//}();
 
 //废弃
 !function () {
