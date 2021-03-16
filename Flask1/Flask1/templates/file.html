@@ -91,6 +91,7 @@
     </div>
 </body>
 </html>
+<script src="/static/js/loading.js"></script>
 <script>
     /**用户UID */
     var UID = lt_code.cookie.getCookie("uid") || function () {
@@ -640,11 +641,11 @@
                             key = lt_code.base64.else.getCode(x.uptime, key[1]);
                             down = lt_code.base64.change.getCode(down, key);
                             value = value[0] + "," + down;
-                            if (x.md5==lt_code.md5(value)) {
+                            if (x.md5 == lt_code.md5(value)) {
                                 lt_code.test.downFile(value, x.name);
                             } else {
                                 newAlert("校检失败", "签名校检失败\n文件可能被篡改\n是否继续下载?", function () {
-                                    lt_code.test.downFile(value,x.name);
+                                    lt_code.test.downFile(value, x.name);
                                 });
                             }
                             alert("下载成功!");
@@ -746,14 +747,14 @@
         /**裁切图片的盒子 */
         var cutBox = lt_code.newDom("div", {
             id: "upHeadPhotoCutBox",
-            title:"移动滑块来裁切\n滚轮调整大小",
+            title: "移动滑块来裁切\n滚轮调整大小",
             style: {
                 display: "none",
                 width: "80px",
                 height: "80px",
                 border: "1px solid #999",
                 left: "50px",
-                top:"50px",
+                top: "50px",
             }
         });
         /**显示上传图片并裁剪的画布 */
@@ -761,7 +762,7 @@
             class: "upHeadPhotoCanvas",
             id: "upHeadPhotoCanvasIn",
             width: 200,
-            height:200,
+            height: 200,
             style: {
 
             }
@@ -789,7 +790,7 @@
         var upBottom = lt_code.newDom("div", {
             class: "upHeadPhotoBottom",
             style: {
-                left:"350px",
+                left: "350px",
             },
         });
 
@@ -808,7 +809,7 @@
         const RIGHT = 251;
         /**底部边界 */
         const BOTTOM = 251;
-        
+
         //添加框在body中
         lt_code.addChild(box);
         lt_code.addChild(close, box);
@@ -849,11 +850,11 @@
             //console.log(data);
             /**临时canvas画布 */
             var tempCas = lt_code.newDom("canvas", {
-                id:"upHeadPhotoTempCanvas",
+                id: "upHeadPhotoTempCanvas",
                 width: data.width,
                 height: data.height,
                 style: {
-                    opacity:"1",
+                    opacity: "1",
                 },
             });
             lt_code.addChild(tempCas);
@@ -977,10 +978,10 @@
             /**框距离顶部的距离 */
             var T = this.offsetTop;
             /**框的宽度(2是边框占长) */
-            var W = this.offsetWidth -2;
+            var W = this.offsetWidth - 2;
             /**框的高度(2是边框占长) */
-            var H = this.offsetHeight -2;
-            if (e.wheelDelta>0) {
+            var H = this.offsetHeight - 2;
+            if (e.wheelDelta > 0) {
                 W = W + 2 > 198 ? 198 : W + 2;
                 H = H + 2 > 198 ? 198 : H + 2;
                 L = L - 1 < LEFT ? LEFT : L - 1;
@@ -996,13 +997,13 @@
                 L = LEFT;
             }
             if (L + W > RIGHT) {
-                L = RIGHT - W -2;
+                L = RIGHT - W - 2;
             }
             if (T < TOP) {
                 T = TOP;
             }
             if (T + H > BOTTOM) {
-                T = BOTTOM - H -2;
+                T = BOTTOM - H - 2;
             }
             this.style.top = T + "px";
             this.style.left = L + "px";
@@ -1033,10 +1034,10 @@
                         if (data == "True") {
                             alert("头像上传成功!");
                             window.location.href = window.location.href;
-                        } else if(data=="Error") {
+                        } else if (data == "Error") {
                             alert("用户尚未登录!");
                             window.location.href = "/signOn/";
-                        } else if (data =="False") {
+                        } else if (data == "False") {
                             alert("上传头像失败!");
                         }
                     },
@@ -1754,7 +1755,7 @@
 
                 upBottom.innerText = "上传\n头像";
 
-                lt_code.addChild(upBottom,icon);
+                lt_code.addChild(upBottom, icon);
                 icon.innerHTML += inner;
 
                 lt_code.getAll(".iconUp").onmousedown = function () {
@@ -1806,6 +1807,8 @@
                 });
             });
         }();
+        //关闭加载
+        lt_code.closeLoading();
     };
 </script>
 <script src="/static/js/file/file.js"></script>
