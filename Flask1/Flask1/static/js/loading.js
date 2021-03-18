@@ -1,33 +1,23 @@
 !function () {
     /**加载背景 */
-    let back = lt_code.newDom("div", {
-        id: "loadBack",
-        style: {
-            width: "100vw",
-            height: "100vh",
-            position: "fixed",
-            "z-index": "1000",
-            left: "0",
-            top: "0",
-            "background-color": "#2f8cdc",
+    let back = document.createElement("div");
+    back.id = "loadBack";
+    back.style.width = "100vw";
+    back.style.height = "100vh";
+    back.style.position = "fixed";
+    back.style.zIndex = "1000";
+    back.style.left = 0;
+    back.style.top = 0;
+    back.style.backgroundColor = "#2f8cdc";
 
-        }
-    });
-
-    let loadimg = lt_code.newDom("img", {
-        id: "loadImg",
-        style: {
-            width: "400px",
-            height: "300px",
-            position: "relative",
-            left: "calc((100vw - 400px)/2)",
-            top: "calc((100vh - 300px)/2)",
-
-        },
-        src: "../static/images/loading/loading1.gif",
-    });
-
-
+    let loadimg = document.createElement("img");
+    loadimg.id = "loadImg";
+    loadimg.style.width = "400px";
+    loadimg.style.height = "300px";
+    loadimg.style.position = "relative";
+    loadimg.style.left = "calc((100vw - 400px)/2)";
+    loadimg.style.top = "calc((100vh - 300px)/2)";
+    loadimg.src = "../static/images/loading/loading1.gif";
 
     //内容添加到主页中
     lt_code.addChild(back, document.body);
