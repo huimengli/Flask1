@@ -617,7 +617,7 @@ def adminfile():
                 if value['isdir']=="True":
                     return fileSys.getFileList(value['dir']);
                 else:
-                    return str(Fsys.files.getFileNoDelete(fileSys.fileSteam,value['dir']));
+                    return str(Fsys.files.getFile(fileSys.fileSteam,value['dir']));
 
             elif value['n']=="newDir":
                 #print(user.ToString());
@@ -778,7 +778,7 @@ def adminfile():
     #print(fileSys.fileSteam[0].getValue());
 
     return render_template(
-        'file.html',
+        'adminFile.html',
         context=context,
     );
 

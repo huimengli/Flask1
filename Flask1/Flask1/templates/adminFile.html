@@ -374,8 +374,9 @@
      * @param {number} create 创建时间
      * @param {boolean} isFile 是否是文件
      * @param {string} dir 文件路径
+     * @param {number} isdelete 是否已经被删除
      */
-    var newEachFile = function (fileName, size, create, isFile, dir) {
+    var newEachFile = function (fileName, size, create, isFile, dir,isdelete) {
         isFile = isFile == null ? true : isFile;
 
         /**每个文件行 */
@@ -456,6 +457,19 @@
             }
         }
 
+        if (isdelete&&isdelete>1) {
+            newEachFileBottomBottom2.style.backgroundColor = "red";
+            newEachFileBottomBottom2.title = "文件已经被删除";
+            newEachFileBottomBottom2.style.cursor = "";
+            newEachFileBottomBottom2.onmouseup = null;
+        } else if (isdelete&&isdelete>2) {
+            newEachFileBottomBottom.style.backgroundColor = "red";
+            newEachFileBottomBottom.title = "文件已经彻底删除,无法下载";
+            newEachFileBottomBottom2.title = "文件已经彻底删除";
+            newEachFileBottomBottom.style.cursor = "";
+            newEachFileBottomBottom.onmouseup = null;
+        }
+
         lt_code.addChild(newEachFileValue, eachFile);
         lt_code.addChild(newEachFileCreate, eachFile);
         lt_code.addChild(newEachFileSize, eachFile);
@@ -475,7 +489,7 @@
 
         $.ajax({
             type: "post",
-            url: "/file/",
+            url: "/adminfile/",
             data: JSON.stringify(info),
             contentType: "application/json; charset=utf-8",
             dataType: "text",
@@ -486,7 +500,7 @@
                 data.forEach(function (i) {
                     eval("x = " + i);
                     //console.log(x);
-                    newEachFile(x.name, x.size, lt_code.getNum(x.create), true, x.path);
+                    newEachFile(x.name, x.size, lt_code.getNum(x.create), true, x.path, x.delete);
                 });
             },
             error: function (err) {
@@ -515,7 +529,7 @@
         $(function () {
             $.ajax({
                 type: "post",
-                url: "/file/",
+                url: "/adminfile/",
                 data: JSON.stringify(up),
                 contentType: "application/json; charset=utf-8",
                 dataType: "text",
@@ -616,7 +630,7 @@
             $(function () {
                 $.ajax({
                     type: "post",
-                    url: "/file/",
+                    url: "/adminfile/",
                     data: JSON.stringify(up),
                     contentType: "application/json; charset=utf-8",
                     dataType: "text",
@@ -689,7 +703,7 @@
                 $(function () {
                     $.ajax({
                         type: "post",
-                        url: "/file/",
+                        url: "/adminfile/",
                         data: JSON.stringify(up),
                         contentType: "application/json; charset=utf-8",
                         dataType: "text",
@@ -1025,7 +1039,7 @@
             $(function () {
                 $.ajax({
                     type: "post",
-                    url: "/file/",
+                    url: "/adminfile/",
                     data: JSON.stringify(up),
                     contentType: "application/json; charset=utf-8",
                     dataType: "text",
@@ -1363,7 +1377,7 @@
                 $(function () {
                     $.ajax({
                         type: "post",
-                        url: "/file/",
+                        url: "/adminfile/",
                         data: JSON.stringify(up),
                         contentType: "application/json; charset=utf-8",
                         dataType: "text",
@@ -1425,7 +1439,7 @@
                     $(function () {
                         $.ajax({
                             type: "post",
-                            url: "/file/",
+                            url: "/adminfile/",
                             data: JSON.stringify(up),
                             contentType: "application/json; charset=utf-8",
                             dataType: "text",
@@ -1518,7 +1532,7 @@
                                     //上传测试
                                     $.ajax({
                                         type: "post",
-                                        url: "/file/",
+                                        url: "/adminfile/",
                                         data: JSON.stringify(upTest),
                                         contentType: "application/json; charset=utf-8",
                                         dataType: "text",
@@ -1533,7 +1547,7 @@
                                                     var oldFile = {};
                                                     $.ajax({
                                                         type: "post",
-                                                        url: "/file/",
+                                                        url: "/adminfile/",
                                                         data: '{"n":"getFileInfo","dir":"' + upTest.dir + "/" + upTest.name + '"}',
                                                         contentType: "application/json; charset=utf-8",
                                                         dataType: "text",
@@ -1554,7 +1568,7 @@
                                                                 } else {
                                                                     $.ajax({
                                                                         type: "post",
-                                                                        url: "/file/",
+                                                                        url: "/adminfile/",
                                                                         data: JSON.stringify(upOver),
                                                                         contentType: "application/json; charset=utf-8",
                                                                         dataType: "text",
@@ -1605,7 +1619,7 @@
                                                                         //改过名了,直接用老模块上传
                                                                         $.ajax({
                                                                             type: "post",
-                                                                            url: "/file/",
+                                                                            url: "/adminfile/",
                                                                             data: JSON.stringify(up),
                                                                             contentType: "application/json; charset=utf-8",
                                                                             dataType: "text",
@@ -1643,7 +1657,7 @@
                                                 //文件不存在,直接上传,用老模块
                                                 $.ajax({
                                                     type: "post",
-                                                    url: "/file/",
+                                                    url: "/adminfile/",
                                                     data: JSON.stringify(up),
                                                     contentType: "application/json; charset=utf-8",
                                                     dataType: "text",
@@ -1766,7 +1780,7 @@
             $(function () {
                 $.ajax({
                     type: "post",
-                    url: "/file/",
+                    url: "/adminfile/",
                     data: '{"n":"headPhoto"}',
                     contentType: "application/json; charset=utf-8",
                     dataType: "text",
@@ -1790,7 +1804,7 @@
             $(function () {
                 $.ajax({
                     type: "post",
-                    url: "/file/",
+                    url: "/adminfile/",
                     data: '{"n":"nameAndType"}',
                     contentType: "application/json; charset=utf-8",
                     dataType: "text",
