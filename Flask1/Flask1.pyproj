@@ -152,6 +152,7 @@
     <Content Include="Flask1\static\temp\Chrome_Google_v49.0.2623.112.exe" />
     <Content Include="Flask1\static\temp\全部作业.txt" />
     <Content Include="Flask1\templates\back.html" />
+    <Content Include="Flask1\templates\adminFile.html" />
     <Content Include="Flask1\templates\plane.html" />
     <Content Include="Flask1\templates\plane2.html" />
     <Content Include="Flask1\templates\adminSignOn.html" />

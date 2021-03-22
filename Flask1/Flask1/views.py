@@ -544,6 +544,244 @@ def file():
         context=context,
     );
 
+@app.route("/adminfile/",methods=['GET','POST'])
+@app.route("/adminFile/",methods=['GET','POST'])
+def adminfile():
+    '''
+    文件系统
+    '''
+    context = {};
+    context['name'] = myname;
+    context['title'] = "文件管理员";
+    print("\n");
+    name = None;
+    password = None;
+    user = None;
+    if name==None or password==None:
+        try:
+            name = session['name'];
+            password = session['password'];
+        except Exception as err:
+            print(err);
+
+    if not name==None and not password==None and not name=='' and not password=='':
+        id = User.SignOn(name,password);
+        #print(id);
+        user = User.GetUser(id);
+        #print(user);
+
+    if isinstance(user,User) and not user==None:
+        session['id'] = user.id;
+        session['name'] = name;
+        session['password'] = password;
+
+    try:
+        if user.ChackLevel(100)==False:
+                return redirect("/file/");
+    except Exception:
+        return redirect("/file/");
+
+    values = request.get_data();
+    
+    #print(values);
+    
+    if len(values)>0:
+        #print(values);
+        value = json.loads(values);
+        #print(values.decode("utf8"));
+        try:
+            if value['n']=='name':
+                return user.name;
+
+            elif value['n']=='id':
+                return str(user.id);
+
+            elif value['n']=="headPhoto":
+                return user.GetHeadPhoto();
+
+            elif value['n']=="type":
+                return user.type;
+
+            elif value['n']=="nameAndType":
+                return '{"name":"'+str(user.name)+'","type":"'+str(user.type)+'"}';
+
+            elif value['n']=="exit":
+                session['name'] = "";
+                session['password'] = "";
+                session['id'] = "";
+                redirect(url_for("signOn"));
+                return "exit";
+
+            elif value['n']=="list":
+                #try:
+                if value['isdir']=="True":
+                    return fileSys.getFileList(value['dir']);
+                else:
+                    return str(Fsys.files.getFileNoDelete(fileSys.fileSteam,value['dir']));
+
+            elif value['n']=="newDir":
+                #print(user.ToString());
+                if not isinstance(user,User) or user==None:
+                    return "Error";
+                else:
+                    if len(value['dir'])>1:
+                        return fileSys.newDir(value['dir'],value['name']);
+                    else:
+                        return "Error";
+
+            elif value['n']=="upFile":
+                if not isinstance(user,User) or user==None:
+                    return "Error";
+                else:
+                    files = fileSys.streamUpdate();
+                    eachSize = 1024*1024*20;
+                    if eachSize>int(value['size']):
+                        eachSize = int(value['size']);
+                    package = math.ceil(int(value['size'])/(1024*1024*20));
+                    level = package;
+                    level += user.AddLevel();
+
+                    newFile = Fsys.files(len(files),value['name'],value['size'],str(eachSize),package,value['md5'],fileSys.root+value['dir']+"/"+value['name']+".file",user.id,level,value['create'],value['uptime'],0);
+                    print(newFile.toDictNoCut());
+                    upSql = newFile.upSql("files");
+                    if upSql=="True":
+                        write = newFile.toDictNoCut();
+                        write['value'] = value['value'];
+                        fileSys.fileSteam.append(newFile);
+                        return str(fileSys.newFileZlib(newFile.path,write));
+                    else:
+                        return upSql;
+
+            elif value['n']=="upFileTest":
+                if not isinstance(user,User) or user==None:
+                    return "Error";
+                else:
+                    files = fileSys.streamUpdate();
+                    eachSize = 1024*1024*20;
+                    if eachSize>int(value['size']):
+                        eachSize = int(value['size']);
+                    package = math.ceil(int(value['size'])/(1024*1024*20));
+                    level = package;
+                    level+=user.AddLevel();
+
+                    newFile = Fsys.files(len(files),value['name'],value['size'],str(eachSize),package,value['md5'],fileSys.root+value['dir']+"/"+value['name']+".file",user.id,level,value['create'],value['uptime'],0);
+                    return str(fileSys.existsSql(newFile));
+
+            elif value['n']=="getFileInfo":
+                dir = fileSys.root+value["dir"]+".file";
+                print(dir);
+                if fileSys.exists(dir):
+                    file = fileSys.getFile(dir);
+                    return str(file.toDict());
+
+                return "Error";
+
+            elif value['n']=="upFileOver":
+                dir = fileSys.root+value['dir']+"/"+value["name"]+".file";
+                print(dir);
+                if not isinstance(user,User) or user==None:
+                    return "Error";
+                else:
+                    fileSys.streamUpdate();
+                    file = fileSys.getFile(dir);
+                    print(file.toDict());
+                    if int(file.id)>=0:
+                        fileIndex = fileSys.fileSteam.index(file);
+                        print(fileIndex);
+                        eachSize = 1024*1024*20;
+                        if eachSize>int(value['size']):
+                            eachSize = int(value['size']);
+                        package = math.ceil(int(value['size'])/(1024*1024*20));
+                        level = package;
+                        level += user.AddLevel();
+                        if user.ChackLevel(file.level):
+                            file.path = dir;
+                            file.name = value['name'];
+                            file.size = value['size'];
+                            file.eachSize = eachSize;
+                            file.create = value['create'];
+                            file.md5 = value['md5'];
+                            file.package = package;
+                            file.level = level;
+                            file.userid = user.id;
+                            upSql = file.changeSql(fileSys.tableName);
+                            if upSql==True or upSql=="True":
+                                #print("True");
+                                write = file.toDictNoCut();
+                                write['value'] = value['value'];
+                                fileSys.fileSteam[fileIndex] = file;
+                                return str(fileSys.overFileZlib(file.path,write));
+                            elif upSql=="Error":return "SystemError";  
+                            else:return str(upSql);
+                        else:return "Error";
+                    else:return "Alive";
+
+            elif value['n']=="downFile":
+                dir = fileSys.root+value["dir"];
+                print(dir);
+                if not fileSys.exists(dir):
+                    file = fileSys.getFile(dir);
+                    return "Alive";
+                else:
+                    file = fileSys.getFile(dir);
+                    if not isinstance(user,User) or user==None:
+                        if file.level<=1:
+                            return file.getValueZlib();
+                        else:
+                            return "Error";
+                    else:
+                        if user.ChackLevel(file.level):
+                            return file.getValueZlib();
+                        else:
+                            return "Error";
+
+            elif value['n']=="deleteFile":
+                dir = fileSys.root+value['dir'];
+                if not fileSys.exists(dir):
+                    return "Alive";
+                else:
+                    file = fileSys.getFile(dir);
+                    print(file.toDictNoCut());
+                    if not isinstance(user,User) or user ==None:
+                        return "Error";
+                    else:
+                        if user.type=="admin":
+                            return file.sqlDelete(Fsys.files.tableName);
+                        elif user.type=="staff" and file.level<=70:
+                            return file.sqlDelete(Fsys.files.tableName);
+                        elif user.type=="general" and file.level<=40:
+                            return file.sqlDelete(Fsys.files.tableName);
+                        elif user.type=="basic" and file.level<=10:
+                            return file.sqlDelete(Fsys.files.tableName);
+                        else:
+                            return "Error";
+
+                return "False";
+
+            elif value['n']=="upHeadPhoto":
+                if not isinstance(user,User) or user==None:
+                    return "Error";
+                else:
+                    if user.UpHeadPhoto(value['value']):
+                        return "True";
+                    else:
+                        return str(user.ChangeHeadPhoto(value['value']));
+
+        except Exception as e:
+            #print("错误内容:"+str(e));
+            #print("错误文件:"+str(e.__traceback__.tb_frame.f_globals["__file__"]))  # 发生异常所在的文件
+            #print("错误行数:"+str(e.__traceback__.tb_lineno))                       # 发生异常所在的行数
+            raise e;
+    #else:
+        return values;
+
+    #print(fileSys.fileSteam[0].getValue());
+
+    return render_template(
+        'file.html',
+        context=context,
+    );
+
 @app.route("/web3D/")
 @app.route("/Web3D/")
 def web3D():

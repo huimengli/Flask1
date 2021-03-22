@@ -12,7 +12,7 @@
 <body>
     <div class="menu">
         <div class="title">
-            {{context.name}}-文件管理系统
+            {{context.name}}-文件管理员系统
         </div>
         <div class="list">
             <div class="listBlock listSelect" data-listBlock="false" data-dir="root">
@@ -132,8 +132,6 @@
         back: "",
         /** 历史记录 */
         history: [],
-        /**最大记录条数 */
-        maxHistory:30,
         /**
          * 获取上一级
          * @param {string} dir 当前路径
@@ -177,27 +175,6 @@
         /**返回上一级搜索 */
         backSearch: function () {
             this.newSearch(this.back);
-        },
-        /**保存cookie */
-        save: function () {
-            //console.log(this.now);
-            //this.history.push(this.now);
-            var history = this.history;
-            history.push(this.now);
-            var ret = "";
-            for (var i = history.length-this.maxHistory<0?0:history.length - this.maxHistory; i < history.length-1; i++) {
-                ret += history[i] + ",";
-            }
-            ret += history[history.length - 1];
-            ret = lt_code.base64.encode(ret);
-            lt_code.cookie.saveCookie("history", ret, 7);
-        },
-        /**读取cookie */
-        load: function () {
-            var history = lt_code.cookie.getCookie("history");
-            history = lt_code.base64.decode(history);
-            this.history = history.split(",");
-            this.lastSearch();
         }
     };
     /**显示当前目录 */
@@ -504,7 +481,7 @@
             dataType: "text",
             success: function (data) {
                 eval("data = " + data);
-                //console.log(data);
+                console.log(data);
                 var x = "";
                 data.forEach(function (i) {
                     eval("x = " + i);
@@ -1353,7 +1330,6 @@
         }, 100);
     }(), "背景图片适应");
 
-    //页面加载
     window.onload = function () {
         //iconImg.src = lt_code.variable.images.headPortrait[0];
         /**所有按钮 */
@@ -1741,11 +1717,6 @@
                 switch (nameAndType.type) {
                     case "admin":
                         iconVal.innerText = "最高管理员:";
-                        iconVal.style.cursor = "pointer";
-                        iconVal.title = "管理员界面";
-                        iconVal.onmousedown = function () {
-                            window.location.href = "/adminFile/";
-                        }
                         lt_code.addChild(newUser(nameAndType.name), iconVal);
                         break;
                     case "staff":
@@ -1838,14 +1809,6 @@
         }();
         //关闭加载
         lt_code.closeLoading();
-        //读取历史记录
-        lt_code.history.load();
-    };
-
-    //界面关闭
-    window.onbeforeunload = function () {
-        //记录历史记录
-        lt_code.history.save();
     };
 </script>
 <script src="/static/js/file/file.js"></script>
