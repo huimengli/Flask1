@@ -35,6 +35,7 @@
     <Compile Include="Flask1\mySqlLink.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Flask1\RSA.py" />
     <Compile Include="Flask1\users.py" />
     <Compile Include="Flask1\zlibTool.py">
       <SubType>Code</SubType>
