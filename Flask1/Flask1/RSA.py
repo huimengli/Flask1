@@ -448,6 +448,10 @@ class rsaKey(object):
 
 
 class project(object):
+    '''
+    加密核心模块
+    在其他值要使用,只要加载这个模块就够了
+    '''
     keys = {
         "middleKey":{
             "N":"4951760154835678088235319297",
@@ -503,7 +507,7 @@ class project(object):
         for x in range(len(input)):
             if not trun:
                 indexA = str(input[x]);
-                print(indexA);
+                #print(indexA);
                 if bigIsBigerSlow(indexA,0)==0:
                     ret+="="
                     continue
@@ -566,7 +570,9 @@ class project(object):
         for x in range(len(rets)):
             ret+=bigPowerAndQuotient(rets[x],key['D'],key['N']);
         ret = self.keyToBase64(ret);
-        print(ret);
+        # 传输数据过程中可能会有"00"被加密,由于00==0所以导致缺少补位,添加补位即可
+        while len(ret)%4!=0:
+            ret+="=";
         ret = base64.b64decode(ret.encode()).decode();
         return ((ret[len(ret)-1])and re.compile(r'\s\n\0').match(ret[len(ret)-1]))and ret[:len(ret)-1] or ret;
     
