@@ -353,8 +353,7 @@ def bigPowerAndQuotient(num1:int or str,exp,num2):
     # 算法原理:
     # ab % k = (a%k) * (b%k) % k
     # 所以，假设大数b是1234567
-    # 那么a^b % k = (a^1234560 % k) * (a^7 % k) % k = ((a^123456 % k)^10 % k) *
-    # (a^7 % k) % k
+    # 那么a^b % k = (a^1234560 % k) * (a^7 % k) % k = ((a^123456 % k)^10 % k) * (a^7 % k) % k
 
     rets = []
     lists = []
@@ -536,7 +535,6 @@ class project(object):
         将8进制数据转回字符串内容
         '''
         base = self.keyToBase64(input);
-        print(base);
         return base64.b64decode(base.encode()).decode();
 
     def setCode(self,input,key:{"N":"","E":"","D":""}):
@@ -560,7 +558,7 @@ class project(object):
 
     def getCode(self,input,key:{"N":"","E":"","D":""}):
         '''
-        RSA解密(错误代码)
+        RSA解密
         '''
         if not isinstance(key,dict):
             raise Exception("参数错误!");
