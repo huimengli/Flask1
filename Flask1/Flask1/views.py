@@ -461,11 +461,12 @@ def file():
                             file.name = value['name'];
                             file.size = value['size'];
                             file.eachSize = eachSize;
-                            file.create = value['create'];
+                            #file.create = value['create'];
                             file.md5 = value['md5'];
                             file.package = package;
                             file.level = level;
                             file.userid = user.id;
+                            file.uptime = value['uptime'];
                             upSql = file.changeSql(fileSys.tableName);
                             if upSql==True or upSql=="True":
                                 #print("True");

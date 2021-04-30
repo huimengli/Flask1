@@ -666,12 +666,13 @@
                             value = value[0] + "," + down;
                             if (x.md5 == lt_code.md5(value)) {
                                 lt_code.test.downFile(value, x.name);
+                                alert("下载成功!");
                             } else {
                                 newAlert("校检失败", "签名校检失败\n文件可能被篡改\n是否继续下载?", function () {
                                     lt_code.test.downFile(value, x.name);
+                                    alert("下载成功!");
                                 });
                             }
-                            alert("下载成功!");
                         } else {
                             //console.assert(data);
                             if (data == "False") {
@@ -1532,7 +1533,7 @@
                                     size: file.size,
                                     md5: md5,
                                     dir: lt_code.history.now,
-                                    create: file.lastModified,
+                                    //create: file.lastModified,
                                     uptime: time,
                                     value: ret,
                                 };
