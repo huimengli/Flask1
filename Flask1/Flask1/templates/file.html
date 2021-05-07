@@ -248,7 +248,9 @@
         clear: function () {
             lt_code.cookie.removeCookie("history");
             this.history = [];
-            this.searchDir("");
+            this.now = "";
+            this.back = "";
+            this.newSearch("");
         }
     };
     /**显示当前目录 */
