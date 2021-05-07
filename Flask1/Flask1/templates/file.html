@@ -133,7 +133,52 @@
         /** 历史记录 */
         history: [],
         /**最大记录条数 */
-        maxHistory:30,
+        maxHistory: 30,
+        /**搜索目录*/
+        searchDir:function (dir) {
+
+            //清空主盒子
+            clearMainBox();
+
+            /**上传数据 */
+            var up = {
+                n: "list",
+                isdir: "True",
+                dir: dir,
+            };
+
+
+            $(function () {
+                $.ajax({
+                    type: "post",
+                    url: "/file/",
+                    data: JSON.stringify(up),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "text",
+                    success: function (data) {
+                        eval("data = " + data);
+                        //console.log(data);
+                        //清空内容数据
+                        clearMainBox();
+                        newEachFile("/..", 0, 0, false, "", dir);
+                        for (var j = 0; j < data.length; j++) {
+                            //console.log(data[j]);
+                            for (var x in data[j]) {
+                                if (data[j][x] == "False") {
+                                    newEachFile(x.slice(dir.length), 0, 0, false, x);
+                                } else {
+                                    newFileInfo(x);
+                                }
+                            }
+                        }
+                    },
+                    error: function (err) {
+                        lt_code.history.clear();
+                        console.trace(err);
+                    }
+                });
+            });
+        },
         /**
          * 获取上一级
          * @param {string} dir 当前路径
@@ -158,7 +203,7 @@
         newSearch: function (dir) {
             this.history.push(this.now);
             this.now = dir;
-            searchDir(dir);
+            this.searchDir(dir);
             dirSpan.innerText = "root" + this.now;
             this.back = this.getBack(dir);
         },
@@ -167,11 +212,11 @@
             if (this.history.length > 0) {
                 this.now = this.history[this.history.length - 1];
                 this.history.pop();
-                searchDir(this.now);
+                this.searchDir(this.now);
                 dirSpan.innerText = "root" + this.now;
                 this.back = this.getBack(this.now);
             } else {
-                searchDir("");
+                this.searchDir("");
             }
         },
         /**返回上一级搜索 */
@@ -198,6 +243,12 @@
             history = lt_code.base64.decode(history);
             this.history = history.split(",");
             this.lastSearch();
+        },
+        /**清空记录 */
+        clear: function () {
+            lt_code.cookie.removeCookie("history");
+            this.history = [];
+            this.searchDir("");
         }
     };
     /**显示当前目录 */
@@ -515,54 +566,6 @@
             error: function (err) {
                 console.log(err);
             }
-        });
-    };
-
-    /**
-     * 查找目录
-     * @param dir
-     */
-    var searchDir = function (dir) {
-
-        //清空主盒子
-        clearMainBox();
-
-        /**上传数据 */
-        var up = {
-            n: "list",
-            isdir: "True",
-            dir: dir,
-        };
-
-
-        $(function () {
-            $.ajax({
-                type: "post",
-                url: "/file/",
-                data: JSON.stringify(up),
-                contentType: "application/json; charset=utf-8",
-                dataType: "text",
-                success: function (data) {
-                    eval("data = " + data);
-                    //console.log(data);
-                    //清空内容数据
-                    clearMainBox();
-                    newEachFile("/..", 0, 0, false, "", dir);
-                    for (var j = 0; j < data.length; j++) {
-                        //console.log(data[j]);
-                        for (var x in data[j]) {
-                            if (data[j][x] == "False") {
-                                newEachFile(x.slice(dir.length), 0, 0, false, x);
-                            } else {
-                                newFileInfo(x);
-                            }
-                        }
-                    }
-                },
-                error: function (err) {
-                    console.log(err);
-                }
-            });
         });
     };
 

@@ -3,6 +3,8 @@
 '''
 
 import MySQLdb;
+import os;
+import time;
 
 #连接地址
 LINKPATH = "localhost";
@@ -19,6 +21,17 @@ DATANAME = "flask1";
 #数据编码
 CHARSET = "utf8";
 
+#报错显示位置
+LOGPATH = "";
+
+# 当前目录
+NOWDIR = os.getcwd().replace('\\','/');
+
+#------------------#
+#以下内容不建议修改#
+#------------------#
+LOGPATH = LOGPATH and LOGPATH or NOWDIR+"/log.txt";
+
 # 打开数据库连接
 link = MySQLdb.connect(LINKPATH,USERNAME,USERPASSWORD,DATANAME,charset=CHARSET);
 
@@ -28,10 +41,10 @@ def getValue(sql):
     '''
     print(sql);
 
-    # 使用cursor()方法获取操作游标 
-    cursor = link.cursor()
-
     try:
+        # 使用cursor()方法获取操作游标 
+        cursor = link.cursor()
+
         # 使用execute方法执行SQL语句
         ret = cursor.execute(sql);
 
@@ -49,6 +62,12 @@ def getValue(sql):
             return data;
     except Exception as e:
         print(e);
+        with open(LOGPATH,"a") as f:
+            f.write("报告时间: "+str(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())))
+            f.write("错误内容: "+str(e));
+            f.write("错误文件: "+str(e.__traceback__.tb_frame.f_globals["__file__"]));
+            f.write("错误行数: "+str(e.__traceback__.tb_lineno));
+            f.write("\n");
         return False;
 
     return False;
