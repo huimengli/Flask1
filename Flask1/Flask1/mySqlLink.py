@@ -76,7 +76,7 @@ def getValue(sql):
                     f.write("系统重新连接数据库失败,错误内容:"+str(e2));
                     f.write(",尝试重启数据库连接...\n");
                     try:
-                        link = MySQLdb.connect(LINKPATH,USERNAME,USERPASSWORD,DATANAME,charset=CHARSET);
+                        mySqlLink.link = MySQLdb.connect(LINKPATH,USERNAME,USERPASSWORD,DATANAME,charset=CHARSET);
                     except Exception as e3:
                         f.write("重启数据库连接失败,错误内容:"+str(e3));
                         return False;
