@@ -68,7 +68,41 @@ def getValue(sql):
             f.write("错误文件: "+str(e.__traceback__.tb_frame.f_globals["__file__"]));
             f.write("错误行数: "+str(e.__traceback__.tb_lineno));
             f.write("\n");
-        return False;
+            if str(e)=="(2006, 'MySQL server has gone away')":
+                f.write("系统尝试重新连接数据库...\n");
+                try:
+                    link.ping(True);
+                except Exception as e2:
+                    f.write("系统重新连接数据库失败,错误内容:"+str(e2));
+                    f.write(",尝试重启数据库连接...\n");
+                    try:
+                        link = MySQLdb.connect(LINKPATH,USERNAME,USERPASSWORD,DATANAME,charset=CHARSET);
+                    except Exception as e3:
+                        f.write("重启数据库连接失败,错误内容:"+str(e3));
+                        return False;
+
+    finally:
+        try:
+            # 使用cursor()方法获取操作游标 
+            cursor = link.cursor()
+
+            # 使用execute方法执行SQL语句
+            ret = cursor.execute(sql);
+
+            # 使用 fetchone() 方法获取一条数据
+            data = cursor.fetchall();
+
+            if len(data)==0:
+                if ret==0:
+                    return False;
+                elif ret==1:
+                    return True;
+            else:
+                return data;
+        except Exception as e:
+            with open(LOGPATH,"a") as f:
+                f.write("最后尝试操作数据库失败,错误内容:"+str(e));
+                return False;
 
     return False;
 
