@@ -586,10 +586,11 @@
             success: function (data) {
                 eval("data = " + data);
                 //console.log(data);
-                var x = "";
                 data.forEach(function (i) {
-                    eval("x = " + i);
-                    console.log(x);
+                    eval("window.temp = " + i);
+                    var x = window.temp;
+                    window.temp = "";
+                    //console.log(x);
                     newEachFile(x.name, x.size, lt_code.getNum(x.create), true, x.path,x.package,x.level,x.delete);
                 });
             },
