@@ -450,9 +450,15 @@
      * @param {number} create 创建时间
      * @param {boolean} isFile 是否是文件
      * @param {string} dir 文件路径
+     * @param {number} [pag] 文件路径
+     * @param {number} [level] 文件路径
+     * @param {number} [isDelete] 文件路径
      */
-    var newEachFile = function (fileName, size, create, isFile, dir) {
+    var newEachFile = function (fileName, size, create, isFile, dir,pag,level,isDelete) {
         isFile = isFile == null ? true : isFile;
+        pag = pag ? pag : 0;
+        level = level ? level : 1;
+        isDelete = typeof (isDelete) == "undefined" ? 1 : isDelete;
 
         /**每个文件行 */
         var eachFile = lt_code.newDom("div", {
@@ -512,6 +518,27 @@
             newEachFileBottomBottom2.onmouseup = function () {
                 deleteFile(eachFile);
             }
+            eachFile.title = "文件名称 : " + fileName;
+            eachFile.title += "\n创建时间 : " + new Date(create).format("yyyy年MM月dd hh时mm分ss秒");
+            eachFile.title += "\n文件大小 : " + (size < 1024 ? size + "字节" :
+                size < 1024 * 1024 ? Math.floor(size / 1024 * 100) / 100 + "KB" :
+                    size < 1024 * 1024 * 1024 ? Math.floor(size / 1024 / 1024 * 100) / 100 + "MB" :
+                        Math.floor(size / 1024 / 1024 / 1024 * 100) / 100 + "GB");
+            eachFile.title += "\n文件路径 : root" + dir;
+            var l = "普通用户";
+            switch (level) {
+                case 0:l = "错误文件"; break;
+                case 1:
+                case 10: l = "普通用户"; break;
+                case 11:
+                case 50: l = "高级用户"; break;
+                case 51:
+                case 100: l = "管理员"; break;
+                default: l = "最高管理员"; break;
+            }
+            eachFile.title += "\n权限需求 : " + l;
+            eachFile.title += "\n文件包数 : " + pag;
+            eachFile.title += "\n是否存在 : " + (isDelete == 0 ? "文件存在" : isDelete == 1 ? "文件已删除,可以找回" : "文件已彻底删除");
         } else {
             newEachFileBottom.innerText = "文件夹";
             newEachFileSize.innerText = "/";
@@ -521,6 +548,7 @@
                 var dir = lt_code.getDomFather(this).dataset.dir;
                 lt_code.history.newSearch(dir);
             }
+            eachFile.title = "文件夹\n路径 : root" + dir;
         }
 
         if (fileName == "/..") {
@@ -561,8 +589,8 @@
                 var x = "";
                 data.forEach(function (i) {
                     eval("x = " + i);
-                    //console.log(x);
-                    newEachFile(x.name, x.size, lt_code.getNum(x.create), true, x.path);
+                    console.log(x);
+                    newEachFile(x.name, x.size, lt_code.getNum(x.create), true, x.path,x.package,x.level,x.delete);
                 });
             },
             error: function (err) {

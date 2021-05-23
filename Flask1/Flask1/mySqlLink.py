@@ -64,9 +64,9 @@ def getValue(sql):
         print(e);
         with open(LOGPATH,"a") as f:
             f.write("报告时间: "+str(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())))
-            f.write("错误内容: "+str(e));
-            f.write("错误文件: "+str(e.__traceback__.tb_frame.f_globals["__file__"]));
-            f.write("错误行数: "+str(e.__traceback__.tb_lineno));
+            f.write("\n错误内容: "+str(e));
+            f.write("\n错误文件: "+str(e.__traceback__.tb_frame.f_globals["__file__"]));
+            f.write("\n错误行数: "+str(e.__traceback__.tb_lineno));
             f.write("\n");
             if str(e)=="(2006, 'MySQL server has gone away')":
                 f.write("系统尝试重新连接数据库...\n");
@@ -83,6 +83,8 @@ def getValue(sql):
 
                     # 使用 fetchone() 方法获取一条数据
                     data = cursor.fetchall();
+
+                    f.write("\n数据库重新连接成功.\n");
 
                     if len(data)==0:
                         if ret==0:
@@ -109,6 +111,8 @@ def getValue(sql):
                         # 使用 fetchone() 方法获取一条数据
                         data = cursor.fetchall();
 
+                        f.write("重启数据库连接成功.\n");
+
                         if len(data)==0:
                             if ret==0:
                                 return False;
@@ -118,6 +122,7 @@ def getValue(sql):
                             return data;
                     except Exception as e3:
                         f.write("重启数据库连接失败,错误内容:"+str(e3));
+                        f.write("\n系统不再尝试连接数据库\n");
                         return False;
 
     #finally:
