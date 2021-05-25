@@ -793,6 +793,12 @@ def web3D():
     return render_template(
         'test3D.html',
     );
+
+@app.route("/testPath/")
+def testPath():
+    return render_template(
+        'testPath.html',        
+    )
     
 
 #@app.route('/')
