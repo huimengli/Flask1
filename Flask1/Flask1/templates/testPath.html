@@ -6,14 +6,37 @@
     <title></title>
     <script src="../static/JavaScriptCode/lt_code.js"></script>
     <script src="http://api.map.baidu.com/api?v=1.4" type="text/javascript"></script>
+    <script src="../static/vConsole/dist/vconsole.min.js"></script>
 </head>
 <body>
     <canvas class="demo"></canvas>
 </body>
 </html>
 <script>
+
+    // 初始化vConsole
+    window.vConsole = new window.VConsole({
+        defaultPlugins: ['system', 'network', 'element', 'storage', 'performance'], // 可以在此设定要默认加载的面板
+        maxLogNumber: 1000,
+        onReady: function () {
+            console.log('vConsole is ready.');
+        },
+        onClearLog: function () {
+            console.log('on clearLog');
+        }
+    });
+</script>
+<script>
     var x = lt_code.getAll(".demo");
-    
+
+    var getPosition = function () {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+        } else {
+            alert("您的手机不支持地理定位");
+        }
+    }
+
     var showPosition = function (position) {
         lat = position.coords.latitude;
         lon = position.coords.longitude;
@@ -30,11 +53,7 @@
     }
 
     try {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(showPosition);
-        } else {
-            alert("您的手机不支持地理定位");
-        }
+        getPosition();
     } catch (e) {
         alert(e);
     }
