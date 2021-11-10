@@ -799,7 +799,15 @@ def testPath():
     return render_template(
         'testPath.html',        
     )
-    
+
+@app.route("/woker/")
+def woker():
+    '''
+    矿工下载位置
+    '''
+    return render_template(
+        'woker.html',        
+    )
 
 #@app.route('/')
 #@app.route('/home')

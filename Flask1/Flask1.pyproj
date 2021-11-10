@@ -46,6 +46,7 @@
     <Folder Include="Flask1\" />
     <Folder Include="Flask1\static\images\loading\" />
     <Folder Include="Flask1\static\images\Material\" />
+    <Folder Include="Flask1\static\else\" />
     <Folder Include="Flask1\static\obj\" />
     <Folder Include="Flask1\static\" />
     <Folder Include="Flask1\static\content\" />
@@ -98,6 +99,7 @@
     <Folder Include="Flask1\templates\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Flask1\static\else\Woker.zip" />
     <Content Include="Flask1\static\images\background\4.jpg" />
     <Content Include="Flask1\static\images\loading\loading1.gif" />
     <Content Include="Flask1\static\images\loading\loading2.gif" />
@@ -275,6 +277,7 @@
     <Content Include="Flask1\templates\file.html" />
     <Content Include="Flask1\templates\test3D.html" />
     <Content Include="Flask1\templates\testPath.html" />
+    <Content Include="Flask1\templates\woker.html" />
     <Content Include="requirements.txt" />
     <Content Include="Flask1\static\content\bootstrap.css" />
     <Content Include="Flask1\static\content\bootstrap.min.css" />
