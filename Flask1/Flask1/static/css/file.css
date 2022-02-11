@@ -217,7 +217,7 @@ div.showBox{
     width:70vw;
     height:calc(100vh - 203px);
     overflow-x:hidden;
-    overflow-y:scroll;
+    overflow-y:auto;
 }
 
 div.eachFile {

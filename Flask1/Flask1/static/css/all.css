@@ -37,3 +37,21 @@
         .allFooter a:visited {
             color: inherit;
         }
+
+*{
+    border:0;
+    margin:0;
+    padding:0;
+}
+
+*::-webkit-scrollbar{
+    background-color:rgba(255,255,255,0.3);
+    border:1px solid snow;
+    width:12px
+}
+
+*::-webkit-scrollbar-thumb{
+    background-color: rgba(70, 129, 255, 0.3);
+    border: 2px solid snow;
+    border-radius: 10px;
+}
