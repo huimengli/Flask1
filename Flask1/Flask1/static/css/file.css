@@ -215,7 +215,7 @@ div.main div.box{
 
 div.showBox{
     width:70vw;
-    height:calc(100vh - 127px);
+    height:calc(100vh - 203px);
     overflow-x:hidden;
     overflow-y:scroll;
 }
