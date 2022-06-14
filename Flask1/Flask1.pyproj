@@ -44,9 +44,11 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Flask1\" />
+    <Folder Include="Flask1\static\images\baiduAPI\" />
     <Folder Include="Flask1\static\images\loading\" />
     <Folder Include="Flask1\static\images\Material\" />
     <Folder Include="Flask1\static\else\" />
+    <Folder Include="Flask1\static\js\baiduAPI\" />
     <Folder Include="Flask1\static\obj\" />
     <Folder Include="Flask1\static\" />
     <Folder Include="Flask1\static\content\" />
@@ -101,6 +103,7 @@
   <ItemGroup>
     <Content Include="Flask1\static\else\Woker.zip" />
     <Content Include="Flask1\static\images\background\4.jpg" />
+    <Content Include="Flask1\static\images\baiduAPI\blank.gif" />
     <Content Include="Flask1\static\images\loading\loading1.gif" />
     <Content Include="Flask1\static\images\loading\loading2.gif" />
     <Content Include="Flask1\static\images\loading\loading3.gif" />
@@ -108,6 +111,9 @@
     <Content Include="Flask1\static\images\loading\loading5.gif" />
     <Content Include="Flask1\static\images\loading\loading6.gif" />
     <Content Include="Flask1\static\images\Material\1000096.jpg" />
+    <Content Include="Flask1\static\js\baiduAPI\abclite-2059-s.js" />
+    <Content Include="Flask1\static\js\baiduAPI\api.js" />
+    <Content Include="Flask1\static\js\baiduAPI\getscript.js" />
     <Content Include="Flask1\static\js\loading.js" />
     <Content Include="Flask1\static\obj\13.js" />
     <Content Include="Flask1\static\obj\17.js" />
