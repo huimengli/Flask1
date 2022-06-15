@@ -42,6 +42,21 @@
     <div class="demo2">
 
     </div>
+    <div class="box">
+        <div class="line">
+
+        </div>
+    </div>
+    <div class="box">
+        <div class="line">
+
+        </div>
+    </div>
+    <div class="box">
+        <div class="line">
+
+        </div>
+    </div>
 </body>
 </html>
 <script>
@@ -93,16 +108,18 @@
 <script>
     var x = 0, y = 0, z = 0;
     window.onload = function () {
-        /**最基础的盒子 */
-        var div = lt_code.newDom("div", {
-            class: "box",
-            style: {
-            }
-        });
-        /**设计一个指针 */
-        var line = lt_code.newDom("div", {
-            class: "line",
-        });
+        ///**最基础的盒子 */
+        //var div = lt_code.newDom("div", {
+        //    class: "box",
+        //});
+        ///**设计一个指针 */
+        //var line = lt_code.newDom("div", {
+        //    class: "line",
+        //});
+
+        //lt_code.addChild(line, div);
+        //lt_code.addChild(div);
+        var lines = lt_code.getAll(".line");
 
         /**陀螺仪 */
         var gyroscope = {
@@ -121,7 +138,9 @@
                     x += gyroscope.x;
                     y += gyroscope.y;
                     z += gyroscope.z;
-                    line.style.transform = "rotate(" +x+ "deg)";
+                    lines[0].style.transform = "rotate(" +x+ "deg)";
+                    lines[1].style.transform = "rotate(" +y+ "deg)";
+                    lines[2].style.transform = "rotate(" +z+ "deg)";
                 }, 33), "显示陀螺仪数据");
             }
             console.log(gyroscope);
@@ -130,9 +149,5 @@
             alert("你的浏览器不支持直接调用传感器!");
         }
 
-        
-
-        lt_code.addChild(line, div);
-        lt_code.addChild(div);
     }
 </script>
