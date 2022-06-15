@@ -91,6 +91,7 @@
     }
 </script>
 <script>
+    var x = 0, y = 0, z = 0;
     window.onload = function () {
         /**最基础的盒子 */
         var div = lt_code.newDom("div", {
@@ -117,7 +118,10 @@
                 gyroscope.start();
                 lt_code.variable.addRun(setInterval(function () {
                     demo2.innerText = "x:" + gyroscope.x + " ;\ny:" + gyroscope.y + " ;\nz:" + gyroscope.z + " ;";
-                    line.style.transform = "rotate(" + (gyroscope.x ? gyroscope.x : 0) + "deg)";
+                    x += gyroscope.x;
+                    y += gyroscope.y;
+                    z += gyroscope.z;
+                    line.style.transform = "rotate(" +x+ "deg)";
                 }, 33), "显示陀螺仪数据");
             }
             console.log(gyroscope);
