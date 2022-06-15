@@ -7,13 +7,39 @@
     <script src="../static/JavaScriptCode/lt_code.js"></script>
     <!--<script src="http://api.map.baidu.com/api?v=1.4" type="text/javascript"></script>-->
     <!--<script src="http://api.map.baidu.com/api?v=1.4" type="text/javascript"></script>-->
-    <script src="../static/vConsole/dist/vconsole.min.js"></script>
+    <!--<script src="../static/vConsole/dist/vconsole.min.js"></script>-->
     <script src="../static/js/baiduAPI/getscript.js"></script>
     <!--<script src="../static/js/baiduAPI/abclite-2059-s.js"></script>-->
+    <style>
+        .box {
+            background-color: black;
+            border: 1px solid blue;
+            width: 200px;
+            height: 200px;
+            border-radius: 100px;
+            margin: 100px auto;
+            position: relative;
+        }
+
+        .line {
+            background-image: linear-gradient(to bottom,red 30%,white 30%,white 100%);
+            width: 5px;
+            height: 100px;
+            transform: rotate(322deg);
+            position: absolute;
+            left: 100px;
+            /* top: 100px; */
+            top: 50px;
+        }
+    </style>
 </head>
 <body>
     <!--<canvas class="demo"></canvas>-->
     <div class="demo">
+
+    </div>
+    <hr />
+    <div class="demo2">
 
     </div>
 </body>
@@ -62,5 +88,47 @@
         getPosition();
     } catch (e) {
         alert(e);
+    }
+</script>
+<script>
+    window.onload = function () {
+        /**最基础的盒子 */
+        var div = lt_code.newDom("div", {
+            class: "box",
+            style: {
+            }
+        });
+        /**设计一个指针 */
+        var line = lt_code.newDom("div", {
+            class: "line",
+        });
+
+        /**陀螺仪 */
+        var gyroscope = {
+            acrivated: false,
+            start: function () { },
+            x:0,y:0,z:0,
+        };
+        try {
+            //创建一个陀螺仪
+            gyroscope = new Gyroscope({ frequency: 30 });
+            var demo2 = lt_code.getAll(".demo2");
+            if (!gyroscope.activated) {
+                gyroscope.start();
+                lt_code.variable.addRun(setInterval(function () {
+                    demo2.innerText = "x:" + gyroscope.x + " ;\ny:" + gyroscope.y + " ;\nz:" + gyroscope.z + " ;";
+                    line.style.transform = "rotate(" + (gyroscope.x ? gyroscope.x : 0) + "deg)";
+                }, 33), "显示陀螺仪数据");
+            }
+            console.log(gyroscope);
+        } catch (e) {
+            alert(e);
+            alert("你的浏览器不支持直接调用传感器!");
+        }
+
+        
+
+        lt_code.addChild(line, div);
+        lt_code.addChild(div);
     }
 </script>
