@@ -135,9 +135,9 @@
                 gyroscope.start();
                 lt_code.variable.addRun(setInterval(function () {
                     demo2.innerText = "x:" + gyroscope.x + " ;\ny:" + gyroscope.y + " ;\nz:" + gyroscope.z + " ;";
-                    x += gyroscope.x;
-                    y += gyroscope.y;
-                    z += gyroscope.z;
+                    x += gyroscope.x*2;
+                    y += gyroscope.y*2;
+                    z += gyroscope.z*2;
                     lines[0].style.transform = "rotate(" +x+ "deg)";
                     lines[1].style.transform = "rotate(" +y+ "deg)";
                     lines[2].style.transform = "rotate(" +z+ "deg)";
