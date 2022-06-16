@@ -109,8 +109,10 @@
     }
 </script>
 <script>
+    lt_code.init("PTD");
     var x = 0, y = 0, z = 0;
     window.onload = function () {
+        var p = lt_code.pseudoThreeD.vector3.None()
         ///**最基础的盒子 */
         //var div = lt_code.newDom("div", {
         //    class: "box",
@@ -201,9 +203,9 @@
                         string = string + (timeX[i] + ":" + oriValuesSqrt[i] + " "); //'当前时间：数据' 的形式显示在前台，方便查看数据
 
                     }
+                    p.transform(x, y, z);
 
-
-                    lt_code.getAll(".demo3").innerText = string;
+                    lt_code.getAll(".demo3").innerText = p.toString();
                 }
 
             }, false);
