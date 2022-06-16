@@ -5,9 +5,11 @@
     <script src="/static/js/jquery-3.3.1.js"></script>
     <script src="/static/three.js/build/three.js"></script>
     <script src="/static/three.js/examples/js/loaders/OBJLoader.js"></script>
+    <script src="../static/three.js/examples/js/loaders/FBXLoader.js"></script>
     <script src="/static/three.js/examples/js/controls/OrbitControls.js"></script>
     <script src="/static/three.js/examples/js/libs/stats.min.js"></script>
     <script src="/static/three.js/examples/js/libs/dat.gui.min.js"></script>
+    <script src="../static/JavaScriptCode/item/pseudoThreeD.js"></script>
     <style>
         div.gui {
             position: fixed;
@@ -15,6 +17,7 @@
             left: 0px;
             width: 100vw;
             height: 0px;
+            display: none;
         }
 
         .gui > div {
@@ -51,7 +54,7 @@
             div.line:hover {
                 transition-duration: 0.3s;
                 background-color: black;
-                color:white;
+                color: white;
             }
 
                 div.line:hover > div {
@@ -62,13 +65,13 @@
                     color: white;
                 }
 
-                div.line:hover div.all {
-                    color: white;
-                }
+                    div.line:hover div.all {
+                        color: white;
+                    }
 
-                div.line:hover div.value {
-                    background-color: black;
-                }
+                    div.line:hover div.value {
+                        background-color: black;
+                    }
 
         /*条标题*/
         div.title {
@@ -80,9 +83,9 @@
             overflow: hidden;
         }
 
-        div.line.value{
-            height:25px;
-            min-height:25px;
+        div.line.value {
+            height: 25px;
+            min-height: 25px;
         }
 
         div.value {
@@ -156,7 +159,7 @@
             top: calc((30px - 18px)/2);
             position: relative;
             left: 20px;
-            float:left;
+            float: left;
         }
 
         /*横拉条*/
@@ -168,10 +171,18 @@
             text-align: center;
         }
 
-        div.select > input[type=radio]{
-            margin:4px;
-            margin-left:8px;
-            cursor:pointer;
+            div.select > input[type=radio] {
+                margin: 4px;
+                margin-left: 8px;
+                cursor: pointer;
+            }
+    </style>
+    <style>
+        video#player {
+            width: calc(100vw - 10px);
+            height: 100vh;
+            position: absolute;
+            z-index: -1;
         }
     </style>
 </head>
@@ -252,36 +263,33 @@
                 是否旋转
             </div>
             <div class="line">
-                <div class="select">    
+                <div class="select">
                     <input type="radio" name="isTrun" value="noTrun" />不旋转
                     <input type="radio" name="isTrun" value="leftTrun" />逆时针
                     <input type="radio" name="isTrun" value="rightTrun" />顺时针
-                </div class="select">
+                </div>
             </div>
         </div>
     </div>
+    <video id="player"></video>
 </body>
 </html>
 <script>
-    /**所有的GUI条 */
-    var lines = lt_code.getAll(".line");
 
     /**旋转y值 */
     let trunY = 0.02;
 
     /**缩放大小 */
-    let zoom = 0.015;
+    let zoom = 15;
 
-    /**每次更改缩放多少 */
-    const trunZoom = 0.001; 
-    
-    //初始化渲染器
+    /**初始化渲染器*/
     var renderer = new THREE.WebGLRenderer({
         //抗锯齿处理
         antialias: true,
         alpha: true
-    }); //实例化渲染器
-    renderer.setSize(window.innerWidth, window.innerHeight); //设置宽和高
+    });
+    //实例化渲染器
+    renderer.setSize(window.innerWidth - 10, window.innerHeight - 50); //设置宽和高
 
     //告诉渲染器需要阴影效果
     renderer.shadowMap.enabled = true;
@@ -292,271 +300,20 @@
     //初始化场景
     var scene = new THREE.Scene(); //实例化场景
 
-    //初始化相机
+    /**初始化相机*/
     var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 200);
     //修改相机位置相机
     camera.position.set(0, 40, 60);
     //修改相机角度
     camera.rotation.set(-45 / 360 * Math.PI, 0, 0);
 
-    //创建obj文件读取器
-    var loader = new THREE.OBJLoader();
-
     //环境光照
     var ambientLight = new THREE.AmbientLight("#999999");
     scene.add(ambientLight);
 
-    //环境光GUI界面设置
-    !function () {
-        /**环境光值显示位置 */
-        var aAll = lt_code.getAll2(".all", lines[4]);
-
-        /**环境光红色值 */
-        var aValueR = lt_code.from16To10(99);
-        /**环境光绿色值 */
-        var aValueG = lt_code.from16To10(99);
-        /**环境光蓝色值 */
-        var aValueB = lt_code.from16To10(99);
-        /**环境光总值 */
-        var aValueAll = "rgb(" + aValueR + "," + aValueG + "," + aValueB + ")";
-
-        /**环境光红光滑块 */
-        var aHR = lt_code.getAll2(".huakuai", lines[1]);
-        /**环境光绿光滑块 */
-        var aHG = lt_code.getAll2(".huakuai", lines[2]);
-        /**环境光蓝光滑块 */
-        var aHB = lt_code.getAll2(".huakuai", lines[3]);
-
-        /**环境光红光已划块 */
-        var aHTR = lt_code.getAll2(".yihuacao", lines[1]);
-        /**环境光绿光已划块 */
-        var aHTG = lt_code.getAll2(".yihuacao", lines[2]);
-        /**环境光蓝光已划块 */
-        var aHTB = lt_code.getAll2(".yihuacao", lines[3]);
-
-        //设定初始值
-        aHR.style.left = (25 + aValueR / 255 * 100).toString() + "px";
-        aHG.style.left = (25 + aValueG / 255 * 100).toString() + "px";
-        aHB.style.left = (25 + aValueB / 255 * 100).toString() + "px";
-        aHTR.style.width = (aValueR / 255 * 100 + 3).toString() + "px";
-        aHTG.style.width = (aValueG / 255 * 100 + 3).toString() + "px";
-        aHTB.style.width = (aValueB / 255 * 100 + 3).toString() + "px";
-        aAll.innerHTML = lt_code.color_change(aValueAll);
-        var acolor = lt_code.getAll2(".acolor", lt_code.getDomFather(aAll));
-        acolor.style.backgroundColor = aValueAll;
-
-        //动态修改数据
-        aHR.onmousedown = function (e) {
-            var nowE = e;
-            aHR.onmousemove = function (e) {
-                /**修改的x值 */
-                var changeX = -(nowE.screenX - e.screenX) / 100 * 255;
-                nowE = e;
-                /**移动后的值 */
-                var move = aValueR + changeX;
-                if (move < 0) {
-                    aValueR = 0;
-                } else if (move > 255) {
-                    aValueR = 255;
-                } else {
-                    aValueR = move;
-                }
-                aValueR = lt_code.getNum(aValueR);
-                aHR.style.left = lt_code.getNum(25 + aValueR / 255 * 100).toString() + "px";
-                aHTR.style.width = lt_code.getNum(aValueR / 255 * 100 + 3).toString() + "px";
-                aValueAll = "rgb(" + aValueR + "," + aValueG + "," + aValueB + ")";
-                ambientLight.color.set(aValueAll);
-                aAll.innerHTML = lt_code.color_change(aValueAll);
-                var acolor = lt_code.getAll2(".acolor", lt_code.getDomFather(aAll));
-                acolor.style.backgroundColor = aValueAll;
-            }
-            lt_code.getDomFather(aHR).onmouseleave = function () { aHR.onmousemove = function () { }; };
-        }
-        aHR.onmouseup = function () { aHR.onmousemove = function () { }; };
-        aHG.onmousedown = function (e) {
-            var nowE = e;
-            aHG.onmousemove = function (e) {
-                /**修改的x值 */
-                var changeX = -(nowE.screenX - e.screenX) / 100 * 255;
-                nowE = e;
-                /**移动后的值 */
-                var move = aValueG + changeX;
-                if (move < 0) {
-                    aValueG = 0;
-                } else if (move > 255) {
-                    aValueG = 255;
-                } else {
-                    aValueG = move;
-                }
-                aValueG = lt_code.getNum(aValueG);
-                aHG.style.left = lt_code.getNum(25 + aValueG / 255 * 100).toString() + "px";
-                aHTG.style.width = lt_code.getNum(aValueG / 255 * 100 + 3).toString() + "px";
-                aValueAll = "rgb(" + aValueR + "," + aValueG + "," + aValueB + ")";
-                ambientLight.color.set(aValueAll);
-                aAll.innerHTML = lt_code.color_change(aValueAll);
-                var acolor = lt_code.getAll2(".acolor", lt_code.getDomFather(aAll));
-                acolor.style.backgroundColor = aValueAll;
-            }
-            lt_code.getDomFather(aHG).onmouseleave = function () { aHG.onmousemove = function () { }; };
-        }
-        aHG.onmouseup = function () { aHG.onmousemove = function () { }; };
-        aHB.onmousedown = function (e) {
-            var nowE = e;
-            aHB.onmousemove = function (e) {
-                /**修改的x值 */
-                var changeX = -(nowE.screenX - e.screenX) / 100 * 255;
-                nowE = e;
-                /**移动后的值 */
-                var move = aValueB + changeX;
-                if (move < 0) {
-                    aValueB = 0;
-                } else if (move > 255) {
-                    aValueB = 255;
-                } else {
-                    aValueB = move;
-                }
-                aValueB = lt_code.getNum(aValueB);
-                aHB.style.left = lt_code.getNum(25 + aValueB / 255 * 100).toString() + "px";
-                aHTB.style.width = lt_code.getNum(aValueB / 255 * 100 + 3).toString() + "px";
-                aValueAll = "rgb(" + aValueR + "," + aValueG + "," + aValueB + ")";
-                ambientLight.color.set(aValueAll);
-                aAll.innerHTML = lt_code.color_change(aValueAll);
-                var acolor = lt_code.getAll2(".acolor", lt_code.getDomFather(aAll));
-                acolor.style.backgroundColor = aValueAll;
-            }
-            lt_code.getDomFather(aHB).onmouseleave = function () { aHB.onmousemove = function () { }; };
-        }
-        aHB.onmouseup = function () { aHB.onmousemove = function () { }; };
-
-    }();
-
     //直接光照
     var directionalLight = new THREE.DirectionalLight("#ffeecc");
     directionalLight.position.set(-40, 60, -10);
-
-    //直接光GUI界面设置
-    !function () {
-        /**直接光值显示位置 */
-        var aAll = lt_code.getAll2(".all", lines[9]);
-
-        /**直接光红色值 */
-        var aValueR = lt_code.from16To10("ff");
-        /**直接光绿色值 */
-        var aValueG = lt_code.from16To10("ff");
-        /**直接光蓝色值 */
-        var aValueB = lt_code.from16To10("ff");
-        /**直接光总值 */
-        var aValueAll = "rgb(" + aValueR + "," + aValueG + "," + aValueB + ")";
-
-        /**直接光红光滑块 */
-        var aHR = lt_code.getAll2(".huakuai", lines[6]);
-        /**直接光绿光滑块 */
-        var aHG = lt_code.getAll2(".huakuai", lines[7]);
-        /**直接光蓝光滑块 */
-        var aHB = lt_code.getAll2(".huakuai", lines[8]);
-
-        /**直接光红光已划块 */
-        var aHTR = lt_code.getAll2(".yihuacao", lines[6]);
-        /**直接光绿光已划块 */
-        var aHTG = lt_code.getAll2(".yihuacao", lines[7]);
-        /**直接光蓝光已划块 */
-        var aHTB = lt_code.getAll2(".yihuacao", lines[8]);
-
-        //设定初始值
-        aHR.style.left = (25 + aValueR / 255 * 100).toString() + "px";
-        aHG.style.left = (25 + aValueG / 255 * 100).toString() + "px";
-        aHB.style.left = (25 + aValueB / 255 * 100).toString() + "px";
-        aHTR.style.width = (aValueR / 255 * 100 + 3).toString() + "px";
-        aHTG.style.width = (aValueG / 255 * 100 + 3).toString() + "px";
-        aHTB.style.width = (aValueB / 255 * 100 + 3).toString() + "px";
-        aAll.innerHTML = lt_code.color_change(aValueAll);
-        var acolor = lt_code.getAll2(".acolor", lt_code.getDomFather(aAll));
-        acolor.style.backgroundColor = aValueAll;
-
-        //动态修改数据
-        aHR.onmousedown = function (e) {
-            var nowE = e;
-            aHR.onmousemove = function (e) {
-                /**修改的x值 */
-                var changeX = -(nowE.screenX - e.screenX) / 100 * 255;
-                nowE = e;
-                /**移动后的值 */
-                var move = aValueR + changeX;
-                if (move < 0) {
-                    aValueR = 0;
-                } else if (move > 255) {
-                    aValueR = 255;
-                } else {
-                    aValueR = move;
-                }
-                aValueR = lt_code.getNum(aValueR);
-                aHR.style.left = lt_code.getNum(25 + aValueR / 255 * 100).toString() + "px";
-                aHTR.style.width = lt_code.getNum(aValueR / 255 * 100 + 3).toString() + "px";
-                aValueAll = "rgb(" + aValueR + "," + aValueG + "," + aValueB + ")";
-                directionalLight.color.set(aValueAll);
-                aAll.innerHTML = lt_code.color_change(aValueAll);
-                var acolor = lt_code.getAll2(".acolor", lt_code.getDomFather(aAll));
-                acolor.style.backgroundColor = aValueAll;
-            }
-            lt_code.getDomFather(aHR).onmouseleave = function () { aHR.onmousemove = function () { }; };
-        }
-        aHR.onmouseup = function () { aHR.onmousemove = function () { }; };
-        aHG.onmousedown = function (e) {
-            var nowE = e;
-            aHG.onmousemove = function (e) {
-                /**修改的x值 */
-                var changeX = -(nowE.screenX - e.screenX) / 100 * 255;
-                nowE = e;
-                /**移动后的值 */
-                var move = aValueG + changeX;
-                if (move < 0) {
-                    aValueG = 0;
-                } else if (move > 255) {
-                    aValueG = 255;
-                } else {
-                    aValueG = move;
-                }
-                aValueG = lt_code.getNum(aValueG);
-                aHG.style.left = lt_code.getNum(25 + aValueG / 255 * 100).toString() + "px";
-                aHTG.style.width = lt_code.getNum(aValueG / 255 * 100 + 3).toString() + "px";
-                aValueAll = "rgb(" + aValueR + "," + aValueG + "," + aValueB + ")";
-                directionalLight.color.set(aValueAll);
-                aAll.innerHTML = lt_code.color_change(aValueAll);
-                var acolor = lt_code.getAll2(".acolor", lt_code.getDomFather(aAll));
-                acolor.style.backgroundColor = aValueAll;
-            }
-            lt_code.getDomFather(aHG).onmouseleave = function () { aHG.onmousemove = function () { }; };
-        }
-        aHG.onmouseup = function () { aHG.onmousemove = function () { }; };
-        aHB.onmousedown = function (e) {
-            var nowE = e;
-            aHB.onmousemove = function (e) {
-                /**修改的x值 */
-                var changeX = -(nowE.screenX - e.screenX) / 100 * 255;
-                nowE = e;
-                /**移动后的值 */
-                var move = aValueB + changeX;
-                if (move < 0) {
-                    aValueB = 0;
-                } else if (move > 255) {
-                    aValueB = 255;
-                } else {
-                    aValueB = move;
-                }
-                aValueB = lt_code.getNum(aValueB);
-                aHB.style.left = lt_code.getNum(25 + aValueB / 255 * 100).toString() + "px";
-                aHTB.style.width = lt_code.getNum(aValueB / 255 * 100 + 3).toString() + "px";
-                aValueAll = "rgb(" + aValueR + "," + aValueG + "," + aValueB + ")";
-                directionalLight.color.set(aValueAll);
-                aAll.innerHTML = lt_code.color_change(aValueAll);
-                var acolor = lt_code.getAll2(".acolor", lt_code.getDomFather(aAll));
-                acolor.style.backgroundColor = aValueAll;
-            }
-            lt_code.getDomFather(aHB).onmouseleave = function () { aHB.onmousemove = function () { }; };
-        }
-        aHB.onmouseup = function () { aHB.onmousemove = function () { }; };
-
-    }();
 
     directionalLight.shadow.camera.near = 20; //产生阴影的最近距离
     directionalLight.shadow.camera.far = 200; //产生阴影的最远距离
@@ -572,6 +329,7 @@
     //告诉平行光需要开启阴影投射
     directionalLight.castShadow = true;
 
+    //将直接光照添加进入场景
     scene.add(directionalLight);
 
     //底部平面
@@ -595,56 +353,95 @@
     plane.receiveShadow = true;
     planeWellMesh.receiveShadow = true;
 
-    scene.add(plane);
-    scene.add(planeWellMesh);
+    //删除底板和背板
+    //scene.add(plane);
+    //scene.add(planeWellMesh);
 
-    /**模型运行挂载 */
-    var run = 0;
 
+
+    /**fbx读取器 */
+    var loader = new THREE.FBXLoader();
+
+    //读取测试模型
     /**导入的模型对象 */
-    var loadMesh;
-
+    var loadMesh = undefined;
     /**
-     * 读取obj模型并导入场景
-     * @param {string} objUrl 模型URL
+     *
+     * @param fbxUrl
      */
-    var loadObj = function (objUrl) {
-
+    var loadFbx = function (fbxUrl) {
         if (loadMesh != undefined) {
             scene.remove(loadMesh);
         }
 
-        //读取obj文件然后放置入场
-        loader.load(objUrl, function (loadedMesh) {
-            let texture_left = new THREE.TextureLoader().load("/static/images/Material/1000096.jpg");
-            texture_left.wrapS = THREE.RepeatWrapping;   //纹理水平方向的平铺方式
-            texture_left.wrapT = THREE.RepeatWrapping; //纹理垂直方向的平铺方式
-
-            let plane_left = new THREE.MeshLambertMaterial();
-            plane_left.map = texture_left;
-            plane_left.side = THREE.DoubleSide;
-
-            var material = new THREE.MeshLambertMaterial({ color: 0xff0000 });
-            //var material = new THREE.MeshNormalMaterial();
+        //读取fbx文件然后放置入场
+        loader.load(fbxUrl, function (loadedMesh) {
 
             console.log(loadedMesh);
 
-            // 加载完obj文件是一个场景组，遍历它的子元素，赋值纹理并且更新面和点的发现了
-            loadedMesh.children.forEach(function (child) {
-                //给每个子元素赋值纹理
-                child.material = plane_left;
-                //更新每个子元素的面和顶点的法向量
-                child.geometry.computeFaceNormals();
-                child.geometry.computeVertexNormals();
+            //scene.add(loadedMesh);
+            window.Meshs = [];
 
-                //每个子部件产生阴影
-                child.castShadow = true;
-            });
+            ////修改模型位置
+            //loadedMesh.position.x += 20;
+            /**添加多个模型*/
+            for (var i = 0; i < 5; i++) {
+                for (var j = 0; j < 5; j++) {
+                    for (var k = 0; k < 5; k++) {
+                        var oneMesh = loadedMesh.clone();
+                        oneMesh.position.set(i * 20, j * 20, k * 20);
+                        scene.add(oneMesh);
+                        window.Meshs.push(oneMesh);
+                    }
+                }
+            }
 
             /**画布对象 */
             var cas = lt_code.getAll("canvas");
 
-            //鼠标移动模型
+            ////鼠标移动模型
+            //cas.onmousedown = function (e) {
+            //    //记录鼠标初始位置
+            //    var nowE = e;
+            //    //鼠标移动
+            //    cas.onmousemove = function (e) {
+            //        //console.log(e);
+            //        /**变动的x */
+            //        var changeEX = e.screenX - nowE.screenX;
+
+            //        /**变动的y */
+            //        var changeEY = e.screenY - nowE.screenY;
+
+            //        nowE = e;
+
+            //        //修改模型位置
+            //        loadedMesh.position.x += changeEX / 14;
+            //        loadedMesh.position.z += changeEY / 10;
+            //    }
+            //};
+
+            ////鼠标旋转模型
+            //cas.onmousedown = function (e) {
+            //    //记录鼠标初始位置
+            //    var nowE = e;
+            //    //鼠标移动
+            //    cas.onmousemove = function (e) {
+            //        //console.log(e);
+            //        /**变动的x */
+            //        var changeEX = e.screenX - nowE.screenX;
+
+            //        /**变动的y */
+            //        var changeEY = e.screenY - nowE.screenY;
+
+            //        nowE = e;
+
+            //        //修改模型旋转
+            //        loadedMesh.rotation.x += changeEY / 100;
+            //        loadedMesh.rotation.y += changeEX / 100;
+            //    }
+            //};
+
+            //鼠标旋转移动模型
             cas.onmousedown = function (e) {
                 //记录鼠标初始位置
                 var nowE = e;
@@ -659,11 +456,67 @@
 
                     nowE = e;
 
-                    //修改模型位置
-                    loadedMesh.position.x += changeEX / 14;
-                    loadedMesh.position.z += changeEY / 10;
+                    if (!e.altKey) {
+                        //修改模型旋转
+                        //loadedMesh.rotation.x += changeEY / 100;
+                        //loadedMesh.rotation.y += changeEX / 100;
+                    } else {
+                        //修改模型位置
+                        loadedMesh.position.x += changeEX / 14;
+                        loadedMesh.position.z += changeEY / 10;
+                    }
                 }
             };
+            window.e = null;
+            window.p = lt_code.pseudoThreeD.vector3.None();
+            window.pe = null;
+            if (window.DeviceOrientationEvent) {
+                window.addEventListener("deviceorientation", function (event) {
+                    e = event;
+                    //var a = document.getElementById('alpha'),
+                    //    b = document.getElementById('beta'),
+                    //    g = document.getElementById('gamma'),
+                    //    alpha = event.alpha,
+                    //    beta = event.beta,
+                    //    gamma = event.gamma;
+
+                    //a.innerHTML = Math.round(alpha);
+                    //b.innerHTML = Math.round(beta);
+                    //g.innerHTML = Math.round(gamma);
+                    var z = event.alpha,
+                        x = event.beta,
+                        y = event.gamma;
+                    //loadedMesh.rotation.x = x/10;
+                    //loadedMesh.rotation.y = y/10;
+                    camera.rotation.z = Math.PI * z / 180;
+                    camera.rotation.x = Math.PI * x / 180;
+                    camera.rotation.y = Math.PI * y / 180;
+                }, true);
+            } else {
+                console.trace('你的浏览器不支持陀螺仪');
+            }
+            if (window.DeviceMotionEvent) {
+                window.addEventListener('devicemotion', function (eventData) {
+                    pe = eventData;
+
+                    var acceleration = eventData.acceleration; //获得加速器对象
+
+                    var x = acceleration.x, //获取x轴当前加速度
+
+                        y = acceleration.y, //获取y轴当前加速度
+
+                        z = acceleration.z; //获取z轴当前加速度
+
+                    p.transform(x, y, z);
+                    //lt_code.getAll(".demo3").innerText = p.toString();
+                    camera.position.set(p.x, p.y, p.z);
+                }, false);
+
+            } else {
+                alert("你的浏览器不支持调用运动传感器!");
+            }
+
+
             //鼠标抬起
             cas.onmouseup = function () {
                 cas.onmousemove = function () { };
@@ -672,7 +525,7 @@
             //鼠标滚轮
             cas.onwheel = function (e) {
                 //console.log(e);
-                if (e.deltaY>0) {
+                if (e.deltaY > 0) {
                     zoom -= trunZoom;
                 } else {
                     zoom += trunZoom;
@@ -684,89 +537,127 @@
             loadedMesh.scale.set(zoom, zoom, zoom);
 
             //模型位置修改
-            loadedMesh.position.set(0, 0, 0);
-
-            ////模型是否产生阴影
-            //loadedMesh.castShadow = true;
-
-            //网格
-            //var mesh = new THREE.Mesh(loadedMesh, material);
-
-            //添加到场景当中
-            scene.add(loadedMesh);
-
-            //运行动画
-            //requestAnimationFrame(function () { console.log(this);}); //循环调用函数
-            run = setInterval(function () {
-                //loadedMesh.rotation.x += 0.01; //每帧网格模型的沿x轴旋转0.01弧度
-                loadedMesh.rotation.y += trunY; //每帧网格模型的沿y轴旋转0.02弧度
-
-                //渲染场景
-                renderer.render(scene, camera); //渲染界面
-            }, 30);
+            loadedMesh.position.set(0, 15, 0);
 
             loadMesh = loadedMesh;
         });
-    };
-
-    /**obj文件数据 */
-    var objInfo = {
-        "name": [
-            "13.js",
-            "17.js",
-            "18.js"
-        ],
-    };
-
-    /**模型选择行 */
-    var selectLine = lt_code.getAll2(".select", lines[11]);
-
-    /**第一个选择显示的模型 */
-    const firstSelect = 1;
-
-    //选择初始模型
-    loadObj("/static/obj/17.js");
-
-    //设置选择模型按钮
-    for (var i = 0; i < objInfo.name.length; i++) {
-
-        var select = lt_code.newDom("input", {
-            type: "radio",
-            value: objInfo.name[i].toString(),
-            name: "selectObj",
-            class:"selectObj",
-        });
-        
-        selectLine.appendChild(select);
-        selectLine.innerHTML += objInfo.name[i].split(".")[0]+".obj";
-    }
-    for (var i = 0; i < objInfo.name.length; i++) {
-        var select = lt_code.getAll(".selectObj", i, selectLine);
-        select.onmousedown = function () {
-            loadObj("/static/obj/" + this.value);
-        }
-        if (firstSelect==i) {
-            select.click();
-        }
     }
 
-    /**模型旋转行 */
-    var trunLine = lt_code.getAll2(".select", lines[13]);
-    /**选择按钮 */
-    var trunBottom = lt_code.getAll2("input", trunLine);
-    trunBottom[0].onmousedown = function () {
-        trunY = 0;
-    };
-    trunBottom[1].onmousedown = function () {
-        trunY = 0.02;
-    };
-    trunBottom[2].onmousedown = function () {
-        trunY = -0.02;
-    };
-    for (var i = 0; i < trunBottom.length; i++) {
-        if (firstSelect==i) {
-            trunBottom[i].click();
-        }
-    }
+    /**加载模型*/
+    loadFbx("../static/fbx/test.fbx");
 
+    /**渲染挂载 */
+    var run = setInterval(function () {
+        //渲染场景
+        renderer.render(scene, camera); //渲染界面
+    }, 33);
 </script>
+<!-- 尝试读取摄像头 -->
+<script>
+    /**媒体流 */
+    var mediaStream = null;
+
+    //获取支持的音视频设备
+    var showDevices = function () {
+        if (!navigator.mediaDevices ||
+            !navigator.mediaDevices.enumerateDevices()) {
+            console.log('不支持')
+        } else {
+            navigator.mediaDevices.enumerateDevices()
+                .then((deviceInfos) => {
+                    deviceInfos.forEach((info) => {
+                        console.log(info.kind + "：label=" +
+                            info.label + "：id=" + info.deviceId + "：group = " + info.groupId);
+                    })
+                })
+                .catch((err) => {
+                    console.log(err.name + "：" + err.message)
+                });
+        }
+    };
+
+    /**
+     * 打开摄像头并且将视频流输出到video
+     * @param {boolean} User
+     */
+    var cameraToVideo = function (User = true) {
+        if (mediaStream) {
+            stopCameraToVideo();
+        }
+        if (navigator.mediaDevices.getUserMedia || navigator.getUserMedia || navigator.webkitGetUserMedia || navigator
+            .mozGetUserMedia) {
+            //var constraints = {
+            //    audio: false,
+            //    video: true
+            //};
+            var constraints = {
+                video: true
+            };
+            if (User) {
+                constraints = {
+                    video: {
+                        facingMode: "user"
+                    }
+                };
+            } else {
+                constraints = {
+                    video: {
+                        facingMode: {
+                            exact: "environment"
+                        }
+                    }
+                }
+            }
+            //调用用户媒体设备, 访问摄像头
+            getUserMedia(constraints, success, error);
+        } else {
+            alert('不支持访问用户媒体');
+        }
+        //访问用户媒体设备的兼容方法
+        function getUserMedia(constraints, success, error) {
+            if (navigator.mediaDevices.getUserMedia) {
+                //最新的标准API
+                navigator.mediaDevices.getUserMedia(constraints).then(success).catch(error);
+            } else if (navigator.webkitGetUserMedia) {
+                //webkit核心浏览器
+                navigator.webkitGetUserMedia(constraints, success, error)
+            } else if (navigator.mozGetUserMedia) {
+                //firfox浏览器
+                navigator.mozGetUserMedia(constraints, success, error);
+            } else if (navigator.getUserMedia) {
+                //旧版API
+                navigator.getUserMedia(constraints, success, error);
+            }
+        }
+
+        //获取video标签
+        var videoPlayer = document.querySelector('video#player')
+
+        function success(stream) {
+            console.log(stream);
+            //将流赋给video标签
+            videoPlayer.srcObject = stream;
+            videoPlayer.play();
+            //videoPlayer.src = stream;
+            mediaStream = stream;
+        }
+
+        function error(error) {
+            console.log(`访问用户媒体设备失败${error.name}, ${error.message}`);
+        }
+    }
+
+    /**停止将摄像头拍到的内容传输到video */
+    var stopCameraToVideo = function () {
+        var video = lt_code.getAll("#player");
+        var tracks = mediaStream.getTracks();
+        tracks.forEach(function (e) {
+            e.stop();
+        });
+        video.srcObject = null;
+    }
+
+    cameraToVideo(false);
+</script>
+
+

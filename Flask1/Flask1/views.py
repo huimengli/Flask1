@@ -794,6 +794,17 @@ def web3D():
         'test3D.html',
     );
 
+@app.route("/web3D2/")
+@app.route("/Web3D2/")
+def web3D2():
+    '''
+    网站3D测试
+    '''
+
+    return render_template(
+        'test3D2.html',
+    );
+
 @app.route("/testPath/")
 @app.route("/testpath/")
 def testPath():
