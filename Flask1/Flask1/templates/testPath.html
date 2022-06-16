@@ -112,8 +112,9 @@
 <script>
     //lt_code.init("PTD");
     var x = 0, y = 0, z = 0;
+    var p = lt_code.pseudoThreeD.vector3.None(),
+        pe = null;
     window.onload = function () {
-        var p = lt_code.pseudoThreeD.vector3.None()
         ///**最基础的盒子 */
         //var div = lt_code.newDom("div", {
         //    class: "box",
@@ -172,14 +173,15 @@
             var string = ''; //定义一个字符串用来显示数据
 
             window.addEventListener('devicemotion', function (eventData) {
+                pe = eventData;
 
-                var currTime = new Date().getTime(); //当前时间
+                //var currTime = new Date().getTime(); //当前时间
 
-                var diffTime = currTime - startTime;//当前时间减最初时间，得到当前时间差
+                //var diffTime = currTime - startTime;//当前时间减最初时间，得到当前时间差
 
-                timeX.push(diffTime); //将当前时间差存放
+                //timeX.push(diffTime); //将当前时间差存放
 
-                var acceleration = eventData.accelerationIncludingGravity; //获得加速器对象
+                var acceleration = eventData.acceleration; //获得加速器对象
 
                 x = acceleration.x; //获取x轴当前加速度
 
@@ -187,27 +189,27 @@
 
                 z = acceleration.z; //获取z轴当前加速度
 
-                oriValuesX.push(x); //将x轴当前加速度存放
+                //oriValuesX.push(x); //将x轴当前加速度存放
 
-                oriValuesY.push(y); //将y轴当前加速度存放
+                //oriValuesY.push(y); //将y轴当前加速度存放
 
-                oriValuesZ.push(z); //将z轴当前加速度存放
+                //oriValuesZ.push(z); //将z轴当前加速度存放
 
-                oriValuesSqrt.push(Math.sqrt(x * x + y * y + z * z)); //将当前xyz加速度平方相加再开根存放
+                //oriValuesSqrt.push(Math.sqrt(x * x + y * y + z * z)); //将当前xyz加速度平方相加再开根存放
 
-                if (timeX.length == 200) { //控制个数
+                //if (timeX.length == 200) { //控制个数
 
-                    //line();//调用line函数，生成图表用的
+                //    //line();//调用line函数，生成图表用的
 
-                    for (var i = 0; i < oriValuesSqrt.length; i++) {
+                //    for (var i = 0; i < oriValuesSqrt.length; i++) {
 
-                        string = string + (timeX[i] + ":" + oriValuesSqrt[i] + " "); //'当前时间：数据' 的形式显示在前台，方便查看数据
+                //        string = string + (timeX[i] + ":" + oriValuesSqrt[i] + " "); //'当前时间：数据' 的形式显示在前台，方便查看数据
 
-                    }
-                    p.transform(x, y, z);
+                //    }
 
-                    lt_code.getAll(".demo3").innerText = p.toString();
-                }
+                //}
+                p.transform(x, y, z);
+                lt_code.getAll(".demo3").innerText = p.toString();
 
             }, false);
 
