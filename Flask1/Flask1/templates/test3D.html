@@ -385,9 +385,9 @@
             ////修改模型位置
             //loadedMesh.position.x += 20;
             /**添加多个模型*/
-            for (var i = 0; i < 5; i++) {
-                for (var j = 0; j < 5; j++) {
-                    for (var k = 0; k < 5; k++) {
+            for (var i = -10; i < 10; i++) {
+                for (var j = -10; j < 10; j++) {
+                    for (var k = -10; k < 10; k++) {
                         var oneMesh = loadedMesh.clone();
                         oneMesh.position.set(i * 20, j * 20, k * 20);
                         scene.add(oneMesh);
