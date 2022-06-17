@@ -488,8 +488,8 @@
                         y = event.gamma;
                     //loadedMesh.rotation.x = x/10;
                     //loadedMesh.rotation.y = y/10;
-                    //先只测试z轴旋转
-                    camera.rotation.z = Math.PI * z / 180;
+                    //先只测试z轴旋转(z轴反了)
+                    camera.rotation.z = -Math.PI * z / 180;
                     //camera.rotation.x = Math.PI * x / 180;
                     //camera.rotation.y = Math.PI * y / 180;
                 }, true);
