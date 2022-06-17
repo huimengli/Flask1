@@ -272,6 +272,12 @@
         </div>
     </div>
     <video id="player"></video>
+    <div class="rotate">
+
+    </div>
+    <div class="position">
+
+    </div>
 </body>
 </html>
 <script>
@@ -469,6 +475,7 @@
             };
             window.e = null;
             window.p = lt_code.pseudoThreeD.vector3.None();
+            window.r = lt_code.pseudoThreeD.vector3.None();
             window.pe = null;
             if (window.DeviceOrientationEvent) {
                 window.addEventListener("deviceorientation", function (event) {
@@ -486,10 +493,14 @@
                     var z = event.alpha,
                         x = event.beta,
                         y = event.gamma;
+                    r.x = x, r.y = y, r.z = z;
+                    lt_code.getAll(".rotate").innerText = r.toString();
                     //loadedMesh.rotation.x = x/10;
                     //loadedMesh.rotation.y = y/10;
-                    //先只测试z轴旋转(z轴反了)
-                    camera.rotation.z = -Math.PI * z / 180;
+                    //先只测试z轴旋转
+                    camera.rotation.z = Math.PI * z / 180;
+                    camera.rotation.x = 0;
+                    camera.rotation.y = 0;
                     //camera.rotation.x = Math.PI * x / 180;
                     //camera.rotation.y = Math.PI * y / 180;
                 }, true);
@@ -509,6 +520,7 @@
                         z = acceleration.z; //获取z轴当前加速度
 
                     p.transform(x, y, z);
+                    lt_code.getAll(".position").innerText = p.toString();
                     //lt_code.getAll(".demo3").innerText = p.toString();
                     //camera.position.set(p.x, p.y, p.z);
                 }, false);
