@@ -363,6 +363,10 @@
     //scene.add(plane);
     //scene.add(planeWellMesh);
 
+    /**摄像机云台盒子最外层 */
+    var cameraBoxBox = new THREE.Mesh();
+    /**摄像机云台盒子中层 */
+    var cameraBox = new THREE.Mesh();
 
 
     /**fbx读取器 */
@@ -478,8 +482,6 @@
             window.r = lt_code.pseudoThreeD.vector3.None();
             window.pe = null;
             if (window.DeviceOrientationEvent) {
-                var cameraBoxBox = new THREE.Mesh();
-                var cameraBox = new THREE.Mesh();
                 cameraBox.position.set(0, 0, 0);
                 cameraBox.rotation.set(0, 0, 0);
                 cameraBoxBox.position.set(0, 0, 0);
@@ -513,9 +515,10 @@
                     //camera.rotation.x = Math.PI * x / 180;  //x轴测试完成,视角非常精确
                     //camera.rotation.y = Math.PI * y / 180;  //y轴测试完成,视角较为精确
                     //使用云台的方式处理摄像机
-                    camera.rotation.z = Math.PI * z / 180;
-                    cameraBox.rotation.x = Math.PI * x / 180;
-                    cameraBoxBox.rotation.y = Math.PI * y / 180;
+                    //camera.rotation.z = Math.PI * z / 180;
+                    //cameraBox.rotation.x = Math.PI * x / 180;
+                    //cameraBoxBox.rotation.y = Math.PI * y / 180;
+                    camera.lookAt(x, y, z);
                 }, true);
             } else {
                 console.trace('你的浏览器不支持陀螺仪');
