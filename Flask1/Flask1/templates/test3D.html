@@ -498,11 +498,10 @@
                     //loadedMesh.rotation.x = x/10;
                     //loadedMesh.rotation.y = y/10;
                     //先只测试单轴旋转
-                    //camera.rotation.z = Math.PI * z / 180; //z轴大致完成了,但是在手机竖起来后有奇怪偏移
-                    //camera.rotation.x = Math.PI * x / 180;  //x轴测试完成,视角非常精确
-                    camera.rotation.z = 0;
-                    camera.rotation.x = 0;
-                    camera.rotation.y = Math.PI * y / 180;
+                    //单轴测试完成,开始多轴测试
+                    camera.rotation.z = Math.PI * z / 180; //z轴大致完成了,但是在手机竖起来后有奇怪偏移
+                    camera.rotation.x = Math.PI * x / 180;  //x轴测试完成,视角非常精确
+                    camera.rotation.y = Math.PI * y / 180;  //y轴测试完成,视角较为精确
                 }, true);
             } else {
                 console.trace('你的浏览器不支持陀螺仪');
