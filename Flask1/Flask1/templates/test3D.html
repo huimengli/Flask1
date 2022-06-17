@@ -488,9 +488,10 @@
                         y = event.gamma;
                     //loadedMesh.rotation.x = x/10;
                     //loadedMesh.rotation.y = y/10;
+                    //先只测试z轴旋转
                     camera.rotation.z = Math.PI * z / 180;
-                    camera.rotation.x = Math.PI * x / 180;
-                    camera.rotation.y = Math.PI * y / 180;
+                    //camera.rotation.x = Math.PI * x / 180;
+                    //camera.rotation.y = Math.PI * y / 180;
                 }, true);
             } else {
                 console.trace('你的浏览器不支持陀螺仪');
@@ -509,7 +510,7 @@
 
                     p.transform(x, y, z);
                     //lt_code.getAll(".demo3").innerText = p.toString();
-                    camera.position.set(p.x, p.y, p.z);
+                    //camera.position.set(p.x, p.y, p.z);
                 }, false);
 
             } else {

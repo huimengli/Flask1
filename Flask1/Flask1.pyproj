@@ -5018,6 +5018,7 @@
     <Content Include="Flask1\templates\changeValue.html" />
     <Content Include="Flask1\templates\file.html" />
     <Content Include="Flask1\templates\test3D.html" />
+    <Content Include="Flask1\templates\test3D2.html" />
     <Content Include="Flask1\templates\testPath.html" />
     <Content Include="Flask1\templates\woker.html" />
     <Content Include="requirements.txt" />
