@@ -478,6 +478,16 @@
             window.r = lt_code.pseudoThreeD.vector3.None();
             window.pe = null;
             if (window.DeviceOrientationEvent) {
+                var cameraBoxBox = new THREE.Mesh();
+                var cameraBox = new THREE.Mesh();
+                cameraBox.position.set(0, 0, 0);
+                cameraBox.rotation.set(0, 0, 0);
+                cameraBoxBox.position.set(0, 0, 0);
+                cameraBoxBox.rotation.set(0, 0, 0);
+                camera.position.set(0, 0, 0);
+                camera.rotation.set(0, 0, 0);
+                cameraBox.attach(camera);
+                cameraBoxBox.attach(cameraBox);
                 window.addEventListener("deviceorientation", function (event) {
                     e = event;
                     //var a = document.getElementById('alpha'),
@@ -497,11 +507,15 @@
                     lt_code.getAll(".rotate").innerText = r.toString();
                     //loadedMesh.rotation.x = x/10;
                     //loadedMesh.rotation.y = y/10;
-                    //先只测试单轴旋转
-                    //单轴测试完成,开始多轴测试
-                    camera.rotation.z = Math.PI * z / 180; //z轴大致完成了,但是在手机竖起来后有奇怪偏移
-                    camera.rotation.x = Math.PI * x / 180;  //x轴测试完成,视角非常精确
-                    camera.rotation.y = Math.PI * y / 180;  //y轴测试完成,视角较为精确
+                    ////先只测试单轴旋转
+                    ////单轴测试完成,开始多轴测试
+                    //camera.rotation.z = Math.PI * z / 180;  //z轴大致完成了,但是在手机竖起来后有奇怪偏移
+                    //camera.rotation.x = Math.PI * x / 180;  //x轴测试完成,视角非常精确
+                    //camera.rotation.y = Math.PI * y / 180;  //y轴测试完成,视角较为精确
+                    //使用云台的方式处理摄像机
+                    camera.rotation.z = Math.PI * z / 180;
+                    cameraBox.rotation.x = Math.PI * x / 180;
+                    cameraBoxBox.rotation.y = Math.PI * y / 180;
                 }, true);
             } else {
                 console.trace('你的浏览器不支持陀螺仪');
