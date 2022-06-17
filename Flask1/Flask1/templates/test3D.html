@@ -364,9 +364,11 @@
     //scene.add(planeWellMesh);
 
     /**摄像机云台盒子最外层 */
-    var cameraBoxBox = new THREE.Mesh();
+    var cameraBoxBox = new THREE.Group();
     /**摄像机云台盒子中层 */
-    var cameraBox = new THREE.Mesh();
+    var cameraBox = new THREE.Group();
+    /**摄像机云台盒子最底层 */
+    var camerabox = new THREE.Group();
 
 
     /**fbx读取器 */
@@ -488,8 +490,12 @@
                 cameraBoxBox.rotation.set(0, 0, 0);
                 camera.position.set(0, 0, 0);
                 camera.rotation.set(0, 0, 0);
-                cameraBox.attach(camera);
+                camerabox.position.set(0, 0, 0);
+                camerabox.rotation.set(0, 0, 0);
+                camerabox.attach(camera);
+                cameraBox.attach(camerabox);
                 cameraBoxBox.attach(cameraBox);
+                scene.add(cameraBoxBox);
                 window.addEventListener("deviceorientation", function (event) {
                     e = event;
                     //var a = document.getElementById('alpha'),
@@ -515,10 +521,10 @@
                     //camera.rotation.x = Math.PI * x / 180;  //x轴测试完成,视角非常精确
                     //camera.rotation.y = Math.PI * y / 180;  //y轴测试完成,视角较为精确
                     //使用云台的方式处理摄像机
-                    //camera.rotation.z = Math.PI * z / 180;
-                    //cameraBox.rotation.x = Math.PI * x / 180;
-                    //cameraBoxBox.rotation.y = Math.PI * y / 180;
-                    camera.lookAt(x, y, z);
+                    camera.rotation.z = Math.PI * z / 180;
+                    cameraBox.rotation.x = Math.PI * x / 180;
+                    cameraBoxBox.rotation.y = Math.PI * y / 180;
+                    //camera.lookAt(0, 0, 0);       //如果能算出根据三轴夹角的向量,倒是可以用lookAt函数
                 }, true);
             } else {
                 console.trace('你的浏览器不支持陀螺仪');
