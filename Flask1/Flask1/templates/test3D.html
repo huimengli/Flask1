@@ -497,11 +497,11 @@
                     lt_code.getAll(".rotate").innerText = r.toString();
                     //loadedMesh.rotation.x = x/10;
                     //loadedMesh.rotation.y = y/10;
-                    //先只测试z轴旋转
-                    camera.rotation.z = Math.PI * z / 180;
-                    camera.rotation.x = 0;
+                    //先只测试单轴旋转
+                    //camera.rotation.z = Math.PI * z / 180; //z轴大致完成了
+                    camera.rotation.z = 0;
+                    camera.rotation.x = Math.PI * x / 180;  //开始测试x轴旋转
                     camera.rotation.y = 0;
-                    //camera.rotation.x = Math.PI * x / 180;
                     //camera.rotation.y = Math.PI * y / 180;
                 }, true);
             } else {
