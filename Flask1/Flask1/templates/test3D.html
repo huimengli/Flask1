@@ -613,7 +613,8 @@
                 //} else {
                 //    alert("你的浏览器不支持直接调用陀螺仪接口");
                 //}
-
+                /**三维向量 */
+                var v3 = lt_code.pseudoThreeD.vector3;
                 window.addEventListener("deviceorientation", function (event) {
                     e = event;
                     //var a = document.getElementById('alpha'),
@@ -681,10 +682,11 @@
                             cameraBox.rotation.y = Math.PI * (1 - Math.sin(x)) * y / 180;
                             cameraBoxBox.rotation.z = Math.PI * (z - oldz - Math.abs(y)) / 180;
                         }
-                        re.x = camerabox.rotation.x;
-                        re.y = cameraBox.rotation.y;
-                        re.z = cameraBoxBox.rotation.z;
-                        lt_code.getAll(".realRotate").innerText = re.toString(5);
+                        lt_code.getAll(".realRotate").innerText =
+                            "\n摄像机: " + new v3(camera.rotation.x, camera.rotation.y, camera.rotation.z).toString(5) +
+                            "\n第一层: " + new v3(camerabox.rotation.x, camerabox.rotation.y, camerabox.rotation.z).toString(5) +
+                            "\n第二层: " + new v3(cameraBox.rotation.x, cameraBox.rotation.y, cameraBox.rotation.z).toString(5) +
+                            "\n第三层: " + new v3(cameraBoxBox.rotation.x, cameraBoxBox.rotation.y, cameraBoxBox.rotation.z).toString(5);
                     }
                     ////y值有问题,需要修正
                     //y = y < 0 ? 180 + y : y;
