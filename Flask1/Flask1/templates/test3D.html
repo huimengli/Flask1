@@ -576,6 +576,10 @@
                     ////cameraBoxBox.rotation.y = Math.PI * z / 180;//把y轴换为z轴
                     //cameraBoxBox.rotation.y = Math.PI * x / 180;
                     ////camera.lookAt(0, 0, 0);       //如果能算出根据三轴夹角的向量,倒是可以用lookAt函数
+                    //重新测试单轴向
+                    camera.rotation.x = Math.PI * x / 180;
+                    camera.rotation.y = 0;
+                    camera.rotation.z = 0;
                 }, true);
             } else {
                 console.trace('你的浏览器不支持陀螺仪');
@@ -628,8 +632,8 @@
                     }
                     //减小移动量变更
                     var tp = lt_code.pseudoThreeD.vector3.zoom(p, 0.1);
-                    camera.lookAt(tp.x, tp.y, tp.z);
-                    cameraBoxBox.position.set(tp.x, tp.y - 40, tp.z);
+                    //camera.lookAt(tp.x, tp.y, tp.z);
+                    //cameraBoxBox.position.set(tp.x, tp.y - 40, tp.z);
                 }, false);
 
             } else {
