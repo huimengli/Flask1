@@ -186,7 +186,7 @@
             z-index: -1;
         }
 
-        div.position, div.rotate,div.realRatate {
+        div.position, div.rotate,div.realRotate {
             font-size: 40px;
             position: fixed;
             background-color: rgba(255,255,255,0.3);
@@ -200,10 +200,10 @@
         div.rotate::before{
             content:"旋转角度: ";
         }
-        div.realRatate{
+        div.realRotate{
             top:106px;
         }
-        div.realRatate::before{
+        div.realRotate::before{
             content:"真实旋转角度: ";
         }
     </style>
@@ -300,7 +300,7 @@
     <div class="position">
 
     </div>
-    <div class="realRatate">
+    <div class="realRotate">
 
     </div>
 </body>
@@ -584,7 +584,19 @@
                     }
                     window.addEventListener("deviceorientation", function (event) {
                         e = event;
-                        
+                        var z = event.alpha,
+                            x = event.beta,
+                            y = event.gamma;
+                        r.x = x, r.y = y, r.z = z;
+                        lt_code.getAll(".rotate").innerText = r.toString(2);
+
+                        m1.rotation.x = Math.PI * x / 180;
+                        m2.rotation.y = Math.PI * y / 180;
+                        m3.rotation.z = Math.PI * z / 180;
+                        m4.rotation.x = Math.PI * x / 180;
+                        m4.rotation.y = Math.PI * y / 180;
+                        m4.rotation.z = Math.PI * z / 180;
+
                         re.x = gyroscope.x;
                         re.y = gyroscope.y;
                         re.z = gyroscope.z;
