@@ -571,10 +571,10 @@
                     //camera.rotation.y = Math.PI * y / 180;  //y轴测试完成,视角较为精确
                     //使用云台的方式处理摄像机
                     camerabox.rotation.z = Math.PI * z / 180;     
-                    //cameraBox.rotation.x = Math.PI * x / 180; //取消x轴
+                    cameraBox.rotation.x = Math.PI * y / 180; //交换xy
                     //z += 90;                                    //初始角度+90,不然可能会错误
                     //cameraBoxBox.rotation.y = Math.PI * z / 180;//把y轴换为z轴
-                    cameraBoxBox.rotation.y = Math.PI * y / 180;
+                    cameraBoxBox.rotation.y = Math.PI * x / 180;
                     //camera.lookAt(0, 0, 0);       //如果能算出根据三轴夹角的向量,倒是可以用lookAt函数
                 }, true);
             } else {
