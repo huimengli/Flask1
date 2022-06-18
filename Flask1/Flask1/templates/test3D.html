@@ -562,20 +562,20 @@
                         y = event.gamma;
                     r.x = x, r.y = y, r.z = z;
                     lt_code.getAll(".rotate").innerText = r.toString(2);
-                    //loadedMesh.rotation.x = x/10;
-                    //loadedMesh.rotation.y = y/10;
-                    ////先只测试单轴旋转
-                    ////单轴测试完成,开始多轴测试
-                    //camera.rotation.z = Math.PI * z / 180;  //z轴大致完成了,但是在手机竖起来后有奇怪偏移
-                    //camera.rotation.x = Math.PI * x / 180;  //x轴测试完成,视角非常精确
-                    //camera.rotation.y = Math.PI * y / 180;  //y轴测试完成,视角较为精确
-                    //使用云台的方式处理摄像机
-                    camerabox.rotation.z = Math.PI * z / 180;     
-                    cameraBox.rotation.x = Math.PI * y / 180; //交换xy
-                    //z += 90;                                    //初始角度+90,不然可能会错误
-                    //cameraBoxBox.rotation.y = Math.PI * z / 180;//把y轴换为z轴
-                    cameraBoxBox.rotation.y = Math.PI * x / 180;
-                    //camera.lookAt(0, 0, 0);       //如果能算出根据三轴夹角的向量,倒是可以用lookAt函数
+                    ////loadedMesh.rotation.x = x/10;
+                    ////loadedMesh.rotation.y = y/10;
+                    //////先只测试单轴旋转
+                    //////单轴测试完成,开始多轴测试
+                    ////camera.rotation.z = Math.PI * z / 180;  //z轴大致完成了,但是在手机竖起来后有奇怪偏移
+                    ////camera.rotation.x = Math.PI * x / 180;  //x轴测试完成,视角非常精确
+                    ////camera.rotation.y = Math.PI * y / 180;  //y轴测试完成,视角较为精确
+                    ////使用云台的方式处理摄像机
+                    //camerabox.rotation.z = Math.PI * z / 180;     
+                    //cameraBox.rotation.x = Math.PI * y / 180; //交换xy
+                    ////z += 90;                                    //初始角度+90,不然可能会错误
+                    ////cameraBoxBox.rotation.y = Math.PI * z / 180;//把y轴换为z轴
+                    //cameraBoxBox.rotation.y = Math.PI * x / 180;
+                    ////camera.lookAt(0, 0, 0);       //如果能算出根据三轴夹角的向量,倒是可以用lookAt函数
                 }, true);
             } else {
                 console.trace('你的浏览器不支持陀螺仪');
@@ -596,6 +596,40 @@
                     lt_code.getAll(".position").innerText = p.toString(2);
                     //lt_code.getAll(".demo3").innerText = p.toString();
                     //camera.position.set(p.x, p.y, p.z);
+                    //先放弃使用轴向,直接使用手机移动来设置摄像头位置
+                    if (lt_code.pseudoThreeD.vector3.prototype.clone == undefined) {
+                        /**追加克隆功能 */
+                        lt_code.pseudoThreeD.vector3.prototype.clone = function () {
+                            return new lt_code.pseudoThreeD.vector3(this.x, this.y, this.z);
+                        }
+                        lt_code.pseudoThreeD.vector3.prototype.zoom = function (zoom) {
+                            this.x *= zoom;
+                            this.y *= zoom;
+                            this.z *= zoom;
+                            return this;
+                        }
+                        lt_code.pseudoThreeD.vector3.zoom = function (v, zoom) {
+                            return v.clone().zoom(zoom);
+                        }
+                    }
+                    if (lt_code.pseudoThreeD.vector2.prototype.clone == undefined) {
+                        /**追加克隆功能 */
+                        lt_code.pseudoThreeD.vector2.prototype.clone = function () {
+                            return new lt_code.pseudoThreeD.vector2(this.x, this.y);
+                        }
+                        lt_code.pseudoThreeD.vector2.prototype.zoom = function (zoom) {
+                            this.x *= zoom;
+                            this.y *= zoom;
+                            return this;
+                        }
+                        lt_code.pseudoThreeD.vector2.zoom = function (v,zoom) {
+                            return v.clone().zoom(zoom);
+                        }
+                    }
+                    //减小移动量变更
+                    var tp = lt_code.pseudoThreeD.vector3.zoom(p, 0.1);
+                    camera.lookAt(tp.x, tp.y, tp.z);
+                    cameraBoxBox.position.set(tp.x, tp.y - 40, tp.z);
                 }, false);
 
             } else {
