@@ -642,11 +642,38 @@
                         y = event.gamma;
                     r.x = x, r.y = y, r.z = z;
 
+                    /*-------------------------------------------*\
+                     * 通过5次真实+1次虚假陀螺仪调用
+                     * 看起来比之前效果好了很多
                     if (time++<overTime) {
                         camerabox.rotation.x = Math.PI * re.x / 180;
                         cameraBox.rotation.y = Math.PI * re.y / 180;
                         cameraBoxBox.rotation.z = Math.PI * re.z / 180;
                     } else {
+                        time = 0;
+                        camerabox.rotation.x = Math.PI * x / 180;
+                        //当x值在80-100°之间时,y值直接不计算,并且根据y值修正z值
+                        if (x < 65 || x > 115) {
+                            cameraBox.rotation.y = Math.PI * y / 180;
+                            cameraBoxBox.rotation.z = Math.PI * (z - oldz) / 180;
+                        } else {
+                            //y轴原有的偏移过大使用sin函数修正(修正值依旧过大)
+                            //cameraBox.rotation.y = Math.PI * (1 - Math.sin(x)) * y / 180;
+                            //尝试通过二次方程修正
+                            cameraBox.rotation.y = Math.PI * (1 - (-0.0016 * x * x + 0.288 * x - 11.96)) * y / 180;
+                            //cameraBoxBox.rotation.z = Math.PI * (z - oldz - Math.abs(y)) / 180;
+                            //取消y轴补偿
+                            cameraBoxBox.rotation.z = Math.PI * (z - oldz) / 180;
+                        }
+                    }
+                    \*-------------------------------------------*/
+
+                    if (time++ < overTime) {
+                        camerabox.rotation.x = Math.PI * re.x / 180;
+                        cameraBox.rotation.y = Math.PI * re.y / 180;
+                        cameraBoxBox.rotation.z = Math.PI * re.z / 180;
+                    } else {
+                        time = 0;
                         camerabox.rotation.x = Math.PI * x / 180;
                         //当x值在80-100°之间时,y值直接不计算,并且根据y值修正z值
                         if (x < 65 || x > 115) {
@@ -746,6 +773,26 @@
                             "\n第三层: " + new v3(cameraBoxBox.rotation.x, cameraBoxBox.rotation.y, cameraBoxBox.rotation.z).toString(5);
                     }
                     \*---------------------------------------*/
+
+                    //if (oldz == null) {
+                    //    oldz = z;
+                    //    return;
+                    //} else {
+                    //    camerabox.rotation.x = Math.PI * x / 180;
+                    //    //当x值在80-100°之间时,y值直接不计算,并且根据y值修正z值
+                    //    if (x < 65 || x > 115) {
+                    //        cameraBox.rotation.y = Math.PI * y / 180;
+                    //        cameraBoxBox.rotation.z = Math.PI * (z - oldz) / 180;
+                    //    } else {
+                    //        //y轴原有的偏移过大使用sin函数修正(修正值依旧过大)
+                    //        //cameraBox.rotation.y = Math.PI * (1 - Math.sin(x)) * y / 180;
+                    //        //尝试通过二次方程修正
+                    //        cameraBox.rotation.y = Math.PI * (1 - (-0.0016 * x * x + 0.288 * x - 11.96)) * y / 180;
+                    //        //cameraBoxBox.rotation.z = Math.PI * (z - oldz - Math.abs(y)) / 180;
+                    //        //取消y轴补偿
+                    //        cameraBoxBox.rotation.z = Math.PI * (z - oldz) / 180;
+                    //    }
+                    //}
 
                     ////y值有问题,需要修正
                     //y = y < 0 ? 180 + y : y;
