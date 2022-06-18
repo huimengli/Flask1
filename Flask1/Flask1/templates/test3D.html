@@ -324,9 +324,9 @@
     /**初始化相机*/
     var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 200);
     //修改相机位置相机
-    camera.position.set(0, 40, 60);
+    //camera.position.set(0, 40, 60);
     //修改相机角度
-    camera.rotation.set(-45 / 360 * Math.PI, 0, 0);
+    //camera.rotation.set(-45 / 360 * Math.PI, 0, 0);
 
     //环境光照
     var ambientLight = new THREE.AmbientLight("#999999");
@@ -386,6 +386,7 @@
         side: THREE.DoubleSide,
     });
     var mesh = new THREE.Mesh(plane, material);
+    mesh.position.set(0, 0, 0);
     scene.add(mesh);
 
     /**摄像机云台盒子最外层 */
@@ -421,7 +422,7 @@
 
             ////修改模型位置
             //loadedMesh.position.x += 20;
-            scene.add(loadedMesh);
+            //scene.add(loadedMesh);
             /**添加多个模型*/
             //for (var i = -10; i < 10; i++) {
             //    for (var j = -10; j < 10; j++) {
