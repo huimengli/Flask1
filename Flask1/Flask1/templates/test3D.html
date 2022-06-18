@@ -442,16 +442,16 @@
             //loadedMesh.position.x += 20;
             //scene.add(loadedMesh);
             /**添加多个模型*/
-            for (var i = -10; i < 10; i++) {
-                for (var j = -10; j < 10; j++) {
-                    for (var k = -10; k < 10; k++) {
-                        var oneMesh = loadedMesh.clone();
-                        oneMesh.position.set(i * 20, j * 20, k * 20);
-                        scene.add(oneMesh);
-                        window.Meshs.push(oneMesh);
-                    }
-                }
-            }
+            //for (var i = -10; i < 10; i++) {
+            //    for (var j = -10; j < 10; j++) {
+            //        for (var k = -10; k < 10; k++) {
+            //            var oneMesh = loadedMesh.clone();
+            //            oneMesh.position.set(i * 20, j * 20, k * 20);
+            //            scene.add(oneMesh);
+            //            window.Meshs.push(oneMesh);
+            //        }
+            //    }
+            //}
 
             /**画布对象 */
             var cas = lt_code.getAll("canvas");
@@ -546,6 +546,25 @@
                 cameraBoxBox.position.set(0, 0, 50);
                 scene.add(cameraBoxBox);
                 var oldz = null;
+
+                //测试物体
+                window.m1 = loadedMesh.clone();
+                m1.scale.set(10, 10, 10);
+                window.m2 = m1.clone();
+                window.m3 = m2.clone();
+
+                window.m4 = m3.clone();
+
+                scene.add(m1);
+                scene.add(m2);
+                scene.add(m3);
+                scene.add(m4);
+
+                m1.position.set(-20, 0, 0);
+                m2.position.set(0, 0, 0);
+                m3.position.set(20, 0, 0);
+                m4.position.set(0, 20, 0);
+
                 window.addEventListener("deviceorientation", function (event) {
                     e = event;
                     //var a = document.getElementById('alpha'),
@@ -583,13 +602,19 @@
                     //camera.rotation.z = 0;
                     //使用云台的方式操作相机,但是记录第一次z轴的位置,并且在之后的数据中都减去z轴数据
                     //同时给x轴加上80度,模拟手机立起来的情况
-                    if (oldz == null) {
-                        oldz = z;
-                    } else {
-                        camerabox.rotation.x = Math.PI * x / 180;
-                        cameraBox.rotation.y = Math.PI * y / 180;
-                        cameraBoxBox.rotation.z = Math.PI * (z - oldz) / 180;
-                    }
+                    //if (oldz == null) {
+                    //    oldz = z;
+                    //} else {
+                    //    camerabox.rotation.x = Math.PI * x / 180;
+                    //    cameraBox.rotation.y = Math.PI * y / 180;
+                    //    cameraBoxBox.rotation.z = Math.PI * (z - oldz) / 180;
+                    //}
+                    m1.rotation.x = Math.PI * x / 180;
+                    m2.rotation.y = Math.PI * y / 180;
+                    m3.rotation.z = Math.PI * z / 180;
+                    m4.rotation.x = Math.PI * x / 180;
+                    m4.rotation.y = Math.PI * y / 180;
+                    m4.rotation.z = Math.PI * z / 180;
                 }, true);
             } else {
                 console.trace('你的浏览器不支持陀螺仪');
