@@ -545,6 +545,7 @@
                 cameraBoxBox.attach(cameraBox);
                 cameraBoxBox.position.set(0, 0, 50);
                 scene.add(cameraBoxBox);
+                var oldz = null;
                 window.addEventListener("deviceorientation", function (event) {
                     e = event;
                     //var a = document.getElementById('alpha'),
@@ -576,10 +577,19 @@
                     ////cameraBoxBox.rotation.y = Math.PI * z / 180;//把y轴换为z轴
                     //cameraBoxBox.rotation.y = Math.PI * x / 180;
                     ////camera.lookAt(0, 0, 0);       //如果能算出根据三轴夹角的向量,倒是可以用lookAt函数
-                    //重新测试单轴向
-                    camera.rotation.x = Math.PI * x / 180;
-                    camera.rotation.y = 0;
-                    camera.rotation.z = 0;
+                    ////重新测试单轴向
+                    //camera.rotation.x = Math.PI * x / 180;
+                    //camera.rotation.y = 0;
+                    //camera.rotation.z = 0;
+                    //使用云台的方式操作相机,但是记录第一次z轴的位置,并且在之后的数据中都减去z轴数据
+                    //同时给x轴加上80度,模拟手机立起来的情况
+                    if (oldz == null) {
+                        oldz = z;
+                    } else {
+                        camerabox.rotation.x = Math.PI * (x + 80) / 180;
+                        cameraBox.rotation.y = Math.PI * y / 180;
+                        cameraBoxBox.rotation.z = Math.PI * (z - oldz) / 180;
+                    }
                 }, true);
             } else {
                 console.trace('你的浏览器不支持陀螺仪');
