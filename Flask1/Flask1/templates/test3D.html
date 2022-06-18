@@ -184,6 +184,10 @@
             position: absolute;
             z-index: -1;
         }
+
+        div.position,div.rotate{
+            font-size:40px;
+        }
     </style>
 </head>
 <body>
@@ -512,7 +516,7 @@
                         x = event.beta,
                         y = event.gamma;
                     r.x = x, r.y = y, r.z = z;
-                    lt_code.getAll(".rotate").innerText = r.toString();
+                    lt_code.getAll(".rotate").innerText = r.toString(2);
                     //loadedMesh.rotation.x = x/10;
                     //loadedMesh.rotation.y = y/10;
                     ////先只测试单轴旋转
@@ -542,7 +546,7 @@
                         z = acceleration.z; //获取z轴当前加速度
 
                     p.transform(x, y, z);
-                    lt_code.getAll(".position").innerText = p.toString();
+                    lt_code.getAll(".position").innerText = p.toString(2);
                     //lt_code.getAll(".demo3").innerText = p.toString();
                     //camera.position.set(p.x, p.y, p.z);
                 }, false);
