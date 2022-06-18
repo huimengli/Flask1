@@ -609,6 +609,9 @@
                     //    cameraBox.rotation.y = Math.PI * y / 180;
                     //    cameraBoxBox.rotation.z = Math.PI * (z - oldz) / 180;
                     //}
+                    //y值有问题,需要修正
+                    y = y < 0 ? 180 + y : y;
+
                     m1.rotation.x = Math.PI * x / 180;
                     m2.rotation.y = Math.PI * y / 180;
                     m3.rotation.z = Math.PI * z / 180;
