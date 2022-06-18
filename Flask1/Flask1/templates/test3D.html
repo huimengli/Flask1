@@ -659,6 +659,8 @@
                         //当x值在80-100°之间时,y值直接不计算
                         if (x<80||x>100) {
                             cameraBox.rotation.y = Math.PI * y / 180;
+                        } else {
+                            cameraBox.rotation.y = 0;
                         }
                         cameraBoxBox.rotation.z = Math.PI * (z - oldz) / 180;
                     }
