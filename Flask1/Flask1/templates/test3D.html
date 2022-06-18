@@ -185,8 +185,19 @@
             z-index: -1;
         }
 
-        div.position,div.rotate{
-            font-size:40px;
+        div.position, div.rotate {
+            font-size: 40px;
+            position: fixed;
+            background-color: rgba(255,255,255,0.3);
+        }
+        div.position::before{
+            content:"定位位置: ";
+        }
+        div.position{
+            top:53px;
+        }
+        div.rotate::before{
+            content:"旋转角度: ";
         }
     </style>
 </head>
@@ -367,6 +378,16 @@
     //scene.add(plane);
     //scene.add(planeWellMesh);
 
+    // 创建一个圆形平面，半径20，圆周方向细分数30
+    var plane = new THREE.CircleGeometry(20, 30)
+    var material = new THREE.MeshPhongMaterial({
+        color: 0xff0000,
+        // 矩形平面网格模型默认单面显示，可以设置side属性值为THREE.DoubleSide双面显示
+        side: THREE.DoubleSide,
+    });
+    var mesh = new THREE.Mesh(plane, material);
+    scene.add(mesh);
+
     /**摄像机云台盒子最外层 */
     var cameraBoxBox = new THREE.Group();
     /**摄像机云台盒子中层 */
@@ -400,17 +421,18 @@
 
             ////修改模型位置
             //loadedMesh.position.x += 20;
+            scene.add(loadedMesh);
             /**添加多个模型*/
-            for (var i = -10; i < 10; i++) {
-                for (var j = -10; j < 10; j++) {
-                    for (var k = -10; k < 10; k++) {
-                        var oneMesh = loadedMesh.clone();
-                        oneMesh.position.set(i * 20, j * 20, k * 20);
-                        scene.add(oneMesh);
-                        window.Meshs.push(oneMesh);
-                    }
-                }
-            }
+            //for (var i = -10; i < 10; i++) {
+            //    for (var j = -10; j < 10; j++) {
+            //        for (var k = -10; k < 10; k++) {
+            //            var oneMesh = loadedMesh.clone();
+            //            oneMesh.position.set(i * 20, j * 20, k * 20);
+            //            scene.add(oneMesh);
+            //            window.Meshs.push(oneMesh);
+            //        }
+            //    }
+            //}
 
             /**画布对象 */
             var cas = lt_code.getAll("canvas");
@@ -490,7 +512,7 @@
             if (window.DeviceOrientationEvent) {
                 cameraBox.position.set(0, 0, 0);
                 cameraBox.rotation.set(0, 0, 0);
-                cameraBoxBox.position.set(0, 0, 0);
+                cameraBoxBox.position.set(0, 100, 0);
                 cameraBoxBox.rotation.set(0, 0, 0);
                 camera.position.set(0, 0, 0);
                 camera.rotation.set(0, 0, 0);
@@ -576,7 +598,7 @@
             loadedMesh.scale.set(zoom, zoom, zoom);
 
             //模型位置修改
-            loadedMesh.position.set(0, 15, 0);
+            loadedMesh.position.set(0, 0, 0);
 
             loadMesh = loadedMesh;
         });
