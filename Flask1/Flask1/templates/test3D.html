@@ -680,7 +680,9 @@
                             cameraBoxBox.rotation.z = Math.PI * (z - oldz) / 180;
                         } else {
                             cameraBox.rotation.y = Math.PI * (1 - Math.sin(x)) * y / 180;
-                            cameraBoxBox.rotation.z = Math.PI * (z - oldz - Math.abs(y)) / 180;
+                            //cameraBoxBox.rotation.z = Math.PI * (z - oldz - Math.abs(y)) / 180;
+                            //取消y轴补偿
+                            cameraBoxBox.rotation.z = Math.PI * (z - oldz) / 180;
                         }
                         lt_code.getAll(".realRotate").innerText =
                             "\n摄像机: " + new v3(camera.rotation.x, camera.rotation.y, camera.rotation.z).toString(5) +
