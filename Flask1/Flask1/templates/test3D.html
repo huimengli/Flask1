@@ -567,13 +567,18 @@
 
                 if (window.Gyroscope) {
                     var gyroscope = new Gyroscope();
+                    //调用给外部查看
+                    window.g = gyroscope;
                     if (!gyroscope.activated) {
                         gyroscope.start();
                     }
-                    r.x = gyroscope.x;
-                    r.y = gyroscope.y;
-                    r.z = gyroscope.z;
-                    lt_code.getAll(".rotate").innerText = r.toString(2);
+                    window.addEventListener("deviceorientation", function (event) {
+                        e = event;
+                        r.x = gyroscope.x;
+                        r.y = gyroscope.y;
+                        r.z = gyroscope.z;
+                        lt_code.getAll(".rotate").innerText = r.toString();
+                    }
                 } else {
                     alert("你的浏览器不支持直接调用陀螺仪接口");
                 }
