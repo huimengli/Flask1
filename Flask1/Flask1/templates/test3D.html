@@ -656,7 +656,10 @@
                         return;
                     } else {
                         camerabox.rotation.x = Math.PI * x / 180;
-                        //cameraBox.rotation.y = Math.PI * y / 180;
+                        //当x值在80-100°之间时,y值直接不计算
+                        if (x<80||x>100) {
+                            cameraBox.rotation.y = Math.PI * y / 180;
+                        }
                         cameraBoxBox.rotation.z = Math.PI * (z - oldz) / 180;
                     }
                     ////y值有问题,需要修正
