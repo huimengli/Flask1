@@ -451,16 +451,16 @@
             //loadedMesh.position.x += 20;
             //scene.add(loadedMesh);
             /**添加多个模型*/
-            //for (var i = -10; i < 10; i++) {
-            //    for (var j = -10; j < 10; j++) {
-            //        for (var k = -10; k < 10; k++) {
-            //            var oneMesh = loadedMesh.clone();
-            //            oneMesh.position.set(i * 20, j * 20, k * 20);
-            //            scene.add(oneMesh);
-            //            window.Meshs.push(oneMesh);
-            //        }
-            //    }
-            //}
+            for (var i = -10; i < 10; i++) {
+                for (var j = -10; j < 10; j++) {
+                    for (var k = -10; k < 10; k++) {
+                        var oneMesh = loadedMesh.clone();
+                        oneMesh.position.set(i * 20, j * 20, k * 20);
+                        scene.add(oneMesh);
+                        window.Meshs.push(oneMesh);
+                    }
+                }
+            }
 
             /**画布对象 */
             var cas = lt_code.getAll("canvas");
