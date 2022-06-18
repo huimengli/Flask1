@@ -626,25 +626,46 @@
                 window.addEventListener("deviceorientation", function (event) {
                     e = event;
 
+                    var z = event.alpha,
+                        x = event.beta,
+                        y = event.gamma;
+                    r.x = x, r.y = y, r.z = z;
+
                     if (!gyroscope.activated) {
                         gyroscope.start();
                         re.x = event.beta;
                         re.y = event.gamma;
                         re.z = event.alpha;
                     } else {
-                        re.x += gyroscope.x;
-                        re.y += gyroscope.y;
-                        re.z += gyroscope.z;
+                        if (time++ < overTime) {
+                            re.x += gyroscope.x;
+                            re.y += gyroscope.y;
+                            re.z += gyroscope.z;
+                        } else {
+                            time = 0;
+                            re.x =  x;
+                            //当x值在80-100°之间时,y值直接不计算,并且根据y值修正z值
+                            if (x < 65 || x > 115) {
+                                re.y = y;
+                                re.z = z - oldz;
+                            } else {
+                                //y轴原有的偏移过大使用sin函数修正(修正值依旧过大)
+                                //cameraBox.rotation.y = Math.PI * (1 - Math.sin(x)) * y / 180;
+                                //尝试通过二次方程修正
+                                re.y = (1 - (-0.0016 * x * x + 0.288 * x - 11.96)) * y;
+                                //cameraBoxBox.rotation.z = Math.PI * (z - oldz - Math.abs(y)) / 180;
+                                //取消y轴补偿
+                                re.z = z - oldz;
+                            }
+                        }
+
                     }
 
-                    var z = event.alpha,
-                        x = event.beta,
-                        y = event.gamma;
-                    r.x = x, r.y = y, r.z = z;
 
                     /*-------------------------------------------*\
                      * 通过5次真实+1次虚假陀螺仪调用
-                     * 看起来比之前效果好了很多
+                     * 看起来比之前效果好了很多(错误融合--)
+                     * 这些代码需要修正
                     if (time++<overTime) {
                         camerabox.rotation.x = Math.PI * re.x / 180;
                         cameraBox.rotation.y = Math.PI * re.y / 180;
@@ -668,27 +689,10 @@
                     }
                     \*-------------------------------------------*/
 
-                    if (time++ < overTime) {
-                        camerabox.rotation.x = Math.PI * re.x / 180;
-                        cameraBox.rotation.y = Math.PI * re.y / 180;
-                        cameraBoxBox.rotation.z = Math.PI * re.z / 180;
-                    } else {
-                        time = 0;
-                        camerabox.rotation.x = Math.PI * x / 180;
-                        //当x值在80-100°之间时,y值直接不计算,并且根据y值修正z值
-                        if (x < 65 || x > 115) {
-                            cameraBox.rotation.y = Math.PI * y / 180;
-                            cameraBoxBox.rotation.z = Math.PI * (z - oldz) / 180;
-                        } else {
-                            //y轴原有的偏移过大使用sin函数修正(修正值依旧过大)
-                            //cameraBox.rotation.y = Math.PI * (1 - Math.sin(x)) * y / 180;
-                            //尝试通过二次方程修正
-                            cameraBox.rotation.y = Math.PI * (1 - (-0.0016 * x * x + 0.288 * x - 11.96)) * y / 180;
-                            //cameraBoxBox.rotation.z = Math.PI * (z - oldz - Math.abs(y)) / 180;
-                            //取消y轴补偿
-                            cameraBoxBox.rotation.z = Math.PI * (z - oldz) / 180;
-                        }
-                    }
+                    camerabox.rotation.x = Math.PI * re.x / 180;
+                    cameraBox.rotation.y = Math.PI * re.y / 180;
+                    cameraBoxBox.rotation.z = Math.PI * re.z / 180;
+
 
                     lt_code.getAll(".rotate").innerText = r.toString(2);
 
