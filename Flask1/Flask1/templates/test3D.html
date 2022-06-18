@@ -649,20 +649,38 @@
                     //camera.rotation.x = Math.PI * x / 180;
                     //camera.rotation.y = 0;
                     //camera.rotation.z = 0;
+                    /*---------------------------------------*\
+                     *这段代码时可以用的,在这里备注并备份一下*
                     //使用云台的方式操作相机,但是记录第一次z轴的位置,并且在之后的数据中都减去z轴数据
                     //直接删掉y轴
+                    //if (oldz == null) {
+                    //    oldz = z;
+                    //    return;
+                    //} else {
+                    //    camerabox.rotation.x = Math.PI * x / 180;
+                    //    //当x值在80-100°之间时,y值直接不计算,并且根据y值修正z值
+                    //    if (x<80||x>100) {
+                    //        cameraBox.rotation.y = Math.PI * y / 180;
+                    //        cameraBoxBox.rotation.z = Math.PI * (z - oldz) / 180;
+                    //    } else {
+                    //        cameraBox.rotation.y = 0;
+                    //        cameraBoxBox.rotation.z = Math.PI * (z - oldz-y) / 180;
+                    //    }
+                    //}
+                    \*---------------------------------------*/
                     if (oldz == null) {
                         oldz = z;
                         return;
                     } else {
                         camerabox.rotation.x = Math.PI * x / 180;
-                        //当x值在80-100°之间时,y值直接不计算
-                        if (x<80||x>100) {
-                            cameraBox.rotation.y = Math.PI * y / 180;
+                        //当x值在80-100°之间时,y值直接不计算,并且根据y值修正z值
+                        if (x<65||x>115) {
+                            cameraBox.rotation.y = Math.PI *  y/ 180;
+                            cameraBoxBox.rotation.z = Math.PI * (z - oldz) / 180;
                         } else {
-                            cameraBox.rotation.y = 0;
+                            cameraBox.rotation.y = Math.PI * (1 - Math.sin(x)) * y / 180;
+                            cameraBoxBox.rotation.z = Math.PI * (z - oldz-y) / 180;
                         }
-                        cameraBoxBox.rotation.z = Math.PI * (z - oldz) / 180;
                     }
                     ////y值有问题,需要修正
                     //y = y < 0 ? 180 + y : y;
