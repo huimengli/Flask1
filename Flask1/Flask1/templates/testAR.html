@@ -3,7 +3,7 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" />
-    <title>鹃湖定位演示demo</title>
+    <title>鹃湖定位演示DEMO</title>
     <script src="../static/js/jquery-3.3.1.js"></script>
     <script src="../static/JavaScriptCode/lt_code.js"></script>
     <script src="../static/JavaScriptCode/item/pseudoThreeD.js"></script>
@@ -45,6 +45,72 @@
             top: 0;
             left: 0;
             z-index: 1;
+            font-size: 40px;
+        }
+
+        .GUI_title {
+            position: absolute;
+            width: 100vw;
+            text-align: center;
+            background-color: rgba(0,0,0,0.4);
+            color: white;
+        }
+
+        .GUI_bottom {
+            position: absolute;
+            width: 100vw;
+            text-align: center;
+            background-color: rgba(0,0,0,0.4);
+            color: white;
+            bottom:0px;
+        }
+
+        .GUI_tackphoto {
+            width: 50px;
+            height: 50px;
+            position: relative;
+            left: calc(50vw - 25px);
+            border-radius: 25px;
+            background-color: white;
+        }
+
+            .GUI_tackphoto::before {
+                position: absolute;
+                content: "";
+                width: 40px;
+                height: 40px;
+                background: black;
+                border-radius: 20px;
+                left: 5px;
+                top: 5px;
+            }
+
+            .GUI_tackphoto::after{
+                content:"";
+                position:absolute;
+                width:30px;
+                height:30px;
+                background-color:white;
+                border-radius:15px;
+                left:10px;
+                top:10px;
+            }
+
+        .GUI_point{
+            position:absolute;
+        }
+
+        .GUI_task {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .GUI_task .GUI_downTask{
+
+        }
+
+        .GUI_task .GUI_allTask{
+
         }
     </style>
 </head>
@@ -52,22 +118,22 @@
     <video id="videoIn"></video>
     <div class="GUI">
         <div class="GUI_title">
-            鹃湖XR定位demo
+            鹃湖XR定位DEMO
         </div>
-        <div class="GUI_buttom">
+        <div class="GUI_bottom">
             <div class="GUI_tackphoto">
 
             </div>
             <div class="GUI_point">
-
+                100
             </div>
             <div class="GUI_task">
-                <div class="GUI_needTask">
-
+                <div class="GUI_downTask">
+                    1
                 </div>
                 /
                 <div class="GUI_allTask">
-
+                    10
                 </div>
             </div>
         </div>
@@ -86,6 +152,21 @@
     });
     //实例化渲染器
     renderer.setSize(window.innerWidth, window.innerHeight); //设置宽和高
+
+    /**gui对象 */
+    var GUI = lt_code.getAll(".GUI");
+    /**gui表头 */
+    var GUI_title = lt_code.getAll(".GUI_title");
+    /**gui底部 */
+    var GUI_bottom = lt_code.getAll(".GUI_bottom");
+    /**gui拍照按钮 */
+    var GUI_tackphoto = lt_code.getAll(".GUI_tackphoto");
+    /**gui任务模块 */
+    var GUI_task = lt_code.getAll(".GUI_task");
+    /**gui完成的任务数量 */
+    var GUI_downTask = lt_code.getAll(".GUI_downTask");
+    /**gui全部的任务数量 */
+    var GUI_allTask = lt_code.getAll(".GUI_allTask");
 
     //告诉渲染器需要阴影效果
     renderer.shadowMap.enabled = true;
@@ -219,7 +300,8 @@
                         //当x值在80-100°之间时,y值直接不计算,并且根据y值修正z值
                         if (x < 65 || x > 115) {
                             re.y = y;
-                            re.z = z - oldz;
+                            re.z = z;
+                            //re.z = z - oldz;
                         } else {
                             //y轴原有的偏移过大使用sin函数修正(修正值依旧过大)
                             //cameraBox.rotation.y = Math.PI * (1 - Math.sin(x)) * y / 180;
@@ -228,7 +310,8 @@
                             //cameraBoxBox.rotation.z = Math.PI * (z - oldz - Math.abs(y)) / 180;
                             if (Math.abs(y) < 20) {
                                 //取消y轴补偿
-                                re.z = z - oldz;
+                                re.z = z;
+                                //re.z = z - oldz;
                             } else {
                                 /*
                                  * 在手机竖起来的时候
@@ -247,9 +330,11 @@
                     if (r.x < 45 && r.y < 45) {
                         loadMesh.visible = false;
                         MapMesh.visible = true;
+                        GUI_tackphoto.style.display = "none";
                     } else {
                         loadMesh.visible = true;
                         MapMesh.visible = false;
+                        GUI_tackphoto.style.display = "block";
                     }
                 });
             } else {
