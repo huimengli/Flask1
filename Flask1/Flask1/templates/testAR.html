@@ -230,7 +230,12 @@
                                 //取消y轴补偿
                                 re.z = z - oldz;
                             } else {
-                                re.z += gyroscope.z;
+                                /*
+                                 * 在手机竖起来的时候
+                                 * 左右旋转手机的时候
+                                 * 应用y轴变量的尝试
+                                 */
+                                re.z += gyroscope.y;
                             }
                         }
                         camerabox.rotation.x = Math.PI * re.x / 180;
