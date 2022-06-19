@@ -205,19 +205,6 @@
     /**不同意权限按钮 */
     var forIOS_No = lt_code.getAll(".forIOS_No");
 
-    if (getIos()) {
-        forIOS.style.display = "flex";
-    }
-
-    forIOS_Yes.onmousedown = function () {
-        forIOS.style.display = "none";
-        testClick();
-    }
-
-    forIOS_No.onmousedown = function () {
-        forIOS.style.display = "none";
-    }
-
     function requestPermissionsIOS() {
         requestDeviceMotionIOS();
         requestDeviceOrientationIOS();
@@ -514,21 +501,45 @@
     /**加载模型*/
     loadFbx("../static/fbx/pagoda.fbx");
 
-    /**旋转控制器 */
-    var controls = new THREE.DeviceOrientationControls(cameraBoxBox);
-    
-    /**渲染挂载 */
-    var run = setInterval(function () {
-        controls.update();
-        ////渲染场景
-        renderer.render(scene, camera); //渲染界面
-    }, 33);
-
     //controls.addEventListener("change", function (e) {
     //    controls.update();
     //    renderer.render(scene, camera); //渲染界面
     //})
 
+</script>
+<!-- 根据是否是IOS设备判断,是否直接开始还是先获取权限再开始 -->
+<script>
+    if (getIos()) {
+        forIOS.style.display = "flex";
+
+        forIOS_Yes.onmousedown = function () {
+            forIOS.style.display = "none";
+            testClick();
+            /**旋转控制器 */
+            var controls = new THREE.DeviceOrientationControls(cameraBoxBox);
+
+            /**渲染挂载 */
+            window.run = setInterval(function () {
+                controls.update();
+                ////渲染场景
+                renderer.render(scene, camera); //渲染界面
+            }, 33);
+        }
+
+        forIOS_No.onmousedown = function () {
+            forIOS.style.display = "none";
+        }
+    } else {
+        /**旋转控制器 */
+        var controls = new THREE.DeviceOrientationControls(cameraBoxBox);
+
+        /**渲染挂载 */
+        window.run = setInterval(function () {
+            controls.update();
+            ////渲染场景
+            renderer.render(scene, camera); //渲染界面
+        }, 33);
+    }
 </script>
 <!-- 获取摄像头媒体流 -->
 <script>
