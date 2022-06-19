@@ -327,16 +327,17 @@
                         //cameraBoxBox.rotation.z = Math.PI * re.z / 180;
                     }
 
-                    //当x轴向以及y轴向同时小于45时,隐去模型
-                    if (r.x < 45 && r.y < 45) {
-                        loadMesh.visible = false;
-                        MapMesh.visible = true;
-                        GUI_tackphoto.style.display = "none";
-                    } else {
-                        loadMesh.visible = true;
-                        MapMesh.visible = false;
-                        GUI_tackphoto.style.display = "block";
-                    }
+                    //取消模型消失
+                    ////当x轴向以及y轴向同时小于45时,隐去模型
+                    //if (r.x < 45 && r.y < 45) {
+                    //    loadMesh.visible = false;
+                    //    MapMesh.visible = true;
+                    //    GUI_tackphoto.style.display = "none";
+                    //} else {
+                    //    loadMesh.visible = true;
+                    //    MapMesh.visible = false;
+                    //    GUI_tackphoto.style.display = "block";
+                    //}
                 });
             } else {
                 alert("你的浏览器不支持调用运动传感器!");
