@@ -10,6 +10,7 @@
     <script src="/static/three.js/examples/js/libs/stats.min.js"></script>
     <script src="/static/three.js/examples/js/libs/dat.gui.min.js"></script>
     <script src="../static/JavaScriptCode/item/pseudoThreeD.js"></script>
+    <script src="../static/js/DeviceOrientationControls.js"></script>
     <style>
         div.gui {
             position: fixed;
@@ -180,32 +181,37 @@
     <style>
         video#player {
             /*width: calc(100vw - 10px);*/
-            width:100vw;
+            width: 100vw;
             height: 100vh;
             position: absolute;
             z-index: -1;
         }
 
-        div.position, div.rotate,div.realRotate {
+        div.position, div.rotate, div.realRotate {
             font-size: 40px;
             position: fixed;
             background-color: rgba(255,255,255,0.3);
         }
-        div.position::before{
-            content:"定位位置: ";
+
+            div.position::before {
+                content: "定位位置: ";
+            }
+
+        div.position {
+            top: 53px;
         }
-        div.position{
-            top:53px;
+
+        div.rotate::before {
+            content: "旋转角度: ";
         }
-        div.rotate::before{
-            content:"旋转角度: ";
+
+        div.realRotate {
+            top: 106px;
         }
-        div.realRotate{
-            top:106px;
-        }
-        div.realRotate::before{
-            content:"真实旋转: ";
-        }
+
+            div.realRotate::before {
+                content: "真实旋转: ";
+            }
     </style>
 </head>
 <body>

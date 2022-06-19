@@ -623,6 +623,7 @@
     <Content Include="Flask1\static\js\baiduAPI\api.js" />
     <Content Include="Flask1\static\js\baiduAPI\getscript.js" />
     <Content Include="Flask1\static\js\inflate.min.js" />
+    <Content Include="Flask1\static\js\DeviceOrientationControls.js" />
     <Content Include="Flask1\static\js\loading.js" />
     <Content Include="Flask1\static\obj\13.js" />
     <Content Include="Flask1\static\obj\17.js" />
