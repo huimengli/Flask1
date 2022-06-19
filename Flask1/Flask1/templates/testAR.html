@@ -3,7 +3,7 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" />
-    <title>绢湖定位演示demo</title>
+    <title>鹃湖定位演示demo</title>
     <script src="../static/js/jquery-3.3.1.js"></script>
     <script src="../static/JavaScriptCode/lt_code.js"></script>
     <script src="../static/JavaScriptCode/item/pseudoThreeD.js"></script>
@@ -52,7 +52,7 @@
     <video id="videoIn"></video>
     <div class="GUI">
         <div class="GUI_title">
-            绢湖XR定位demo
+            鹃湖XR定位demo
         </div>
         <div class="GUI_buttom">
             <div class="GUI_tackphoto">
@@ -260,9 +260,9 @@
             loadedMesh.scale.set(zoom, zoom, zoom);
 
             //模型位置修改
-            loadedMesh.position.set(800, 0, 0);
+            loadedMesh.position.set(0, 800, 0);
             //模型旋转修改
-            loadedMesh.rotation.set(Math.PI / 2, 0, 0);
+            loadedMesh.rotation.set(Math.PI / 2, - Math.PI / 2, 0);
 
             //将模型添加进入场景
             scene.add(loadedMesh);
@@ -273,23 +273,10 @@
             scene.add(cameraBoxBox);
         });
     }
-
-
-
+    
     /**加载模型*/
     loadFbx("../static/fbx/pagoda.fbx");
-
-    //loader.load('../static/fbx/pagoda.fbx', function (object) {
-    //    object.mixer = new THREE.AnimationMixer(object);
-    //    mixers.push(object.mixer);
-    //    var action = object.mixer.clipAction(object.animations[0]);
-    //    action.play();
-    //    object.scale.multiplyScalar(.5);
-    //    scene.add(object);
-    //}, function (e) { console.log(e) }, function (err) { console.error(err) });
-
-
-
+    
     /**渲染挂载 */
     var run = setInterval(function () {
         //渲染场景
