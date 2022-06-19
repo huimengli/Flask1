@@ -218,7 +218,8 @@
     /**圆形平面,半径20,圆周方向细分数50 */
     var MapPlane = new THREE.CircleGeometry(20, 50);
     var MapMesh = new THREE.Mesh(MapPlane, sceneMAP);
-    MapMesh.position.set(0, 0, 0);
+    MapMesh.position.set(0, -200, 0);
+    MapMesh.rotation.set(Math.PI / 2, 0, 0);
     //放大地图
     MapMesh.scale.set(10, 10, 10);
     scene.add(MapMesh);
@@ -269,7 +270,7 @@
                 cameraBox.attach(camerabox);
                 cameraBoxBox.attach(cameraBox);
                 //调整摄像机位置
-                cameraBoxBox.position.set(0, 0, 160);
+                cameraBoxBox.position.set(0, 160, 0);
                 scene.add(cameraBoxBox);
                 /**三维向量 */
                 var v3 = lt_code.pseudoThreeD.vector3;
@@ -347,9 +348,9 @@
             loadedMesh.scale.set(zoom, zoom, zoom);
 
             //模型位置修改
-            loadedMesh.position.set(800, 0, 0);
+            loadedMesh.position.set(0, 0, -800);
             //模型旋转修改
-            loadedMesh.rotation.set(Math.PI / 2, - Math.PI / 2, 0);
+            loadedMesh.rotation.set(0,0, 0);
 
             //将模型添加进入场景
             scene.add(loadedMesh);
