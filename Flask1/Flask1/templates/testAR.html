@@ -113,6 +113,42 @@
 
             .GUI_task .GUI_allTask {
             }
+
+        .forIOS {
+            width: 80vw;
+            position: fixed;
+            left: 10vw;
+            top: 34vh;
+            background-color: white;
+            height: 26vh;
+            font-size: 60px;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: center;
+            z-index:1000;
+        }
+
+            .forIOS .forIOS_Value {
+                padding: 0 50px;
+                font-size: 62px;
+            }
+
+            .forIOS .forIOS_button {
+                display: flex;
+                justify-content: flex-end;
+                width: 90%;
+            }
+
+                .forIOS .forIOS_button .forIOS_Yes {
+                    padding: 0 40px;
+                    color: #3333ff;
+                }
+
+            .forIOS .forIOS_button .forIOS_No{
+                /*padding:0 40px;*/
+            }
     </style>
 </head>
 <body>
@@ -139,8 +175,97 @@
             </div>
         </div>
     </div>
+    <div class="forIOS" style="display:none;">
+        <div class="forIOS_Value">
+            是否允许此网站使用您手机的陀螺仪数据?
+        </div>
+        <div class="forIOS_button">
+            <div class="forIOS_Yes">
+                确认
+            </div>
+            <div class="forIOS_No">
+                取消
+            </div>
+        </div>
+    </div>
 </body>
 </html>
+<!-- 判断并尝试获取ios权限 -->
+<script>
+    // 判断是否是 ios 设备    
+    function getIos() {
+        var u = window.navigator.userAgent;
+        return !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
+    }
+
+    /**请求IOS权限的弹窗 */
+    var forIOS = lt_code.getAll(".forIOS");
+    /**同意权限的按钮 */
+    var forIOS_Yes = lt_code.getAll(".forIOS_Yes");
+    /**不同意权限按钮 */
+    var forIOS_No = lt_code.getAll(".forIOS_No");
+
+    if (!getIos()) {
+        forIOS.style.display = "flex";
+    }
+
+    forIOS_Yes.onmousedown = function () {
+        forIOS.style.display = "none";
+        testClick();
+    }
+
+    forIOS_No.onmousedown = function () {
+        forIOS.style.display = "none";
+    }
+
+    function requestPermissionsIOS() {
+        requestDeviceMotionIOS();
+        requestDeviceOrientationIOS();
+    }
+
+    function requestDeviceMotionIOS() {
+
+        if (typeof (DeviceMotionEvent).requestPermission === 'function') {
+            (DeviceMotionEvent).requestPermission().then(permissionState => {
+
+                if (permissionState === 'granted') {
+                    window.addEventListener('devicemotion', () => {
+
+                    });
+                }
+            }).
+                catch((err) => {
+                    alert(JSON.stringify(err));
+                    alert("用户未允许权限");
+                })
+        } else {
+            // handle regular non iOS 13+ devices
+        }
+    }
+
+    // requesting device orientation permission
+    function requestDeviceOrientationIOS() {
+
+        if (typeof (DeviceOrientationEvent).requestPermission === 'function') {
+            (DeviceOrientationEvent).requestPermission().then(permissionState => {
+                if (permissionState === 'granted') {
+                    window.addEventListener('deviceorientation', () => {
+
+                    });
+                }
+            }).
+            catch((err) => {
+                alert(JSON.stringify(err));
+                alert("用户未允许权限");
+            })
+        } else {
+            // handle regular non iOS 13+ devices
+        }
+    }
+    function testClick() {
+        requestPermissionsIOS();
+    }
+</script>
 <script>
     /**缩放大小 */
     let zoom = 0.1;
@@ -256,6 +381,31 @@
             console.log(loadedMesh);
 
             loadedMesh.position.set(20, 0, 0);
+
+            let texture_left = new THREE.TextureLoader().load("/static/images/Material/1000096.jpg");
+            texture_left.wrapS = THREE.RepeatWrapping;   //纹理水平方向的平铺方式
+            texture_left.wrapT = THREE.RepeatWrapping; //纹理垂直方向的平铺方式
+
+            let plane_left = new THREE.MeshLambertMaterial();
+            plane_left.map = texture_left;
+            plane_left.side = THREE.DoubleSide;
+
+            var material = new THREE.MeshLambertMaterial({ color: 0xff0000 });
+            //var material = new THREE.MeshNormalMaterial();
+
+            console.log(loadedMesh);
+
+            // 加载完obj文件是一个场景组，遍历它的子元素，赋值纹理并且更新面和点的发现了
+            loadedMesh.children.forEach(function (child) {
+                //给每个子元素赋值纹理
+                child.material = plane_left;
+                //更新每个子元素的面和顶点的法向量
+                child.geometry.computeFaceNormals();
+                child.geometry.computeVertexNormals();
+
+                //每个子部件产生阴影
+                child.castShadow = true;
+            });
 
             if (window.DeviceOrientationEvent) {
                 cameraBox.position.set(0, 0, 0);
