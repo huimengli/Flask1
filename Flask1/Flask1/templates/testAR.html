@@ -99,7 +99,6 @@
     /**初始化相机*/
     var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
 
-
     //环境光照
     var ambientLight = new THREE.AmbientLight("#999999");
     scene.add(ambientLight);
@@ -185,7 +184,8 @@
                 camerabox.attach(camera);
                 cameraBox.attach(camerabox);
                 cameraBoxBox.attach(cameraBox);
-                cameraBoxBox.position.set(0, 0, 50);
+                //调整摄像机位置
+                cameraBoxBox.position.set(0, 0, 160);
                 scene.add(cameraBoxBox);
                 /**三维向量 */
                 var v3 = lt_code.pseudoThreeD.vector3;
@@ -255,6 +255,15 @@
 
             //将摄像头云台添加进入场景
             scene.add(cameraBoxBox);
+
+            //当x轴向以及y轴向同时小于45时,隐去模型
+            if (r.x < 45 && r.y < 45) {
+                loadMesh.visible = false;
+                MapMesh.visible = true;
+            } else {
+                loadMesh.visible = true;
+                MapMesh.visible = false;
+            }
         });
     }
 
