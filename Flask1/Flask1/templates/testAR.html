@@ -109,7 +109,7 @@
     directionalLight.position.set(-40, 60, -10);
 
     directionalLight.shadow.camera.near = 20; //产生阴影的最近距离
-    directionalLight.shadow.camera.far = 200; //产生阴影的最远距离
+    directionalLight.shadow.camera.far = 1000; //产生阴影的最远距离
     directionalLight.shadow.camera.left = -50; //产生阴影距离位置的最左边位置
     directionalLight.shadow.camera.right = 50; //最右边
     directionalLight.shadow.camera.top = 50; //最上边
@@ -244,7 +244,7 @@
             loadedMesh.scale.set(zoom, zoom, zoom);
 
             //模型位置修改
-            loadedMesh.position.set(200, 0, 50);
+            loadedMesh.position.set(800, 0, 0);
             //模型旋转修改
             loadedMesh.rotation.set(Math.PI / 2, 0, 0);
 
