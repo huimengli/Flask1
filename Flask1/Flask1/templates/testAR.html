@@ -1,0 +1,453 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>绢湖定位演示demo</title>
+    <script src="../static/js/jquery-3.3.1.js"></script>
+    <script src="../static/JavaScriptCode/lt_code.js"></script>
+    <script src="../static/JavaScriptCode/item/pseudoThreeD.js"></script>
+    <script src="../static/three.js/build/three.js"></script>
+    <script src="../static/three.js/examples/js/loaders/FBXLoader.js"></script>
+    <script src="../static/js/inflate.min.js"></script>
+    <!--<script src="../static/zlib.js/src/inflate.js"></script>-->
+    <!--<script src="../static/zlib.js/src/inflate_stream.js"></script>-->
+    <!--<script src="../static/zlib.js/bin/inflate.min.js"></script>-->
+    <!--<script src="../static/zlib.js/bin/inflate.dev.min.js"></script>-->
+    <script>
+        const Inflate = Zlib.Inflate;
+    </script>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            border: 0;
+        }
+
+        body {
+            overflow: hidden;
+        }
+
+        video#videoIn {
+            /*width: calc(100vw - 10px);*/
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+            top: 0px;
+            left: 0px;
+            z-index: -1;
+        }
+
+        div.GUI {
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+    <video id="videoIn"></video>
+    <div class="GUI">
+        <div class="GUI_title">
+            绢湖XR定位demo
+        </div>
+        <div class="GUI_buttom">
+            <div class="GUI_tackphoto">
+
+            </div>
+            <div class="GUI_point">
+
+            </div>
+            <div class="GUI_task">
+                <div class="GUI_needTask">
+
+                </div>
+                /
+                <div class="GUI_allTask">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<script>
+    /**缩放大小 */
+    let zoom = 0.1;
+
+    /**初始化渲染器*/
+    var renderer = new THREE.WebGLRenderer({
+        //抗锯齿处理
+        antialias: true,
+        alpha: true
+    });
+    //实例化渲染器
+    renderer.setSize(window.innerWidth, window.innerHeight); //设置宽和高
+
+    //告诉渲染器需要阴影效果
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap; // 默认的是，没有设置的这个清晰 THREE.PCFShadowMap
+
+    document.body.appendChild(renderer.domElement); //添加到dom
+
+    //初始化场景
+    var scene = new THREE.Scene(); //实例化场景
+
+    /**初始化相机*/
+    var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 200);
+
+
+    //环境光照
+    var ambientLight = new THREE.AmbientLight("#999999");
+    scene.add(ambientLight);
+
+    //直接光照
+    var directionalLight = new THREE.DirectionalLight("#ffeecc");
+    directionalLight.position.set(-40, 60, -10);
+
+    directionalLight.shadow.camera.near = 20; //产生阴影的最近距离
+    directionalLight.shadow.camera.far = 200; //产生阴影的最远距离
+    directionalLight.shadow.camera.left = -50; //产生阴影距离位置的最左边位置
+    directionalLight.shadow.camera.right = 50; //最右边
+    directionalLight.shadow.camera.top = 50; //最上边
+    directionalLight.shadow.camera.bottom = -50; //最下面
+
+    //这两个值决定使用多少像素生成阴影 默认512
+    directionalLight.shadow.mapSize.height = 1024;
+    directionalLight.shadow.mapSize.width = 1024;
+
+    //告诉平行光需要开启阴影投射
+    directionalLight.castShadow = true;
+
+    //将直接光照添加进入场景
+    scene.add(directionalLight);
+
+    /**地图材质 */
+    let sceneMap = new THREE.TextureLoader().load("/static/images/Material/1000096.jpg");
+    sceneMap.wrapS = THREE.RepeatWrapping;   //纹理水平方向的平铺方式
+    sceneMap.wrapT = THREE.RepeatWrapping; //纹理垂直方向的平铺方式
+    /**地图贴图 */
+    let sceneMAP = new THREE.MeshLambertMaterial();
+    sceneMAP.map = sceneMap;
+    sceneMAP.side = THREE.DoubleSide;
+
+    /**圆形平面,半径20,圆周方向细分数50 */
+    var MapPlane = new THREE.CircleGeometry(20, 50);
+    var MapMesh = new THREE.Mesh(MapPlane, sceneMAP);
+    MapMesh.position.set(0, 0, 0);
+    scene.add(MapMesh);
+
+    /**fbx读取器 */
+    var loader = new THREE.FBXLoader();
+
+    //读取测试模型
+    /**导入的模型对象 */
+    var loadMesh = undefined;
+
+    /**摄像机云台盒子最外层 */
+    var cameraBoxBox = new THREE.Group();
+    /**摄像机云台盒子中层 */
+    var cameraBox = new THREE.Group();
+    /**摄像机云台盒子最底层 */
+    var camerabox = new THREE.Group();
+    /**WebAPI 旋转值 */
+    var r = lt_code.pseudoThreeD.vector3.None();
+    /**真实API 旋转值 */
+    var re = lt_code.pseudoThreeD.vector3.None();
+
+    /**
+     * 读取fbx文件并防止入场
+     * @param fbxUrl
+     */
+    var loadFbx = function (fbxUrl) {
+        if (loadMesh != undefined) {
+            scene.remove(loadMesh);
+        }
+
+        //读取fbx文件然后防止入场
+        loader.load(fbxUrl, function (loadedMesh) {
+            console.log(loadedMesh);
+
+            loadedMesh.position.set(20, 0, 0);
+
+            if (window.DeviceOrientationEvent) {
+                cameraBox.position.set(0, 0, 0);
+                cameraBox.rotation.set(0, 0, 0);
+                cameraBoxBox.position.set(0, 0, 0);
+                cameraBoxBox.rotation.set(0, 0, 0);
+                camera.position.set(0, 0, 0);
+                camera.rotation.set(0, 0, 0);
+                camerabox.position.set(0, 0, 0);
+                camerabox.rotation.set(0, 0, 0);
+                camerabox.attach(camera);
+                cameraBox.attach(camerabox);
+                cameraBoxBox.attach(cameraBox);
+                cameraBoxBox.position.set(0, 0, 50);
+                scene.add(cameraBoxBox);
+                /**三维向量 */
+                var v3 = lt_code.pseudoThreeD.vector3;
+                //真实陀螺仪
+                window.gyroscope = new Gyroscope();
+                /**运行的次数 */
+                var time = 0;
+                /**获取2次真实陀螺仪后使用api陀螺仪数据 */
+                var overTime = 2;
+                /**上一次的z */
+                var oldz = null;
+                window.addEventListener("deviceorientation", function (event) {
+                    e = event;
+
+                    var z = event.alpha,
+                        x = event.beta,
+                        y = event.gamma;
+                    r.x = x, r.y = y, r.z = z;
+
+                    if (!gyroscope.activated) {
+                        gyroscope.start();
+                        re.x = event.beta;
+                        re.y = event.gamma;
+                        re.z = event.alpha;
+                        or = re.clone();
+                    } else {
+                        //只在z轴诡异偏移时修正
+                        re.x = x;
+                        //当x值在80-100°之间时,y值直接不计算,并且根据y值修正z值
+                        if (x < 65 || x > 115) {
+                            re.y = y;
+                            re.z = z - oldz;
+                        } else {
+                            //y轴原有的偏移过大使用sin函数修正(修正值依旧过大)
+                            //cameraBox.rotation.y = Math.PI * (1 - Math.sin(x)) * y / 180;
+                            //尝试通过二次方程修正
+                            re.y = (1 - (-0.0016 * x * x + 0.288 * x - 11.96)) * y;
+                            //cameraBoxBox.rotation.z = Math.PI * (z - oldz - Math.abs(y)) / 180;
+                            if (Math.abs(y) < 20) {
+                                //取消y轴补偿
+                                re.z = z - oldz;
+                            } else {
+                                re.z += gyroscope.z;
+                            }
+                        }
+                        camerabox.rotation.x = Math.PI * re.x / 180;
+                        cameraBox.rotation.y = Math.PI * re.y / 180;
+                        cameraBoxBox.rotation.z = Math.PI * re.z / 180;
+                    }
+                });
+            } else {
+                alert("你的浏览器不支持调用运动传感器!");
+            }
+
+            //模型缩小
+            loadedMesh.scale.set(zoom, zoom, zoom);
+
+            //模型位置修改
+            loadedMesh.position.set(200, 0, 50);
+            //模型旋转修改
+            loadedMesh.rotation.set(Math.PI / 2, 0, 0);
+
+            //将模型添加进入场景
+            scene.add(loadedMesh);
+
+            loadMesh = loadedMesh;
+
+            //将摄像头云台添加进入场景
+            scene.add(cameraBoxBox);
+        });
+    }
+
+
+
+    /**加载模型*/
+    loadFbx("../static/fbx/pagoda.fbx");
+
+    //loader.load('../static/fbx/pagoda.fbx', function (object) {
+    //    object.mixer = new THREE.AnimationMixer(object);
+    //    mixers.push(object.mixer);
+    //    var action = object.mixer.clipAction(object.animations[0]);
+    //    action.play();
+    //    object.scale.multiplyScalar(.5);
+    //    scene.add(object);
+    //}, function (e) { console.log(e) }, function (err) { console.error(err) });
+
+
+
+    /**渲染挂载 */
+    var run = setInterval(function () {
+        //渲染场景
+        renderer.render(scene, camera); //渲染界面
+    }, 33);
+
+</script>
+<!-- 获取摄像头媒体流 -->
+<script>
+    /**媒体流 */
+    var mediaStream = null;
+
+    //获取支持的音视频设备
+    var showDevices = function () {
+        if (!navigator.mediaDevices ||
+            !navigator.mediaDevices.enumerateDevices()) {
+            console.log('不支持')
+        } else {
+            navigator.mediaDevices.enumerateDevices()
+                .then((deviceInfos) => {
+                    deviceInfos.forEach((info) => {
+                        console.log(info.kind + "：label=" +
+                            info.label + "：id=" + info.deviceId + "：group = " + info.groupId);
+                    })
+                })
+                .catch((err) => {
+                    console.log(err.name + "：" + err.message)
+                });
+        }
+    };
+
+    /**
+     * 打开摄像头并且将视频流输出到video
+     * @param {boolean} User
+     * @param {DecodeSuccessCallback} callback
+     */
+    var cameraToVideo = function (User = true,callback) {
+        if (mediaStream) {
+            stopCameraToVideo();
+        }
+        if (navigator.mediaDevices.getUserMedia || navigator.getUserMedia || navigator.webkitGetUserMedia || navigator
+            .mozGetUserMedia) {
+            //var constraints = {
+            //    audio: false,
+            //    video: true
+            //};
+            var constraints = {
+                video: true
+            };
+            if (User) {
+                constraints = {
+                    video: {
+                        facingMode: "user"
+                    }
+                };
+            } else {
+                constraints = {
+                    video: {
+                        facingMode: {
+                            exact: "environment"
+                        }
+                    }
+                }
+            }
+            //调用用户媒体设备, 访问摄像头
+            getUserMedia(constraints, success, error);
+        } else {
+            alert('不支持访问用户媒体');
+        }
+        //访问用户媒体设备的兼容方法
+        function getUserMedia(constraints, success, error) {
+            if (navigator.mediaDevices.getUserMedia) {
+                //最新的标准API
+                navigator.mediaDevices.getUserMedia(constraints).then(success).catch(error);
+            } else if (navigator.webkitGetUserMedia) {
+                //webkit核心浏览器
+                navigator.webkitGetUserMedia(constraints, success, error)
+            } else if (navigator.mozGetUserMedia) {
+                //firfox浏览器
+                navigator.mozGetUserMedia(constraints, success, error);
+            } else if (navigator.getUserMedia) {
+                //旧版API
+                navigator.getUserMedia(constraints, success, error);
+            }
+        }
+
+        //获取video标签
+        var videoPlayer = document.querySelector('video#videoIn')
+
+        function success(stream) {
+            console.log(stream);
+            //将流赋给video标签
+            videoPlayer.srcObject = stream;
+            videoPlayer.play();
+            //videoPlayer.src = stream;
+            mediaStream = stream;
+            if (callback) {
+                callback(mediaStream);
+            }
+        }
+
+        function error(error) {
+            console.log(`访问用户媒体设备失败${error.name}, ${error.message}`);
+        }
+    }
+
+    /**停止将摄像头拍到的内容传输到video */
+    var stopCameraToVideo = function () {
+        var video = lt_code.getAll("#videoIn");
+        var tracks = mediaStream.getTracks();
+        tracks.forEach(function (e) {
+            e.stop();
+        });
+        video.srcObject = null;
+    }
+
+    //启动摄像头,并且通过媒体流获取宽高,并修正video
+    cameraToVideo(false, function (media) {
+        /**视频宽度 */
+        var width = media.getVideoTracks()[0].getSettings().width;
+        /**视频高度 */
+        var height = media.getVideoTracks()[0].getSettings().height;
+        /**视频流的比率 */
+        var videoRatio = width / height;
+        /**视频输入显示对象 */
+        var videoIn = lt_code.getAll("#videoIn");
+
+        width = videoRatio * window.innerHeight;
+        if (width < window.innerWidth) {
+            height = window.innerWidth / videoRatio;
+            var top = (window.innerHeight - height) / 2;
+            videoIn.style.width = "100vw";
+            videoIn.style.left = 0;
+            videoIn.style.height = height + "px";
+            videoIn.style.top = top + "px";
+        } else {
+            var left = (window.innerWidth - width) / 2;
+            videoIn.style.width = width + "px";
+            videoIn.style.left = left + "px";
+            videoIn.style.top = 0;
+            videoIn.style.height = "100vh";
+        }
+    });
+
+    lt_code.variable.addRun(setInterval(function () {
+        if (lt_code.variable.WHchange) {
+            //修正video
+            /**视频宽度 */
+            var width = mediaStream.getVideoTracks()[0].getSettings().width;
+            /**视频高度 */
+            var height = mediaStream.getVideoTracks()[0].getSettings().height;
+            /**视频流的比率 */
+            var videoRatio = width / height;
+            /**视频输入显示对象 */
+            var videoIn = lt_code.getAll("#videoIn");
+
+            width = videoRatio * window.innerHeight;
+            if (width < window.innerWidth) {
+                height = window.innerWidth / videoRatio;
+                var top = (window.innerHeight - height) / 2;
+                videoIn.style.width = "100vw";
+                videoIn.style.left = 0;
+                videoIn.style.height = height + "px";
+                videoIn.style.top = top + "px";
+            } else {
+                var left = (window.innerWidth - width) / 2;
+                videoIn.style.width = width + "px";
+                videoIn.style.left = left + "px";
+                videoIn.style.top = 0;
+                videoIn.style.height = "100vh";
+            }
+            //重设渲染器大小
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+    }, 200), "读取场景变换");
+    
+</script>

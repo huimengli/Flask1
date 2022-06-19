@@ -805,6 +805,19 @@ def web3D2():
         'test3D2.html',
     );
 
+@app.route("/testAR/")
+@app.route("/testar/")
+@app.route("/AR/")
+@app.route("/ar/")
+def testAR():
+    '''
+    网站3D测试
+    '''
+
+    return render_template(
+        'testAR.html',
+    );
+
 @app.route("/testPath/")
 @app.route("/testpath/")
 def testPath():
