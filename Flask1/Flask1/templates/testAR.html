@@ -137,6 +137,8 @@
     var MapPlane = new THREE.CircleGeometry(20, 50);
     var MapMesh = new THREE.Mesh(MapPlane, sceneMAP);
     MapMesh.position.set(0, 0, 0);
+    //放大地图
+    MapMesh.scale.set(10, 10, 10);
     scene.add(MapMesh);
 
     /**fbx读取器 */
