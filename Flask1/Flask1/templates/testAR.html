@@ -237,6 +237,15 @@
                         cameraBox.rotation.y = Math.PI * re.y / 180;
                         cameraBoxBox.rotation.z = Math.PI * re.z / 180;
                     }
+
+                    //当x轴向以及y轴向同时小于45时,隐去模型
+                    if (r.x < 45 && r.y < 45) {
+                        loadMesh.visible = false;
+                        MapMesh.visible = true;
+                    } else {
+                        loadMesh.visible = true;
+                        MapMesh.visible = false;
+                    }
                 });
             } else {
                 alert("你的浏览器不支持调用运动传感器!");
@@ -257,15 +266,6 @@
 
             //将摄像头云台添加进入场景
             scene.add(cameraBoxBox);
-
-            //当x轴向以及y轴向同时小于45时,隐去模型
-            if (r.x < 45 && r.y < 45) {
-                loadMesh.visible = false;
-                MapMesh.visible = true;
-            } else {
-                loadMesh.visible = true;
-                MapMesh.visible = false;
-            }
         });
     }
 
