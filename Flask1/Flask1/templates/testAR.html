@@ -14,6 +14,9 @@
     <!--<script src="../static/zlib.js/src/inflate_stream.js"></script>-->
     <!--<script src="../static/zlib.js/bin/inflate.min.js"></script>-->
     <!--<script src="../static/zlib.js/bin/inflate.dev.min.js"></script>-->
+    <script src="../static/js/DeviceOrientationControls.js"></script>
+    <!--<script src="../static/three.js/examples/jsm/controls/DeviceOrientationControls.js"></script>-->
+    <!--<script src="../static/three.js/examples/js/controls/DeviceOrientationControls.js"></script>-->
     <script>
         const Inflate = Zlib.Inflate;
     </script>
@@ -62,7 +65,7 @@
             text-align: center;
             background-color: rgba(0,0,0,0.4);
             color: white;
-            bottom:0px;
+            bottom: 0px;
         }
 
         .GUI_tackphoto {
@@ -85,19 +88,19 @@
                 top: 5px;
             }
 
-            .GUI_tackphoto::after{
-                content:"";
-                position:absolute;
-                width:60px;
-                height:60px;
-                background-color:white;
-                border-radius:30px;
-                left:10px;
-                top:10px;
+            .GUI_tackphoto::after {
+                content: "";
+                position: absolute;
+                width: 60px;
+                height: 60px;
+                background-color: white;
+                border-radius: 30px;
+                left: 10px;
+                top: 10px;
             }
 
-        .GUI_point{
-            position:absolute;
+        .GUI_point {
+            position: absolute;
         }
 
         .GUI_task {
@@ -105,13 +108,11 @@
             justify-content: flex-end;
         }
 
-        .GUI_task .GUI_downTask{
+            .GUI_task .GUI_downTask {
+            }
 
-        }
-
-        .GUI_task .GUI_allTask{
-
-        }
+            .GUI_task .GUI_allTask {
+            }
     </style>
 </head>
 <body>
@@ -321,9 +322,9 @@
                                 re.z += gyroscope.y;
                             }
                         }
-                        camerabox.rotation.x = Math.PI * re.x / 180;
-                        cameraBox.rotation.y = Math.PI * re.y / 180;
-                        cameraBoxBox.rotation.z = Math.PI * re.z / 180;
+                        //camerabox.rotation.x = Math.PI * re.x / 180;
+                        //cameraBox.rotation.y = Math.PI * re.y / 180;
+                        //cameraBoxBox.rotation.z = Math.PI * re.z / 180;
                     }
 
                     //当x轴向以及y轴向同时小于45时,隐去模型
@@ -361,12 +362,21 @@
     
     /**加载模型*/
     loadFbx("../static/fbx/pagoda.fbx");
+
+    /**旋转控制器 */
+    var controls = new THREE.DeviceOrientationControls(cameraBoxBox);
     
     /**渲染挂载 */
     var run = setInterval(function () {
-        //渲染场景
+        controls.update();
+        ////渲染场景
         renderer.render(scene, camera); //渲染界面
     }, 33);
+
+    //controls.addEventListener("change", function (e) {
+    //    controls.update();
+    //    renderer.render(scene, camera); //渲染界面
+    //})
 
 </script>
 <!-- 获取摄像头媒体流 -->

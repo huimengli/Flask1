@@ -1,3 +1,4 @@
+/// <reference path="../three.js/build/three.module.js" />
 /**
  * @author richt / http://richt.me
  * @author WestLangley / http://github.com/WestLangley
@@ -5,12 +6,17 @@
  * W3C Device Orientation control (http://w3c.github.io/deviceorientation/spec-source-orientation.html)
  */
 
-import {
-    Euler,
-    MathUtils,
-    Quaternion,
-    Vector3
-} from "../../../build/three.module.js";
+//import {
+//    Euler,
+//    MathUtils,
+//    Quaternion,
+//    Vector3
+//} from "../three.js/build/three.module.js";
+
+var Euler = THREE.Euler,
+    MathUtils = THREE.MathUtils,
+    Quaternion = THREE.Quaternion,
+    Vector3 = THREE.Vector3;
 
 var DeviceOrientationControls = function (object) {
 
@@ -140,4 +146,4 @@ var DeviceOrientationControls = function (object) {
 
 };
 
-export { DeviceOrientationControls };
+THREE.DeviceOrientationControls = DeviceOrientationControls;
