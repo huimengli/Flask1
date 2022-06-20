@@ -457,6 +457,10 @@
     /**加载模型*/
     loadFbx2("../static/fbx/redBoot.FBX");
 
+    //修改模型大小
+    loadMesh[0].scale.set(zoom, zoom, zoom);
+    loadMesh[1].scale.set(1, 1, 1);
+
     /**
      * 读取fbx文件并放置入场
      * @param fbxUrl
