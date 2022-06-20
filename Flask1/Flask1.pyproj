@@ -569,6 +569,7 @@
   <ItemGroup>
     <Content Include="Flask1\static\else\Woker.zip" />
     <Content Include="Flask1\static\fbx\pagoda.fbx" />
+    <Content Include="Flask1\static\fbx\redBoot.FBX" />
     <Content Include="Flask1\static\fbx\Ta.FBX" />
     <Content Include="Flask1\static\fbx\Ta02.FBX" />
     <Content Include="Flask1\static\fbx\test.fbx" />
