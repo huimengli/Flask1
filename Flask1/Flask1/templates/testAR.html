@@ -345,10 +345,10 @@
 
     //读取测试模型
     /**导入的fbx模型对象 */
-    var loadMesh = undefined;
+    var loadMesh = [];
 
-    /**导入的gltf模型对象 */
-    var loadGltfMesh = undefined;
+    ///**导入的gltf模型对象 */
+    //var loadGltfMesh = undefined;
 
     /**摄像机云台盒子最外层 */
     var cameraBoxBox = new THREE.Group();
@@ -362,15 +362,15 @@
     var re = lt_code.pseudoThreeD.vector3.None();
 
     /**
-     * 读取fbx文件并防止入场
+     * 读取fbx文件并放置入场
      * @param fbxUrl
      */
     var loadFbx = function (fbxUrl) {
-        if (loadMesh != undefined) {
-            scene.remove(loadMesh);
-        }
+        //if (loadMesh != undefined) {
+        //    scene.remove(loadMesh);
+        //}
 
-        //读取fbx文件然后防止入场
+        //读取fbx文件然后放置入场
         loader.load(fbxUrl, function (loadedMesh) {
             console.log(loadedMesh);
 
@@ -401,91 +401,6 @@
                 child.castShadow = true;
             });
 
-            if (window.DeviceOrientationEvent) {
-                cameraBox.position.set(0, 0, 0);
-                cameraBox.rotation.set(0, 0, 0);
-                cameraBoxBox.position.set(0, 0, 0);
-                cameraBoxBox.rotation.set(0, 0, 0);
-                camera.position.set(0, 0, 0);
-                camera.rotation.set(0, 0, 0);
-                camerabox.position.set(0, 0, 0);
-                camerabox.rotation.set(0, 0, 0);
-                camerabox.attach(camera);
-                cameraBox.attach(camerabox);
-                cameraBoxBox.attach(cameraBox);
-                //调整摄像机位置
-                cameraBoxBox.position.set(0, 160, 0);
-                scene.add(cameraBoxBox);
-                /**三维向量 */
-                var v3 = lt_code.pseudoThreeD.vector3;
-                //真实陀螺仪
-                window.gyroscope = new Gyroscope();
-                /**运行的次数 */
-                var time = 0;
-                /**获取2次真实陀螺仪后使用api陀螺仪数据 */
-                var overTime = 2;
-                /**上一次的z */
-                var oldz = null;
-                window.addEventListener("deviceorientation", function (event) {
-                    e = event;
-
-                    var z = event.alpha,
-                        x = event.beta,
-                        y = event.gamma;
-                    r.x = x, r.y = y, r.z = z;
-
-                    if (!gyroscope.activated) {
-                        gyroscope.start();
-                        re.x = event.beta;
-                        re.y = event.gamma;
-                        re.z = event.alpha;
-                        or = re.clone();
-                    } else {
-                        //只在z轴诡异偏移时修正
-                        re.x = x;
-                        //当x值在80-100°之间时,y值直接不计算,并且根据y值修正z值
-                        if (x < 65 || x > 115) {
-                            re.y = y;
-                            re.z = z;
-                            //re.z = z - oldz;
-                        } else {
-                            //y轴原有的偏移过大使用sin函数修正(修正值依旧过大)
-                            //cameraBox.rotation.y = Math.PI * (1 - Math.sin(x)) * y / 180;
-                            //尝试通过二次方程修正
-                            re.y = (1 - (-0.0016 * x * x + 0.288 * x - 11.96)) * y;
-                            //cameraBoxBox.rotation.z = Math.PI * (z - oldz - Math.abs(y)) / 180;
-                            if (Math.abs(y) < 20) {
-                                //取消y轴补偿
-                                re.z = z;
-                                //re.z = z - oldz;
-                            } else {
-                                /*
-                                 * 在手机竖起来的时候
-                                 * 左右旋转手机的时候
-                                 * 应用y轴变量的尝试
-                                 */
-                                re.z += gyroscope.y;
-                            }
-                        }
-                        //camerabox.rotation.x = Math.PI * re.x / 180;
-                        //cameraBox.rotation.y = Math.PI * re.y / 180;
-                        //cameraBoxBox.rotation.z = Math.PI * re.z / 180;
-                    }
-
-                    //当x轴向以及y轴向同时小于45时,隐去模型
-                    if (r.x < 45 && r.y < 45) {
-                        loadMesh.visible = false;
-                        MapMesh.visible = true;
-                        GUI_tackphoto.style.display = "none";
-                    } else {
-                        loadMesh.visible = true;
-                        MapMesh.visible = false;
-                        GUI_tackphoto.style.display = "block";
-                    }
-                });
-            } else {
-                alert("你的浏览器不支持调用运动传感器!");
-            }
 
             //模型缩小
             loadedMesh.scale.set(zoom, zoom, zoom);
@@ -498,7 +413,40 @@
             //将模型添加进入场景
             scene.add(loadedMesh);
 
-            loadMesh = loadedMesh;
+            loadMesh.push(loadedMesh);
+
+            //将摄像头云台添加进入场景
+            scene.add(cameraBoxBox);
+        });
+    }
+    
+    /**
+     * 读取fbx文件并放置入场
+     * @param fbxUrl
+     */
+    var loadFbx2 = function (fbxUrl) {
+        //if (loadMesh != undefined) {
+        //    scene.remove(loadMesh);
+        //}
+
+        //读取fbx文件然后放置入场
+        loader.load(fbxUrl, function (loadedMesh) {
+            console.log(loadedMesh);
+
+            
+
+            //模型缩小
+            loadedMesh.scale.set(zoom, zoom, zoom);
+
+            //模型位置修改
+            loadedMesh.position.set(0, 0, -800);
+            //模型旋转修改
+            loadedMesh.rotation.set(0,0, 0);
+
+            //将模型添加进入场景
+            scene.add(loadedMesh);
+
+            loadMesh.push(loadedMesh);
 
             //将摄像头云台添加进入场景
             scene.add(cameraBoxBox);
@@ -506,10 +454,10 @@
     }
     
     /**加载模型*/
-    loadFbx("../static/fbx/pagoda.fbx");
+    loadFbx2("../static/fbx/Ta.fbx");
 
     /**
-     * 读取fbx文件并防止入场
+     * 读取fbx文件并放置入场
      * @param fbxUrl
      */
     var loadGltf = function (fbxUrl) {
@@ -517,7 +465,7 @@
             scene.remove(loadGltfMesh);
         }
 
-        //读取fbx文件然后防止入场
+        //读取fbx文件然后放置入场
         gltfLoader.load(fbxUrl, function (object) {
             var tempScene = object.scene;
             var loadedMesh = new THREE.Mesh();
@@ -556,14 +504,102 @@
         });
     }
     
-    /**加载模型*/
-    loadGltf("../static/gltf/RowBoat.glb");
+    ///**加载模型*/
+    //loadGltf("../static/gltf/RowBoat.glb");
 
     //controls.addEventListener("change", function (e) {
     //    controls.update();
     //    renderer.render(scene, camera); //渲染界面
     //})
 
+    /**根据角度显隐对象,设置摄像头位置 */
+    var disable = function () {
+        if (window.DeviceOrientationEvent) {
+            cameraBox.position.set(0, 0, 0);
+            cameraBox.rotation.set(0, 0, 0);
+            cameraBoxBox.position.set(0, 0, 0);
+            cameraBoxBox.rotation.set(0, 0, 0);
+            camera.position.set(0, 0, 0);
+            camera.rotation.set(0, 0, 0);
+            camerabox.position.set(0, 0, 0);
+            camerabox.rotation.set(0, 0, 0);
+            camerabox.attach(camera);
+            cameraBox.attach(camerabox);
+            cameraBoxBox.attach(cameraBox);
+            //调整摄像机位置
+            cameraBoxBox.position.set(0, 160, 0);
+            scene.add(cameraBoxBox);
+            /**三维向量 */
+            var v3 = lt_code.pseudoThreeD.vector3;
+            //真实陀螺仪
+            window.gyroscope = new Gyroscope();
+            /**运行的次数 */
+            var time = 0;
+            /**获取2次真实陀螺仪后使用api陀螺仪数据 */
+            var overTime = 2;
+            /**上一次的z */
+            var oldz = null;
+            window.addEventListener("deviceorientation", function (event) {
+                e = event;
+
+                var z = event.alpha,
+                    x = event.beta,
+                    y = event.gamma;
+                r.x = x, r.y = y, r.z = z;
+
+                if (!gyroscope.activated) {
+                    gyroscope.start();
+                    re.x = event.beta;
+                    re.y = event.gamma;
+                    re.z = event.alpha;
+                    or = re.clone();
+                } else {
+                    //只在z轴诡异偏移时修正
+                    re.x = x;
+                    //当x值在80-100°之间时,y值直接不计算,并且根据y值修正z值
+                    if (x < 65 || x > 115) {
+                        re.y = y;
+                        re.z = z;
+                        //re.z = z - oldz;
+                    } else {
+                        //y轴原有的偏移过大使用sin函数修正(修正值依旧过大)
+                        //cameraBox.rotation.y = Math.PI * (1 - Math.sin(x)) * y / 180;
+                        //尝试通过二次方程修正
+                        re.y = (1 - (-0.0016 * x * x + 0.288 * x - 11.96)) * y;
+                        //cameraBoxBox.rotation.z = Math.PI * (z - oldz - Math.abs(y)) / 180;
+                        if (Math.abs(y) < 20) {
+                            //取消y轴补偿
+                            re.z = z;
+                            //re.z = z - oldz;
+                        } else {
+                            /*
+                             * 在手机竖起来的时候
+                             * 左右旋转手机的时候
+                             * 应用y轴变量的尝试
+                             */
+                            re.z += gyroscope.y;
+                        }
+                    }
+                    //camerabox.rotation.x = Math.PI * re.x / 180;
+                    //cameraBox.rotation.y = Math.PI * re.y / 180;
+                    //cameraBoxBox.rotation.z = Math.PI * re.z / 180;
+                }
+
+                //当x轴向以及y轴向同时小于45时,隐去模型
+                if (r.x < 45 && r.y < 45) {
+                    loadMesh.visible = false;
+                    MapMesh.visible = true;
+                    GUI_tackphoto.style.display = "none";
+                } else {
+                    loadMesh.visible = true;
+                    MapMesh.visible = false;
+                    GUI_tackphoto.style.display = "block";
+                }
+            });
+        } else {
+            alert("你的浏览器不支持调用运动传感器!");
+        }
+    }
 </script>
 <!-- 根据是否是IOS设备判断,是否直接开始还是先获取权限再开始 -->
 <script>
@@ -576,6 +612,8 @@
             /**旋转控制器 */
             var controls = new THREE.DeviceOrientationControls(cameraBoxBox);
 
+            disable();
+                
             /**渲染挂载 */
             window.run = setInterval(function () {
                 controls.update();
@@ -590,6 +628,8 @@
     } else {
         /**旋转控制器 */
         var controls = new THREE.DeviceOrientationControls(cameraBoxBox);
+
+        disable();
 
         /**渲染挂载 */
         window.run = setInterval(function () {
