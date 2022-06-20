@@ -433,7 +433,6 @@
         loader.load(fbxUrl, function (loadedMesh) {
             console.log(loadedMesh);
 
-            
 
             //模型缩小
             loadedMesh.scale.set(zoom, zoom, zoom);
@@ -453,6 +452,8 @@
         });
     }
     
+    /**加载模型*/
+    loadFbx("../static/fbx/pagoda.fbx");
     /**加载模型*/
     loadFbx2("../static/fbx/Ta.FBX");
 
