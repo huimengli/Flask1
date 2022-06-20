@@ -518,7 +518,13 @@
         }
 
         //读取fbx文件然后防止入场
-        gltfLoader.load(fbxUrl, function (loadedMesh) {
+        gltfLoader.load(fbxUrl, function (object) {
+            var tempScene = object.scene;
+            var loadedMesh = new THREE.Mesh();
+            for (var i = 0; i < tempScene.children.length; i++) {
+                loadedMesh.add(tempScene.children[i]);
+            }
+
             console.log(loadedMesh);
 
             loadedMesh.position.set(20, 0, 0);
