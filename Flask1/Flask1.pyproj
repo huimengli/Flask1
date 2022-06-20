@@ -76,6 +76,7 @@
     <Folder Include="Flask1\static\JavaScriptCode\sVersion\" />
     <Folder Include="Flask1\static\JavaScriptCode\testPage\" />
     <Folder Include="Flask1\static\js\baiduAPI\" />
+    <Folder Include="Flask1\static\gltf\" />
     <Folder Include="Flask1\static\obj\" />
     <Folder Include="Flask1\static\" />
     <Folder Include="Flask1\static\content\" />
@@ -571,6 +572,7 @@
     <Content Include="Flask1\static\fbx\Ta.FBX" />
     <Content Include="Flask1\static\fbx\Ta02.FBX" />
     <Content Include="Flask1\static\fbx\test.fbx" />
+    <Content Include="Flask1\static\gltf\RowBoat.glb" />
     <Content Include="Flask1\static\images\background\4.jpg" />
     <Content Include="Flask1\static\images\baiduAPI\blank.gif" />
     <Content Include="Flask1\static\images\loading\loading1.gif" />

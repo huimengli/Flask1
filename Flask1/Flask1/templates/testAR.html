@@ -9,6 +9,7 @@
     <script src="../static/JavaScriptCode/item/pseudoThreeD.js"></script>
     <script src="../static/three.js/build/three.js"></script>
     <script src="../static/three.js/examples/js/loaders/FBXLoader.js"></script>
+    <script src="../static/three.js/examples/js/loaders/GLTFLoader.js"></script>
     <script src="../static/js/inflate.min.js"></script>
     <!--<script src="../static/zlib.js/src/inflate.js"></script>-->
     <!--<script src="../static/zlib.js/src/inflate_stream.js"></script>-->
@@ -127,7 +128,7 @@
             flex-direction: column;
             justify-content: space-around;
             align-items: center;
-            z-index:1000;
+            z-index: 1000;
         }
 
             .forIOS .forIOS_Value {
@@ -146,9 +147,9 @@
                     color: #3333ff;
                 }
 
-            .forIOS .forIOS_button .forIOS_No{
-                /*padding:0 40px;*/
-            }
+                .forIOS .forIOS_button .forIOS_No {
+                    /*padding:0 40px;*/
+                }
     </style>
 </head>
 <body>
@@ -339,9 +340,15 @@
     /**fbx读取器 */
     var loader = new THREE.FBXLoader();
 
+    /**gltf读取器 */
+    var gltfLoader = new THREE.GLTFLoader();
+
     //读取测试模型
-    /**导入的模型对象 */
+    /**导入的fbx模型对象 */
     var loadMesh = undefined;
+
+    /**导入的gltf模型对象 */
+    var loadGltfMesh = undefined;
 
     /**摄像机云台盒子最外层 */
     var cameraBoxBox = new THREE.Group();
@@ -500,6 +507,51 @@
     
     /**加载模型*/
     loadFbx("../static/fbx/pagoda.fbx");
+
+    /**
+     * 读取fbx文件并防止入场
+     * @param fbxUrl
+     */
+    var loadGltf = function (fbxUrl) {
+        if (loadGltfMesh != undefined) {
+            scene.remove(loadGltfMesh);
+        }
+
+        //读取fbx文件然后防止入场
+        gltfLoader.load(fbxUrl, function (loadedMesh) {
+            console.log(loadedMesh);
+
+            loadedMesh.position.set(20, 0, 0);
+
+            ////当x轴向以及y轴向同时小于45时,隐去模型
+            //if (r.x < 45 && r.y < 45) {
+            //    loadMesh.visible = false;
+            //    MapMesh.visible = true;
+            //    GUI_tackphoto.style.display = "none";
+            //} else {
+            //    loadMesh.visible = true;
+            //    MapMesh.visible = false;
+            //    GUI_tackphoto.style.display = "block";
+            //}
+
+            //模型缩小
+            loadedMesh.scale.set(zoom, zoom, zoom);
+
+            //模型位置修改
+            loadedMesh.position.set(0, 0, 800);
+            //模型旋转修改
+            loadedMesh.rotation.set(0,0, 0);
+
+            //将模型添加进入场景
+            scene.add(loadedMesh);
+
+            loadGltfMesh = loadedMesh;
+
+        });
+    }
+    
+    /**加载模型*/
+    loadGltf("../static/gltf/RowBoat.glb");
 
     //controls.addEventListener("change", function (e) {
     //    controls.update();
