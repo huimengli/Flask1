@@ -463,6 +463,10 @@
             loadMesh[0].scale.set(zoom, zoom, zoom);
             loadMesh[1].scale.set(1, 1, 1);
 
+            //修改模型位置
+            loadMesh[0].position.set(0, 0, 800);
+            loadMesh[1].position.set(0, 0, -800);
+
             //将模型添加进入场景
             for (var i = 0; i < loadMesh.length; i++) {
                 scene.add(loadMesh[i]);
