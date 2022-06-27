@@ -462,6 +462,12 @@
             //修改模型大小
             loadMesh[0].scale.set(zoom, zoom, zoom);
             loadMesh[1].scale.set(1, 1, 1);
+
+            //将模型添加进入场景
+            for (var i = 0; i < loadMesh.length; i++) {
+                scene.add(loadMesh[i]);
+            }
+
             lt_code.variable.delRun("修改模型大小");
         }
     }, 20), "修改模型大小");
