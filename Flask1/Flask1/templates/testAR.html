@@ -451,17 +451,18 @@
             //scene.add(cameraBoxBox);
         });
     }
-    
+
+    /**加载模型*/
+    loadFbx2("../static/fbx/redBoot.FBX");//由于船的模型小,加载快,导致出错
+
     /**加载模型*/
     loadFbx("../static/fbx/pagoda.fbx");
-    /**加载模型*/
-    loadFbx2("../static/fbx/redBoot.FBX");
 
     lt_code.variable.addRun(setInterval(function () {
         if (loadMesh.length == 2) {
             //修改模型大小
-            loadMesh[0].scale.set(zoom, zoom, zoom);
-            loadMesh[1].scale.set(1, 1, 1);
+            loadMesh[0].scale.set(1, 1, 1);
+            loadMesh[1].scale.set(zoom, zoom, zoom);
 
             //修改模型位置
             loadMesh[0].position.set(0, 0, 800);
