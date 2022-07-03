@@ -821,7 +821,7 @@ def testAR():
 @app.route("/testARForMoon/")
 @app.route("/Moon/")
 @app.route("/moon/")
-def testAR():
+def testARForMoon():
     '''
     网站3D测试
     '''
