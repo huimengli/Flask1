@@ -619,6 +619,7 @@
     <Content Include="Flask1\static\JavaScriptCode\testPage\ImageEncodeAndDecode.html" />
     <Content Include="Flask1\static\JavaScriptCode\testPage\ltCodeMinJs.html" />
     <Content Include="Flask1\static\JavaScriptCode\testPage\PseudoThreeD.html" />
+    <Content Include="Flask1\static\JavaScriptCode\testPage\TestAPI.html" />
     <Content Include="Flask1\static\JavaScriptCode\testPage\WaterMark.html" />
     <Content Include="Flask1\static\JavaScriptCode\文件合并.bat" />
     <Content Include="Flask1\static\JavaScriptCode\比较文件.bat" />
@@ -628,6 +629,7 @@
     <Content Include="Flask1\static\js\inflate.min.js" />
     <Content Include="Flask1\static\js\DeviceOrientationControls.js" />
     <Content Include="Flask1\static\js\loading.js" />
+    <Content Include="Flask1\static\js\lt_api.js" />
     <Content Include="Flask1\static\obj\13.js" />
     <Content Include="Flask1\static\obj\17.js" />
     <Content Include="Flask1\static\obj\18.js" />
@@ -5149,6 +5151,8 @@
     <Content Include="Flask1\templates\file.html" />
     <Content Include="Flask1\templates\test3D.html" />
     <Content Include="Flask1\templates\test3D2.html" />
+    <Content Include="Flask1\templates\TestAPI.html" />
+    <Content Include="Flask1\templates\testARForMoon.html" />
     <Content Include="Flask1\templates\testAR.html" />
     <Content Include="Flask1\templates\testPath.html" />
     <Content Include="Flask1\templates\woker.html" />

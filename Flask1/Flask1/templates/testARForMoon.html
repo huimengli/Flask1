@@ -1,0 +1,832 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>中秋节快乐</title>
+    <script src="../static/js/jquery-3.3.1.js"></script>
+    <script src="../static/JavaScriptCode/lt_code.js"></script>
+    <script src="../static/JavaScriptCode/item/pseudoThreeD.js"></script>
+    <script src="../static/three.js/build/three.js"></script>
+    <script src="../static/three.js/examples/js/loaders/FBXLoader.js"></script>
+    <script src="../static/three.js/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="../static/js/inflate.min.js"></script>
+    <!--<script src="../static/zlib.js/src/inflate.js"></script>-->
+    <!--<script src="../static/zlib.js/src/inflate_stream.js"></script>-->
+    <!--<script src="../static/zlib.js/bin/inflate.min.js"></script>-->
+    <!--<script src="../static/zlib.js/bin/inflate.dev.min.js"></script>-->
+    <script src="../static/js/DeviceOrientationControls.js"></script>
+    <!--<script src="../static/three.js/examples/jsm/controls/DeviceOrientationControls.js"></script>-->
+    <!--<script src="../static/three.js/examples/js/controls/DeviceOrientationControls.js"></script>-->
+    <script>
+        const Inflate = Zlib.Inflate;
+    </script>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            border: 0;
+        }
+
+        body {
+            overflow: hidden;
+        }
+
+        video#videoIn {
+            /*width: calc(100vw - 10px);*/
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+            top: 0px;
+            left: 0px;
+            z-index: -1;
+        }
+
+        div.GUI {
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            font-size: 100px;
+        }
+
+        .GUI_title {
+            position: absolute;
+            width: 100vw;
+            text-align: center;
+            background-color: rgba(0,0,0,0.4);
+            color: white;
+        }
+
+        .GUI_bottom {
+            position: absolute;
+            width: 100vw;
+            text-align: center;
+            background-color: rgba(0,0,0,0.4);
+            color: white;
+            bottom: 0px;
+        }
+
+        .GUI_tackphoto {
+            width: 80px;
+            height: 80px;
+            position: relative;
+            left: calc(50vw - 40px);
+            border-radius: 40px;
+            background-color: white;
+        }
+
+            .GUI_tackphoto::before {
+                position: absolute;
+                content: "";
+                width: 70px;
+                height: 70px;
+                background: black;
+                border-radius: 35px;
+                left: 5px;
+                top: 5px;
+            }
+
+            .GUI_tackphoto::after {
+                content: "";
+                position: absolute;
+                width: 60px;
+                height: 60px;
+                background-color: white;
+                border-radius: 30px;
+                left: 10px;
+                top: 10px;
+            }
+
+        .GUI_point {
+            position: absolute;
+        }
+
+        .GUI_task {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+            .GUI_task .GUI_downTask {
+            }
+
+            .GUI_task .GUI_allTask {
+            }
+
+        .forIOS {
+            width: 80vw;
+            position: fixed;
+            left: 10vw;
+            top: 34vh;
+            background-color: white;
+            height: 26vh;
+            font-size: 60px;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 1000;
+        }
+
+            .forIOS .forIOS_Value {
+                padding: 0 50px;
+                font-size: 62px;
+            }
+
+            .forIOS .forIOS_button {
+                display: flex;
+                justify-content: flex-end;
+                width: 90%;
+            }
+
+                .forIOS .forIOS_button .forIOS_Yes {
+                    padding: 0 40px;
+                    color: #3333ff;
+                }
+
+                .forIOS .forIOS_button .forIOS_No {
+                    /*padding:0 40px;*/
+                }
+    </style>
+</head>
+<body>
+    <video id="videoIn"></video>
+    <div class="GUI">
+        <div class="GUI_title">
+            中秋节快乐!
+        </div>
+        <div class="GUI_bottom">
+            <div class="GUI_tackphoto">
+
+            </div>
+            <div class="GUI_point">
+                100
+            </div>
+            <div class="GUI_task">
+                <div class="GUI_downTask">
+                    1
+                </div>
+                /
+                <div class="GUI_allTask">
+                    10
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="forIOS" style="display:none;">
+        <div class="forIOS_Value">
+            是否允许此网站使用您手机的陀螺仪数据?
+        </div>
+        <div class="forIOS_button">
+            <div class="forIOS_Yes">
+                确认
+            </div>
+            <div class="forIOS_No">
+                取消
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<!-- 判断并尝试获取ios权限 -->
+<script>
+    // 判断是否是 ios 设备    
+    function getIos() {
+        var u = window.navigator.userAgent;
+        return !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
+    }
+
+    /**请求IOS权限的弹窗 */
+    var forIOS = lt_code.getAll(".forIOS");
+    /**同意权限的按钮 */
+    var forIOS_Yes = lt_code.getAll(".forIOS_Yes");
+    /**不同意权限按钮 */
+    var forIOS_No = lt_code.getAll(".forIOS_No");
+
+    function requestPermissionsIOS() {
+        requestDeviceMotionIOS();
+        requestDeviceOrientationIOS();
+    }
+
+    function requestDeviceMotionIOS() {
+
+        if (typeof (DeviceMotionEvent).requestPermission === 'function') {
+            (DeviceMotionEvent).requestPermission().then(permissionState => {
+
+                if (permissionState === 'granted') {
+                    window.addEventListener('devicemotion', () => {
+
+                    });
+                }
+            }).
+                catch((err) => {
+                    alert(JSON.stringify(err));
+                    alert("用户未允许权限");
+                })
+        } else {
+            // handle regular non iOS 13+ devices
+        }
+    }
+
+    // requesting device orientation permission
+    function requestDeviceOrientationIOS() {
+
+        if (typeof (DeviceOrientationEvent).requestPermission === 'function') {
+            (DeviceOrientationEvent).requestPermission().then(permissionState => {
+                if (permissionState === 'granted') {
+                    window.addEventListener('deviceorientation', () => {
+
+                    });
+                }
+            }).
+            catch((err) => {
+                alert(JSON.stringify(err));
+                alert("用户未允许权限");
+            })
+        } else {
+            // handle regular non iOS 13+ devices
+        }
+    }
+    function testClick() {
+        requestPermissionsIOS();
+    }
+</script>
+<script>
+    /**缩放大小 */
+    let zoom = 0.1;
+
+    /**初始化渲染器*/
+    var renderer = new THREE.WebGLRenderer({
+        //抗锯齿处理
+        antialias: true,
+        alpha: true
+    });
+    //实例化渲染器
+    renderer.setSize(window.innerWidth, window.innerHeight); //设置宽和高
+
+    /**gui对象 */
+    var GUI = lt_code.getAll(".GUI");
+    /**gui表头 */
+    var GUI_title = lt_code.getAll(".GUI_title");
+    /**gui底部 */
+    var GUI_bottom = lt_code.getAll(".GUI_bottom");
+    /**gui拍照按钮 */
+    var GUI_tackphoto = lt_code.getAll(".GUI_tackphoto");
+    /**gui任务模块 */
+    var GUI_task = lt_code.getAll(".GUI_task");
+    /**gui完成的任务数量 */
+    var GUI_downTask = lt_code.getAll(".GUI_downTask");
+    /**gui全部的任务数量 */
+    var GUI_allTask = lt_code.getAll(".GUI_allTask");
+
+    //告诉渲染器需要阴影效果
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap; // 默认的是，没有设置的这个清晰 THREE.PCFShadowMap
+
+    document.body.appendChild(renderer.domElement); //添加到dom
+
+    //初始化场景
+    var scene = new THREE.Scene(); //实例化场景
+
+    /**初始化相机*/
+    var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+    //环境光照
+    var ambientLight = new THREE.AmbientLight("#999999");
+    scene.add(ambientLight);
+
+    //直接光照
+    var directionalLight = new THREE.DirectionalLight("#ffeecc");
+    directionalLight.position.set(-40, 60, -10);
+
+    directionalLight.shadow.camera.near = 20; //产生阴影的最近距离
+    directionalLight.shadow.camera.far = 200; //产生阴影的最远距离
+    directionalLight.shadow.camera.left = -50; //产生阴影距离位置的最左边位置
+    directionalLight.shadow.camera.right = 50; //最右边
+    directionalLight.shadow.camera.top = 50; //最上边
+    directionalLight.shadow.camera.bottom = -50; //最下面
+
+    //这两个值决定使用多少像素生成阴影 默认512
+    directionalLight.shadow.mapSize.height = 1024;
+    directionalLight.shadow.mapSize.width = 1024;
+
+    //告诉平行光需要开启阴影投射
+    directionalLight.castShadow = true;
+
+    //将直接光照添加进入场景
+    scene.add(directionalLight);
+
+    /**地图材质 */
+    let sceneMap = new THREE.TextureLoader().load("/static/images/Material/1000096.jpg");
+    sceneMap.wrapS = THREE.RepeatWrapping;   //纹理水平方向的平铺方式
+    sceneMap.wrapT = THREE.RepeatWrapping; //纹理垂直方向的平铺方式
+    /**地图贴图 */
+    let sceneMAP = new THREE.MeshLambertMaterial();
+    sceneMAP.map = sceneMap;
+    sceneMAP.side = THREE.DoubleSide;
+
+    /**圆形平面,半径20,圆周方向细分数50 */
+    var MapPlane = new THREE.CircleGeometry(20, 50);
+    var MapMesh = new THREE.Mesh(MapPlane, sceneMAP);
+    MapMesh.position.set(0, -200, 0);
+    MapMesh.rotation.set(Math.PI / 2, 0, 0);
+    //放大地图
+    MapMesh.scale.set(10, 10, 10);
+    scene.add(MapMesh);
+
+    /**fbx读取器 */
+    var loader = new THREE.FBXLoader();
+
+    /**gltf读取器 */
+    var gltfLoader = new THREE.GLTFLoader();
+
+    //读取测试模型
+    /**导入的fbx模型对象 */
+    var loadMesh = [];
+
+    ///**导入的gltf模型对象 */
+    //var loadGltfMesh = undefined;
+
+    /**摄像机云台盒子最外层 */
+    var cameraBoxBox = new THREE.Group();
+    /**摄像机云台盒子中层 */
+    var cameraBox = new THREE.Group();
+    /**摄像机云台盒子最底层 */
+    var camerabox = new THREE.Group();
+    /**WebAPI 旋转值 */
+    var r = lt_code.pseudoThreeD.vector3.None();
+    /**真实API 旋转值 */
+    var re = lt_code.pseudoThreeD.vector3.None();
+
+    /**
+     * 读取fbx文件并放置入场
+     * @param fbxUrl
+     */
+    var loadFbx = function (fbxUrl) {
+        //if (loadMesh != undefined) {
+        //    scene.remove(loadMesh);
+        //}
+
+        //读取fbx文件然后放置入场
+        loader.load(fbxUrl, function (loadedMesh) {
+            console.log(loadedMesh);
+
+            loadedMesh.position.set(20, 0, 0);
+
+            let texture_left = new THREE.TextureLoader().load("/static/images/Material/1000096.jpg");
+            texture_left.wrapS = THREE.RepeatWrapping;   //纹理水平方向的平铺方式
+            texture_left.wrapT = THREE.RepeatWrapping; //纹理垂直方向的平铺方式
+
+            let plane_left = new THREE.MeshLambertMaterial();
+            plane_left.map = texture_left;
+            plane_left.side = THREE.DoubleSide;
+
+            var material = new THREE.MeshLambertMaterial({ color: 0xff0000 });
+            //var material = new THREE.MeshNormalMaterial();
+
+            console.log(loadedMesh);
+
+            // 加载完obj文件是一个场景组，遍历它的子元素，赋值纹理并且更新面和点的发现了
+            loadedMesh.children.forEach(function (child) {
+                //给每个子元素赋值纹理
+                child.material = plane_left;
+                //更新每个子元素的面和顶点的法向量
+                child.geometry.computeFaceNormals();
+                child.geometry.computeVertexNormals();
+
+                //每个子部件产生阴影
+                child.castShadow = true;
+            });
+
+
+            //模型缩小
+            loadedMesh.scale.set(zoom, zoom, zoom);
+
+            //模型位置修改
+            loadedMesh.position.set(0, 0, -800);
+            //模型旋转修改
+            loadedMesh.rotation.set(0,0, 0);
+
+            //将模型添加进入场景
+            //scene.add(loadedMesh);
+
+            loadMesh.push(loadedMesh);
+
+            //将摄像头云台添加进入场景
+            //scene.add(cameraBoxBox);
+        });
+    }
+    
+    /**
+     * 读取fbx文件并放置入场
+     * @param fbxUrl
+     */
+    var loadFbx2 = function (fbxUrl) {
+        //if (loadMesh != undefined) {
+        //    scene.remove(loadMesh);
+        //}
+
+        //读取fbx文件然后放置入场
+        loader.load(fbxUrl, function (loadedMesh) {
+            console.log(loadedMesh);
+
+
+            //模型缩小
+            loadedMesh.scale.set(zoom, zoom, zoom);
+
+            //模型位置修改
+            loadedMesh.position.set(0, 0, 800);
+            //模型旋转修改
+            loadedMesh.rotation.set(0,0, 0);
+
+            //将模型添加进入场景
+            //scene.add(loadedMesh);
+
+            loadMesh.push(loadedMesh);
+
+            //将摄像头云台添加进入场景
+            //scene.add(cameraBoxBox);
+        });
+    }
+
+    /**加载模型*/
+    loadFbx2("../static/fbx/redBoot.FBX");//由于船的模型小,加载快,导致出错
+
+    /**加载模型*/
+    loadFbx("../static/fbx/pagoda.fbx");
+
+    lt_code.variable.addRun(setInterval(function () {
+        if (loadMesh.length == 2) {
+            //修改模型大小
+            loadMesh[0].scale.set(1, 1, 1);
+            loadMesh[1].scale.set(zoom, zoom, zoom);
+
+            //修改模型位置
+            loadMesh[0].position.set(0, 0, 800);
+            loadMesh[1].position.set(0, 0, -800);
+
+            //将模型添加进入场景
+            for (var i = 0; i < loadMesh.length; i++) {
+                scene.add(loadMesh[i]);
+            }
+
+            lt_code.variable.delRun("修改模型大小");
+        }
+    }, 20), "修改模型大小");
+
+    /**
+     * 读取fbx文件并放置入场
+     * @param fbxUrl
+     */
+    var loadGltf = function (fbxUrl) {
+        if (loadGltfMesh != undefined) {
+            scene.remove(loadGltfMesh);
+        }
+
+        //读取fbx文件然后放置入场
+        gltfLoader.load(fbxUrl, function (object) {
+            var tempScene = object.scene;
+            var loadedMesh = new THREE.Mesh();
+            for (var i = 0; i < tempScene.children.length; i++) {
+                loadedMesh.add(tempScene.children[i]);
+            }
+
+            console.log(loadedMesh);
+
+            loadedMesh.position.set(20, 0, 0);
+
+            ////当x轴向以及y轴向同时小于45时,隐去模型
+            //if (r.x < 45 && r.y < 45) {
+            //    loadMesh.visible = false;
+            //    MapMesh.visible = true;
+            //    GUI_tackphoto.style.display = "none";
+            //} else {
+            //    loadMesh.visible = true;
+            //    MapMesh.visible = false;
+            //    GUI_tackphoto.style.display = "block";
+            //}
+
+            //模型缩小
+            loadedMesh.scale.set(zoom, zoom, zoom);
+
+            //模型位置修改
+            loadedMesh.position.set(0, 0, 800);
+            //模型旋转修改
+            loadedMesh.rotation.set(0,0, 0);
+
+            //将模型添加进入场景
+            //scene.add(loadedMesh);
+
+            loadGltfMesh = loadedMesh;
+
+        });
+    }
+    
+    ///**加载模型*/
+    //loadGltf("../static/gltf/RowBoat.glb");
+
+    //controls.addEventListener("change", function (e) {
+    //    controls.update();
+    //    renderer.render(scene, camera); //渲染界面
+    //})
+
+    /**根据角度显隐对象,设置摄像头位置 */
+    var disable = function () {
+        if (window.DeviceOrientationEvent) {
+            cameraBox.position.set(0, 0, 0);
+            cameraBox.rotation.set(0, 0, 0);
+            cameraBoxBox.position.set(0, 0, 0);
+            cameraBoxBox.rotation.set(0, 0, 0);
+            camera.position.set(0, 0, 0);
+            camera.rotation.set(0, 0, 0);
+            camerabox.position.set(0, 0, 0);
+            camerabox.rotation.set(0, 0, 0);
+            camerabox.attach(camera);
+            cameraBox.attach(camerabox);
+            cameraBoxBox.attach(cameraBox);
+            //调整摄像机位置
+            cameraBoxBox.position.set(0, 160, 0);
+            scene.add(cameraBoxBox);
+            /**三维向量 */
+            var v3 = lt_code.pseudoThreeD.vector3;
+            //真实陀螺仪
+            window.gyroscope = new Gyroscope();
+            /**运行的次数 */
+            var time = 0;
+            /**获取2次真实陀螺仪后使用api陀螺仪数据 */
+            var overTime = 2;
+            /**上一次的z */
+            var oldz = null;
+            window.addEventListener("deviceorientation", function (event) {
+                e = event;
+
+                var z = event.alpha,
+                    x = event.beta,
+                    y = event.gamma;
+                r.x = x, r.y = y, r.z = z;
+
+                if (!gyroscope.activated) {
+                    gyroscope.start();
+                    re.x = event.beta;
+                    re.y = event.gamma;
+                    re.z = event.alpha;
+                    or = re.clone();
+                } else {
+                    //只在z轴诡异偏移时修正
+                    re.x = x;
+                    //当x值在80-100°之间时,y值直接不计算,并且根据y值修正z值
+                    if (x < 65 || x > 115) {
+                        re.y = y;
+                        re.z = z;
+                        //re.z = z - oldz;
+                    } else {
+                        //y轴原有的偏移过大使用sin函数修正(修正值依旧过大)
+                        //cameraBox.rotation.y = Math.PI * (1 - Math.sin(x)) * y / 180;
+                        //尝试通过二次方程修正
+                        re.y = (1 - (-0.0016 * x * x + 0.288 * x - 11.96)) * y;
+                        //cameraBoxBox.rotation.z = Math.PI * (z - oldz - Math.abs(y)) / 180;
+                        if (Math.abs(y) < 20) {
+                            //取消y轴补偿
+                            re.z = z;
+                            //re.z = z - oldz;
+                        } else {
+                            /*
+                             * 在手机竖起来的时候
+                             * 左右旋转手机的时候
+                             * 应用y轴变量的尝试
+                             */
+                            re.z += gyroscope.y;
+                        }
+                    }
+                    //camerabox.rotation.x = Math.PI * re.x / 180;
+                    //cameraBox.rotation.y = Math.PI * re.y / 180;
+                    //cameraBoxBox.rotation.z = Math.PI * re.z / 180;
+                }
+
+                //当x轴向以及y轴向同时小于45时,隐去模型
+                if (r.x < 45 && r.y < 45) {
+                    loadMesh.visible = false;
+                    MapMesh.visible = true;
+                    GUI_tackphoto.style.display = "none";
+                } else {
+                    loadMesh.visible = true;
+                    MapMesh.visible = false;
+                    GUI_tackphoto.style.display = "block";
+                }
+            });
+        } else {
+            alert("你的浏览器不支持调用运动传感器!");
+        }
+    }
+</script>
+<!-- 根据是否是IOS设备判断,是否直接开始还是先获取权限再开始 -->
+<script>
+    if (getIos()) {
+        forIOS.style.display = "flex";
+
+        forIOS_Yes.onmousedown = function () {
+            forIOS.style.display = "none";
+
+            /**旋转控制器 */
+            var controls = new THREE.DeviceOrientationControls(cameraBoxBox);
+
+            disable();
+                
+            /**渲染挂载 */
+            window.run = setInterval(function () {
+                controls.update();
+                ////渲染场景
+                renderer.render(scene, camera); //渲染界面
+            }, 33);
+        }
+
+        forIOS_No.onmousedown = function () {
+            forIOS.style.display = "none";
+        }
+    } else {
+        /**旋转控制器 */
+        var controls = new THREE.DeviceOrientationControls(cameraBoxBox);
+
+        disable();
+
+        /**渲染挂载 */
+        window.run = setInterval(function () {
+            controls.update();
+            ////渲染场景
+            renderer.render(scene, camera); //渲染界面
+        }, 33);
+    }
+</script>
+<!-- 获取摄像头媒体流 -->
+<script>
+    /**媒体流 */
+    var mediaStream = null;
+
+    //获取支持的音视频设备
+    var showDevices = function () {
+        if (!navigator.mediaDevices ||
+            !navigator.mediaDevices.enumerateDevices()) {
+            console.log('不支持')
+        } else {
+            navigator.mediaDevices.enumerateDevices()
+                .then((deviceInfos) => {
+                    deviceInfos.forEach((info) => {
+                        console.log(info.kind + "：label=" +
+                            info.label + "：id=" + info.deviceId + "：group = " + info.groupId);
+                    })
+                })
+                .catch((err) => {
+                    console.log(err.name + "：" + err.message)
+                });
+        }
+    };
+
+    /**
+     * 打开摄像头并且将视频流输出到video
+     * @param {boolean} User
+     * @param {DecodeSuccessCallback} callback
+     */
+    var cameraToVideo = function (User = true,callback) {
+        if (mediaStream) {
+            stopCameraToVideo();
+        }
+        if (navigator.mediaDevices.getUserMedia || navigator.getUserMedia || navigator.webkitGetUserMedia || navigator
+            .mozGetUserMedia) {
+            //var constraints = {
+            //    audio: false,
+            //    video: true
+            //};
+            var constraints = {
+                video: true
+            };
+            if (User) {
+                constraints = {
+                    video: {
+                        facingMode: "user"
+                    }
+                };
+            } else {
+                constraints = {
+                    video: {
+                        facingMode: {
+                            exact: "environment"
+                        }
+                    }
+                }
+            }
+            //调用用户媒体设备, 访问摄像头
+            getUserMedia(constraints, success, error);
+        } else {
+            alert('不支持访问用户媒体');
+        }
+        //访问用户媒体设备的兼容方法
+        function getUserMedia(constraints, success, error) {
+            if (navigator.mediaDevices.getUserMedia) {
+                //最新的标准API
+                navigator.mediaDevices.getUserMedia(constraints).then(success).catch(error);
+            } else if (navigator.webkitGetUserMedia) {
+                //webkit核心浏览器
+                navigator.webkitGetUserMedia(constraints, success, error)
+            } else if (navigator.mozGetUserMedia) {
+                //firfox浏览器
+                navigator.mozGetUserMedia(constraints, success, error);
+            } else if (navigator.getUserMedia) {
+                //旧版API
+                navigator.getUserMedia(constraints, success, error);
+            }
+        }
+
+        //获取video标签
+        var videoPlayer = document.querySelector('video#videoIn')
+
+        function success(stream) {
+            console.log(stream);
+            //将流赋给video标签
+            videoPlayer.srcObject = stream;
+            videoPlayer.play();
+            //videoPlayer.src = stream;
+            mediaStream = stream;
+            if (callback) {
+                callback(mediaStream);
+            }
+        }
+
+        function error(error) {
+            console.log(`访问用户媒体设备失败${error.name}, ${error.message}`);
+        }
+    }
+
+    /**停止将摄像头拍到的内容传输到video */
+    var stopCameraToVideo = function () {
+        var video = lt_code.getAll("#videoIn");
+        var tracks = mediaStream.getTracks();
+        tracks.forEach(function (e) {
+            e.stop();
+        });
+        video.srcObject = null;
+    }
+
+    //启动摄像头,并且通过媒体流获取宽高,并修正video
+    cameraToVideo(false, function (media) {
+        /**视频宽度 */
+        var width = media.getVideoTracks()[0].getSettings().width;
+        /**视频高度 */
+        var height = media.getVideoTracks()[0].getSettings().height;
+        /**视频流的比率 */
+        var videoRatio = width / height;
+        /**视频输入显示对象 */
+        var videoIn = lt_code.getAll("#videoIn");
+
+        width = videoRatio * window.innerHeight;
+        if (width < window.innerWidth) {
+            height = window.innerWidth / videoRatio;
+            var top = (window.innerHeight - height) / 2;
+            videoIn.style.width = "100vw";
+            videoIn.style.left = 0;
+            videoIn.style.height = height + "px";
+            videoIn.style.top = top + "px";
+        } else {
+            var left = (window.innerWidth - width) / 2;
+            videoIn.style.width = width + "px";
+            videoIn.style.left = left + "px";
+            videoIn.style.top = 0;
+            videoIn.style.height = "100vh";
+        }
+    });
+
+    lt_code.variable.addRun(setInterval(function () {
+        if (lt_code.variable.WHchange) {
+            //修正video
+            /**视频宽度 */
+            var width = mediaStream.getVideoTracks()[0].getSettings().width;
+            /**视频高度 */
+            var height = mediaStream.getVideoTracks()[0].getSettings().height;
+            /**视频流的比率 */
+            var videoRatio = width / height;
+            /**视频输入显示对象 */
+            var videoIn = lt_code.getAll("#videoIn");
+
+            width = videoRatio * window.innerHeight;
+            if (width < window.innerWidth) {
+                height = window.innerWidth / videoRatio;
+                var top = (window.innerHeight - height) / 2;
+                videoIn.style.width = "100vw";
+                videoIn.style.left = 0;
+                videoIn.style.height = height + "px";
+                videoIn.style.top = top + "px";
+            } else {
+                var left = (window.innerWidth - width) / 2;
+                videoIn.style.width = width + "px";
+                videoIn.style.left = left + "px";
+                videoIn.style.top = 0;
+                videoIn.style.height = "100vh";
+            }
+            //重设渲染器大小
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+    }, 200), "读取场景变换");
+    
+</script>

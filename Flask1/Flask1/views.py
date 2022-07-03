@@ -818,6 +818,18 @@ def testAR():
         'testAR.html',
     );
 
+@app.route("/testARForMoon/")
+@app.route("/Moon/")
+@app.route("/moon/")
+def testAR():
+    '''
+    网站3D测试
+    '''
+
+    return render_template(
+        'testARForMoon.html',
+    );
+
 @app.route("/testPath/")
 @app.route("/testpath/")
 def testPath():
@@ -832,6 +844,16 @@ def woker():
     '''
     return render_template(
         'woker.html',        
+    )
+
+@app.route("/testAPI/")
+@app.route("/webAPI/")
+def testAPI():
+    '''
+    测试页面API
+    '''
+    return render_template(
+        'testAPI.html',        
     )
 
 #@app.route('/')
