@@ -847,13 +847,15 @@ def woker():
     )
 
 @app.route("/testAPI/")
+@app.route("/testapi/")
 @app.route("/webAPI/")
+@app.route("/webapi/")
 def testAPI():
     '''
     测试页面API
     '''
     return render_template(
-        'testAPI.html',        
+        'TestAPI.html',        
     )
 
 #@app.route('/')
