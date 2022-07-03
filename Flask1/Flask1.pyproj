@@ -605,6 +605,7 @@
     <Content Include="Flask1\static\JavaScriptCode\encode\lt_code.16.min.en.js" />
     <Content Include="Flask1\static\JavaScriptCode\encode\lt_code.16.min.en2.js" />
     <Content Include="Flask1\static\JavaScriptCode\images\headPortrait.js" />
+    <Content Include="Flask1\static\JavaScriptCode\item\API.js" />
     <Content Include="Flask1\static\JavaScriptCode\item\imageOperation.js" />
     <Content Include="Flask1\static\JavaScriptCode\item\pseudoThreeD.js" />
     <Content Include="Flask1\static\JavaScriptCode\item\threeD.js" />

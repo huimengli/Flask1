@@ -6,18 +6,133 @@
     <script src="/static/three.js/build/three.js"></script>
 </head>
 <body>
+    <div class="buttonBox">
+        <input type="checkbox" class="useGyroscope" name="useGyroscope" value="是否使用陀螺仪?" />
+    </div>
+    <div class="valueBox">
+        
+    </div>
 </body>
 </html>
 <script>
-    var API = null;
+    /**内容盒子 */
+    var valueBox = lt_code.getAll(".valueBox");
+    /**按钮盒子 */
+    var buttonBox = lt_code.getAll(".buttonBox");
+    /**是否使用陀螺仪 */
+    var useGyroscope = lt_code.getAll(".useGyroscope");
+    try {
+        /**API对象 */
+        var API = new lt_code.API();
+    } catch (e) {
+        var API = null;
+    }
+    /**多少时间从API拿一次数据*/
+    const WAITTIME = 100;
+
+    //以下是数据
+    /**陀螺仪的原始数据 */
+    var Gyroscope = null;
+    /**陀螺仪四元数数据 */
+    var GyroscopeQuaternion = null;
+    /**陀螺仪欧拉角数据 */
+    var GyroscopeEuler = null;
+
+    //加载模块
     window.onload = function () {
         lt_code.init("API");
+        lt_code.init("PTD");
         lt_code.variable.addRun(setInterval(async function () {
-            if (lt_code.API) {
-                lt_code.variable.delRun("等待API加载");
+            if (lt_code.API&&lt_code.pseudoThreeD) {
+                lt_code.variable.delRun("等待模块加载");
                 API = new lt_code.API();     
                 await API.Init();
+                //设置能否使用API数据
+                useGyroscope.onchange = function () {
+                    API.UseGyroscope = this.checked;
+                };
+
+                //开始获取数据
+                lt_code.variable.addRun(setInterval(function () {
+                    //获取原始陀螺仪数据
+                    Gyroscope = !Gyroscope ? createLine("原始陀螺仪数据", API.Gyroscope) : function () {
+                        this.innerText = JSON.stringify({
+                            x: lt_code.pseudoThreeD.getAccuracy(API.Gyroscope.x),
+                            y: lt_code.pseudoThreeD.getAccuracy(API.Gyroscope.y),
+                            z: lt_code.pseudoThreeD.getAccuracy(API.Gyroscope.z),
+                        });
+                        return this;
+                    }();
+                    //获取陀螺仪四元素数据
+                    GyroscopeQuaternion = !GyroscopeQuaternion ? createLine("旋转四元素数据", API.GyroscopeQuaternion) : function () {
+                        this.innerText = JSON.stringify({
+                            x: lt_code.pseudoThreeD.getAccuracy(API.GyroscopeQuaternion.x),
+                            y: lt_code.pseudoThreeD.getAccuracy(API.GyroscopeQuaternion.y),
+                            z: lt_code.pseudoThreeD.getAccuracy(API.GyroscopeQuaternion.z),
+                            w: lt_code.pseudoThreeD.getAccuracy(API.GyroscopeQuaternion.w),
+                        });
+                        return this;
+                    }();
+                    //获取陀螺仪欧拉角数据
+                    GyroscopeEuler = !GyroscopeEuler ? createLine("旋转欧拉角数据", API.GyroscopeEuler) : function () {
+                        this.innerText = JSON.stringify({
+                            x: lt_code.pseudoThreeD.getAccuracy(radianToAngle(API.GyroscopeEuler.x)),
+                            y: lt_code.pseudoThreeD.getAccuracy(radianToAngle(API.GyroscopeEuler.y)),
+                            z: lt_code.pseudoThreeD.getAccuracy(radianToAngle(API.GyroscopeEuler.z)),
+                        });
+                        return this;
+                    }();
+                }, WAITTIME), "获取数据");
+
             }
-        }, 100), "等待API加载");
+        }, 100), "等待模块加载");
     };
+    /**
+     * 创建内容行
+     * @param name
+     * @param value
+     */
+    var createLine = function (name, value) {
+        var line = lt_code.newDom("div", {
+            class: "valueLine",
+        });
+        var lineTitle = lt_code.newDom("div", {
+            class: "valueLineTitle",
+            innerText: name
+        });
+        var lineValue = lt_code.newDom("div", {
+            class: "valueLineValue",
+            innerText: value.w ? JSON.stringify({
+                x: lt_code.pseudoThreeD.getAccuracy(value.x),
+                y: lt_code.pseudoThreeD.getAccuracy(value.y),
+                z: lt_code.pseudoThreeD.getAccuracy(value.z),
+                w: lt_code.pseudoThreeD.getAccuracy(value.w),
+            }) : value.x ? JSON.stringify({
+                x: lt_code.pseudoThreeD.getAccuracy(value.x),
+                y: lt_code.pseudoThreeD.getAccuracy(value.y),
+                z: lt_code.pseudoThreeD.getAccuracy(value.z),
+                }) : value
+        });
+        lt_code.addChild(lineTitle, line);
+        lt_code.addChild(lineValue, line);
+
+        lt_code.addChild(line, valueBox);
+        return lineValue;
+    };
+
+    /**
+     * 将弧度转化为角度
+     * @param e
+     */
+    var radianToAngle = function (radian) {
+        return Math.round(radian * 180 / Math.PI);
+    }
+
+    /**
+     * 将角度转化为弧度
+     * @param deg
+     */
+    var angleToRadian = function (deg) {
+        return deg * Math.PI / 180;
+    }
 </script>
