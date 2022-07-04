@@ -96,13 +96,13 @@
     window.onload = function () {
         lt_code.init("API");
         lt_code.init("PTD");
-        lt_code.variable.addRun(setInterval(async function () {
+        lt_code.variable.addRun(setInterval(function () {
             if (lt_code.API&&lt_code.pseudoThreeD) {
                 lt_code.variable.delRun("等待模块加载");
                 API = new lt_code.API();   
                 
                 //设置能否使用API数据
-                useGyroscope.onchange = function () {
+                useGyroscope.onchange = async function () {
                     API.UseGyroscope = this.checked;
                     if (API.Gyroscope == void 0) {
                         await API.Init();
