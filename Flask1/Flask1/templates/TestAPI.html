@@ -4,11 +4,11 @@
     <title>测试API</title>
     <script src="/static/JavaScriptCode/lt_code.js"></script>
     <script src="/static/three.js/build/three.js"></script>
+    <style>
+
+    </style>
 </head>
 <body>
-    <div class="buttonBox">
-        <input type="checkbox" class="useGyroscope" name="useGyroscope" value="是否使用陀螺仪?" />
-    </div>
     <div class="valueBox">
         
     </div>
@@ -17,10 +17,6 @@
 <script>
     /**内容盒子 */
     var valueBox = lt_code.getAll(".valueBox");
-    /**按钮盒子 */
-    var buttonBox = lt_code.getAll(".buttonBox");
-    /**是否使用陀螺仪 */
-    var useGyroscope = lt_code.getAll(".useGyroscope");
     try {
         /**API对象 */
         var API = new lt_code.API();
@@ -29,6 +25,32 @@
     }
     /**多少时间从API拿一次数据*/
     const WAITTIME = 100;
+
+    /**
+     * 创建一个按钮行
+     * @param name 按钮提示
+     * @param classname 按钮英文名
+     */
+    var createButtonLine = function (name,classname) {
+        var line = lt_code.newDom("div", {
+            class: "buttonLine",
+        });
+        var input = lt_code.newDom("input", {
+            type: "checkbox",
+            class: classname,
+            name: classname,
+            value: name,
+        });
+        var tishi = lt_code.newDom("div", {
+            innerText: name,
+        });
+
+        lt_code.addChild(input, line);
+        lt_code.addChild(tishi, line);
+
+        lt_code.addChild(line, valueBox);
+        return input;
+    }
 
     /**
      * 创建内容行
@@ -54,13 +76,21 @@
         return lineValue;
     };
 
-    //以下是数据
+    //以下是布局创建
+    //陀螺仪布局
+    /**是否使用陀螺仪 */
+    var useGyroscope = createButtonLine("是否使用陀螺仪", "useGyroscope");
     /**陀螺仪的原始数据 */
     var Gyroscope = createLine("原始陀螺仪数据", null);
     /**陀螺仪四元数数据 */
     var GyroscopeQuaternion = createLine("旋转四元素数据", null);
     /**陀螺仪欧拉角数据 */
     var GyroscopeEuler = createLine("旋转欧拉角数据", null);
+    //GPS布局
+    /**是否使用GPS */
+    var useGPS = createButtonLine("是否使用GPS", "useGPS");
+    /**GPS数据 */
+    var GPS = createLine("GPS数据", null);
 
     //加载模块
     window.onload = function () {
@@ -102,6 +132,17 @@
                     }
                 }, WAITTIME), "获取数据");
 
+                //获取GPS数据
+                useGPS.onchange = function () {
+                    API.UseGPS = this.checked;
+                    try {
+                        API.GPSInit(function (gps) {
+                            GPS.innerText = JSON.stringify(gps);
+                        });
+                    } catch (e) {
+                        alert(e);
+                    }
+                }
             }
         }, 100), "等待模块加载");
     };
