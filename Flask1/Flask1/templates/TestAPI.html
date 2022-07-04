@@ -55,7 +55,11 @@
                 //开始获取数据
                 lt_code.variable.addRun(setInterval(function () {
                     //获取原始陀螺仪数据
-                    Gyroscope = !Gyroscope ? createLine("原始陀螺仪数据", API.Gyroscope) : function () {
+                    Gyroscope = !Gyroscope ? createLine("原始陀螺仪数据", JSON.stringify({
+                        x: lt_code.pseudoThreeD.getAccuracy(API.Gyroscope.x),
+                        y: lt_code.pseudoThreeD.getAccuracy(API.Gyroscope.y),
+                        z: lt_code.pseudoThreeD.getAccuracy(API.Gyroscope.z),
+                    })) : function () {
                         this.innerText = JSON.stringify({
                             x: lt_code.pseudoThreeD.getAccuracy(API.Gyroscope.x),
                             y: lt_code.pseudoThreeD.getAccuracy(API.Gyroscope.y),
@@ -64,7 +68,12 @@
                         return this;
                     }();
                     //获取陀螺仪四元素数据
-                    GyroscopeQuaternion = !GyroscopeQuaternion ? createLine("旋转四元素数据", API.GyroscopeQuaternion) : function () {
+                    GyroscopeQuaternion = !GyroscopeQuaternion ? createLine("旋转四元素数据", JSON.stringify({
+                        x: lt_code.pseudoThreeD.getAccuracy(API.GyroscopeQuaternion.x),
+                        y: lt_code.pseudoThreeD.getAccuracy(API.GyroscopeQuaternion.y),
+                        z: lt_code.pseudoThreeD.getAccuracy(API.GyroscopeQuaternion.z),
+                        w: lt_code.pseudoThreeD.getAccuracy(API.GyroscopeQuaternion.w),
+                    })) : function () {
                         this.innerText = JSON.stringify({
                             x: lt_code.pseudoThreeD.getAccuracy(API.GyroscopeQuaternion.x),
                             y: lt_code.pseudoThreeD.getAccuracy(API.GyroscopeQuaternion.y),
@@ -74,7 +83,11 @@
                         return this;
                     }();
                     //获取陀螺仪欧拉角数据
-                    GyroscopeEuler = !GyroscopeEuler ? createLine("旋转欧拉角数据", API.GyroscopeEuler) : function () {
+                    GyroscopeEuler = !GyroscopeEuler ? createLine("旋转欧拉角数据", JSON.stringify({
+                        x: lt_code.pseudoThreeD.getAccuracy(radianToAngle(API.GyroscopeEuler.x)),
+                        y: lt_code.pseudoThreeD.getAccuracy(radianToAngle(API.GyroscopeEuler.y)),
+                        z: lt_code.pseudoThreeD.getAccuracy(radianToAngle(API.GyroscopeEuler.z)),
+                    })) : function () {
                         this.innerText = JSON.stringify({
                             x: lt_code.pseudoThreeD.getAccuracy(radianToAngle(API.GyroscopeEuler.x)),
                             y: lt_code.pseudoThreeD.getAccuracy(radianToAngle(API.GyroscopeEuler.y)),
@@ -102,16 +115,7 @@
         });
         var lineValue = lt_code.newDom("div", {
             class: "valueLineValue",
-            innerText: value.w ? JSON.stringify({
-                x: lt_code.pseudoThreeD.getAccuracy(value.x),
-                y: lt_code.pseudoThreeD.getAccuracy(value.y),
-                z: lt_code.pseudoThreeD.getAccuracy(value.z),
-                w: lt_code.pseudoThreeD.getAccuracy(value.w),
-            }) : value.x ? JSON.stringify({
-                x: lt_code.pseudoThreeD.getAccuracy(value.x),
-                y: lt_code.pseudoThreeD.getAccuracy(value.y),
-                z: lt_code.pseudoThreeD.getAccuracy(value.z),
-                }) : value
+            innerText: value
         });
         lt_code.addChild(lineTitle, line);
         lt_code.addChild(lineValue, line);
