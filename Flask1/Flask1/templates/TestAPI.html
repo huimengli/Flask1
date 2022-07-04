@@ -137,7 +137,11 @@
                     API.UseGPS = this.checked;
                     try {
                         API.GPSInit(function (gps) {
-                            GPS.innerText = JSON.stringify(gps);
+                            var dict = {};
+                            for (var x in gps) {
+                                dict[x] = gps[x];
+                            }
+                            GPS.innerText = JSON.stringify(dict);
                         });
                     } catch (e) {
                         alert(e);
