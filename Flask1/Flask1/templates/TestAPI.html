@@ -30,6 +30,30 @@
     /**多少时间从API拿一次数据*/
     const WAITTIME = 100;
 
+    /**
+     * 创建内容行
+     * @param name
+     * @param value
+     */
+    var createLine = function (name, value) {
+        var line = lt_code.newDom("div", {
+            class: "valueLine",
+        });
+        var lineTitle = lt_code.newDom("div", {
+            class: "valueLineTitle",
+            innerText: name
+        });
+        var lineValue = lt_code.newDom("div", {
+            class: "valueLineValue",
+            innerText: value
+        });
+        lt_code.addChild(lineTitle, line);
+        lt_code.addChild(lineValue, line);
+
+        lt_code.addChild(line, valueBox);
+        return lineValue;
+    };
+
     //以下是数据
     /**陀螺仪的原始数据 */
     var Gyroscope = createLine("原始陀螺仪数据", null);
@@ -80,29 +104,6 @@
 
             }
         }, 100), "等待模块加载");
-    };
-    /**
-     * 创建内容行
-     * @param name
-     * @param value
-     */
-    var createLine = function (name, value) {
-        var line = lt_code.newDom("div", {
-            class: "valueLine",
-        });
-        var lineTitle = lt_code.newDom("div", {
-            class: "valueLineTitle",
-            innerText: name
-        });
-        var lineValue = lt_code.newDom("div", {
-            class: "valueLineValue",
-            innerText: value
-        });
-        lt_code.addChild(lineTitle, line);
-        lt_code.addChild(lineValue, line);
-
-        lt_code.addChild(line, valueBox);
-        return lineValue;
     };
 
     /**
