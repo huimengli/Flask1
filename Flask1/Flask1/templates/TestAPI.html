@@ -32,11 +32,11 @@
 
     //以下是数据
     /**陀螺仪的原始数据 */
-    var Gyroscope = null;
+    var Gyroscope = createLine("原始陀螺仪数据", null);
     /**陀螺仪四元数数据 */
-    var GyroscopeQuaternion = null;
+    var GyroscopeQuaternion = createLine("旋转四元素数据", null);
     /**陀螺仪欧拉角数据 */
-    var GyroscopeEuler = null;
+    var GyroscopeEuler = createLine("旋转欧拉角数据", null);
 
     //加载模块
     window.onload = function () {
@@ -54,47 +54,28 @@
 
                 //开始获取数据
                 lt_code.variable.addRun(setInterval(function () {
-                    //获取原始陀螺仪数据
-                    Gyroscope = !Gyroscope ? createLine("原始陀螺仪数据", JSON.stringify({
-                        x: lt_code.pseudoThreeD.getAccuracy(API.Gyroscope.x),
-                        y: lt_code.pseudoThreeD.getAccuracy(API.Gyroscope.y),
-                        z: lt_code.pseudoThreeD.getAccuracy(API.Gyroscope.z),
-                    })) : function () {
-                        this.innerText = JSON.stringify({
+                    if (API.UseGyroscope) {
+                        Gyroscope.innerText = JSON.stringify({
                             x: lt_code.pseudoThreeD.getAccuracy(API.Gyroscope.x),
                             y: lt_code.pseudoThreeD.getAccuracy(API.Gyroscope.y),
                             z: lt_code.pseudoThreeD.getAccuracy(API.Gyroscope.z),
                         });
-                        return this;
-                    }();
-                    //获取陀螺仪四元素数据
-                    GyroscopeQuaternion = !GyroscopeQuaternion ? createLine("旋转四元素数据", JSON.stringify({
-                        x: lt_code.pseudoThreeD.getAccuracy(API.GyroscopeQuaternion.x),
-                        y: lt_code.pseudoThreeD.getAccuracy(API.GyroscopeQuaternion.y),
-                        z: lt_code.pseudoThreeD.getAccuracy(API.GyroscopeQuaternion.z),
-                        w: lt_code.pseudoThreeD.getAccuracy(API.GyroscopeQuaternion.w),
-                    })) : function () {
-                        this.innerText = JSON.stringify({
+                        GyroscopeQuaternion.innerText = JSON.stringify({
                             x: lt_code.pseudoThreeD.getAccuracy(API.GyroscopeQuaternion.x),
                             y: lt_code.pseudoThreeD.getAccuracy(API.GyroscopeQuaternion.y),
                             z: lt_code.pseudoThreeD.getAccuracy(API.GyroscopeQuaternion.z),
                             w: lt_code.pseudoThreeD.getAccuracy(API.GyroscopeQuaternion.w),
                         });
-                        return this;
-                    }();
-                    //获取陀螺仪欧拉角数据
-                    GyroscopeEuler = !GyroscopeEuler ? createLine("旋转欧拉角数据", JSON.stringify({
-                        x: lt_code.pseudoThreeD.getAccuracy(radianToAngle(API.GyroscopeEuler.x)),
-                        y: lt_code.pseudoThreeD.getAccuracy(radianToAngle(API.GyroscopeEuler.y)),
-                        z: lt_code.pseudoThreeD.getAccuracy(radianToAngle(API.GyroscopeEuler.z)),
-                    })) : function () {
-                        this.innerText = JSON.stringify({
+                        GyroscopeEuler.innerText = JSON.stringify({
                             x: lt_code.pseudoThreeD.getAccuracy(radianToAngle(API.GyroscopeEuler.x)),
                             y: lt_code.pseudoThreeD.getAccuracy(radianToAngle(API.GyroscopeEuler.y)),
                             z: lt_code.pseudoThreeD.getAccuracy(radianToAngle(API.GyroscopeEuler.z)),
                         });
-                        return this;
-                    }();
+                    } else {
+                        Gyroscope.innerText = "null";
+                        GyroscopeQuaternion.innerText = "null";
+                        GyroscopeEuler.innerText = "null";
+                    }
                 }, WAITTIME), "获取数据");
 
             }
