@@ -5,7 +5,6 @@
     <script src="/static/JavaScriptCode/lt_code.js"></script>
     <script src="/static/three.js/build/three.js"></script>
     <style>
-
     </style>
 </head>
 <body>
@@ -86,11 +85,18 @@
     var GyroscopeQuaternion = createLine("旋转四元素数据", null);
     /**陀螺仪欧拉角数据 */
     var GyroscopeEuler = createLine("旋转欧拉角数据", null);
+
     //GPS布局
     /**是否使用GPS */
     var useGPS = createButtonLine("是否使用GPS", "useGPS");
     /**GPS数据 */
     var GPS = createLine("GPS数据", null);
+
+    //加速度布局
+    /**是否使用加速计 */
+    var useAccelerometer = createButtonLine("是否使用加速计", "useAccelerometer");
+    /**加速计数据 */
+    var Accelerometer = createLine("加速计数据", null);
 
     //加载模块
     window.onload = function () {
@@ -125,6 +131,14 @@
                         } catch (e) {
                             alert(e);
                         }
+                    }
+                };
+
+                //获取加速计数据
+                useAccelerometer.onchange = async function () {
+                    API.UseAccelerometer = this.checked;
+                    if (API.Accelerometer == void 0) {
+                        await API.Init();
                     }
                 };
 
@@ -163,6 +177,17 @@
                         GPS.innerText = JSON.stringify(dict);
                     } else {
                         GPS.innerText = null;
+                    }
+
+                    //获取加速度数据
+                    if (API.UseAccelerometer) {
+                        Accelerometer.innerText = JSON.stringify({
+                            x: lt_code.pseudoThreeD.getAccuracy(API.Accelerometer.x),
+                            y: lt_code.pseudoThreeD.getAccuracy(API.Accelerometer.y),
+                            z: lt_code.pseudoThreeD.getAccuracy(API.Accelerometer.z),
+                        });
+                    } else {
+                        Accelerometer.innerText = null;
                     }
                 }, WAITTIME), "获取数据");
             }
