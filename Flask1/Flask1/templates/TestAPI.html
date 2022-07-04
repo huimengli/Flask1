@@ -99,15 +99,38 @@
         lt_code.variable.addRun(setInterval(async function () {
             if (lt_code.API&&lt_code.pseudoThreeD) {
                 lt_code.variable.delRun("等待模块加载");
-                API = new lt_code.API();     
-                await API.Init();
+                API = new lt_code.API();   
+                
                 //设置能否使用API数据
                 useGyroscope.onchange = function () {
                     API.UseGyroscope = this.checked;
+                    if (API.Gyroscope == void 0) {
+                        await API.Init();
+                    }
+                };
+
+                //获取GPS数据
+                useGPS.onchange = function () {
+                    API.UseGPS = this.checked;
+                    if (API.GPS == void 0) {
+                        try {
+                            //使用默认的根据时间刷新GPS定位
+                            API.GPSInit(function (gps) {
+                                var dict = {};
+                                for (var x in gps) {
+                                    dict[x] = gps[x];
+                                }
+                                GPS.innerText = JSON.stringify(dict);
+                            });
+                        } catch (e) {
+                            alert(e);
+                        }
+                    }
                 };
 
                 //开始获取数据
                 lt_code.variable.addRun(setInterval(function () {
+                    //获取陀螺仪数据
                     if (API.UseGyroscope) {
                         Gyroscope.innerText = JSON.stringify({
                             x: lt_code.pseudoThreeD.getAccuracy(API.Gyroscope.x),
@@ -130,23 +153,18 @@
                         GyroscopeQuaternion.innerText = "null";
                         GyroscopeEuler.innerText = "null";
                     }
-                }, WAITTIME), "获取数据");
 
-                //获取GPS数据
-                useGPS.onchange = function () {
-                    API.UseGPS = this.checked;
-                    try {
-                        API.GPSInit(function (gps) {
-                            var dict = {};
-                            for (var x in gps) {
-                                dict[x] = gps[x];
-                            }
-                            GPS.innerText = JSON.stringify(dict);
-                        });
-                    } catch (e) {
-                        alert(e);
+                    //获取GPS数据
+                    if (API.UseGPS&&API.GPS) {
+                        var dict = {};
+                        for (var x in API.GPS) {
+                            dict[x] = API.GPS[x];
+                        }
+                        GPS.innerText = JSON.stringify(dict);
+                    } else {
+                        GPS.innerText = null;
                     }
-                }
+                }, WAITTIME), "获取数据");
             }
         }, 100), "等待模块加载");
     };
