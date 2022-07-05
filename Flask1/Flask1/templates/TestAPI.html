@@ -5,11 +5,14 @@
     <script src="/static/JavaScriptCode/lt_code.js?time=0"></script>
     <script src="/static/three.js/build/three.js"></script>
     <style>
+        video#VideoIn{
+            border:1px solid black;
+        }
+
     </style>
 </head>
 <body>
     <div class="valueBox">
-        
     </div>
 </body>
 </html>
@@ -158,12 +161,16 @@
 
                 //获取摄像头数据
                 useVideoIn.onchange = function () {
-                    API.UseVideoIn = this.checked;
-                    if (this.checked && API.MediaStream==void 0) {
-                        API.VideoInInit(false, function (stream) {
-                            video.srcObject = stream;
-                            video.play();
-                        });
+                    try {
+                        API.UseVideoIn = this.checked;
+                        if (this.checked && API.MediaStream == void 0) {
+                            API.VideoInInit(false, function (stream) {
+                                video.srcObject = stream;
+                                video.play();
+                            });
+                        }
+                    } catch (e) {
+                        alert(e);
                     }
                 }
 
