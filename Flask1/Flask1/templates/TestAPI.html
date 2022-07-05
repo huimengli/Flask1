@@ -115,6 +115,13 @@
         return ret;
     }();
 
+    //测试震动功能
+    var vibrateButton = lt_code.newDom("input", {
+        type: "button",
+        class: "vibrateButton",
+    });
+    lt_code.addChild(vibrateButton, valueBox);
+
     //加载模块
     window.onload = function () {
         lt_code.initByTime("API");
@@ -172,6 +179,18 @@
                     } catch (e) {
                         alert(e);
                     }
+                }
+
+                //测试震动按钮
+                vibrateButton.onmousedown = function () {
+                    if (API.vibrate) {
+                        try {
+                            API.VibrateInit();
+                        } catch (e) {
+                            alert(e);
+                        }
+                    }
+                    API.Vibrate(300, 300);
                 }
 
                 //开始获取数据
