@@ -98,6 +98,20 @@
     /**加速计数据 */
     var Accelerometer = createLine("加速计数据", null);
 
+    //视频布局
+    /**是否使用摄像头 */
+    var useVideoIn = createButtonLine("是否使用摄像头", "useVideoIn");
+    /**视频播片对象 */
+    var video = createLine("摄像头数据", null);
+    video = function () {
+        var ret = lt_code.newDom("video", {
+            id: "videoIn",
+        });
+        video.innerHTML = "";
+        lt_code.addChild(ret, video);
+        return ret;
+    }();
+
     //加载模块
     window.onload = function () {
         lt_code.initByTime("API");
@@ -110,7 +124,7 @@
                 //设置能否使用API数据
                 useGyroscope.onchange = async function () {
                     API.UseGyroscope = this.checked;
-                    if (API.Gyroscope == void 0) {
+                    if (this.checked&&API.Gyroscope == void 0) {
                         await API.Init();
                     }
                 };
@@ -118,7 +132,7 @@
                 //获取GPS数据
                 useGPS.onchange = function () {
                     API.UseGPS = this.checked;
-                    if (API.GPS == void 0) {
+                    if (this.checked&&API.GPS == void 0) {
                         try {
                             //使用默认的根据时间刷新GPS定位
                             API.GPSInit(function (gps) {
@@ -137,10 +151,21 @@
                 //获取加速计数据
                 useAccelerometer.onchange = async function () {
                     API.UseAccelerometer = this.checked;
-                    if (API.Accelerometer == void 0) {
+                    if (this.checked&&API.Accelerometer == void 0) {
                         await API.Init();
                     }
                 };
+
+                //获取摄像头数据
+                useVideoIn.onchange = function () {
+                    API.UseVideoIn = this.checked;
+                    if (this.checked && API.MediaStream==void 0) {
+                        API.VideoInInit(false, function (stream) {
+                            video.srcObject = stream;
+                            video.play();
+                        });
+                    }
+                }
 
                 //开始获取数据
                 lt_code.variable.addRun(setInterval(function () {
