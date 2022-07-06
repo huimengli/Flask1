@@ -123,6 +123,13 @@
     });
     lt_code.addChild(vibrateButton, valueBox);
 
+    //测试截图功能
+    var ScreenshotButton = lt_code.newDom("input", {
+        type: "buttn",
+        class: "ScreenshotButton",
+        value: "测试截图"
+    });
+
     //加载模块
     window.onload = function () {
         lt_code.initByTime("API");
@@ -192,6 +199,15 @@
                         }
                     }
                     API.Vibrate(300, 300);
+                }
+
+                //测试截图按钮
+                ScreenshotButton.onmousedown = function () {
+                    try {
+                        await API.Screenshot();
+                    } catch (e) {
+                        alert(e);
+                    }
                 }
 
                 //开始获取数据
