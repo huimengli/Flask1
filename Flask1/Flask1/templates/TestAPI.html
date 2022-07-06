@@ -89,6 +89,12 @@
     /**陀螺仪欧拉角数据 */
     var GyroscopeEuler = createLine("旋转欧拉角数据", null);
 
+    //测试朝向
+    /**师傅使用方向传感器 */
+    var useOrientation = createButtonLine("是否使用方向传感器", "useOrientation");
+    /**方向传感器数据 */
+    var Orientation = createLine("方向传感器数据", null);
+
     //GPS布局
     /**是否使用GPS */
     var useGPS = createButtonLine("是否使用GPS", "useGPS");
@@ -147,6 +153,14 @@
                         await API.Init();
                     }
                 };
+
+                //设置能否使用陀螺仪数据
+                useOrientation.onchange = async function () {
+                    API.UseOrientation = this.checked;
+                    if (this.checked && API.orientation == void 0) {
+                        await API.Init();
+                    }
+                }
 
                 //获取GPS数据
                 useGPS.onchange = function () {
@@ -236,6 +250,9 @@
                         GyroscopeQuaternion.innerText = "null";
                         GyroscopeEuler.innerText = "null";
                     }
+
+                    //获取方向数据
+                    Orientation.innerText = API.Orientation;
 
                     //获取GPS数据
                     if (API.UseGPS&&API.GPS) {
