@@ -112,22 +112,6 @@
     var useVideoIn = createButtonLine("是否使用摄像头", "useVideoIn");
     /**视频播片对象 */
     var video = createLine("摄像头数据", null);
-    video = function () {
-        if (API.IsIOS()) {
-            var ret = lt_code.newDom("video", {
-                id: "videoIn",
-                playsinline: "playsinline",
-                "webkit-playsinline":"true",
-            });
-        } else {
-            var ret = lt_code.newDom("video", {
-                id: "videoIn",
-            });
-        }
-        video.innerHTML = "";
-        lt_code.addChild(ret, video);
-        return ret;
-    }();
 
     //测试震动功能
     var vibrateButton = lt_code.newDom("input", {
@@ -153,6 +137,24 @@
             if (lt_code.API&&lt_code.pseudoThreeD) {
                 lt_code.variable.delRun("等待模块加载");
                 API = new lt_code.API();   
+
+                //修改video指向
+                video = function () {
+                    if (API.IsIOS()) {
+                        var ret = lt_code.newDom("video", {
+                            id: "videoIn",
+                            playsinline: "playsinline",
+                            "webkit-playsinline": "true",
+                        });
+                    } else {
+                        var ret = lt_code.newDom("video", {
+                            id: "videoIn",
+                        });
+                    }
+                    video.innerHTML = "";
+                    lt_code.addChild(ret, video);
+                    return ret;
+                }();
                 
                 //设置能否使用API数据
                 useGyroscope.onchange = async function () {
