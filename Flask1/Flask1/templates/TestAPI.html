@@ -113,9 +113,17 @@
     /**视频播片对象 */
     var video = createLine("摄像头数据", null);
     video = function () {
-        var ret = lt_code.newDom("video", {
-            id: "videoIn",
-        });
+        if (API.IsIOS()) {
+            var ret = lt_code.newDom("video", {
+                id: "videoIn",
+                playsinline: "playsinline",
+                "webkit-playsinline":"true",
+            });
+        } else {
+            var ret = lt_code.newDom("video", {
+                id: "videoIn",
+            });
+        }
         video.innerHTML = "";
         lt_code.addChild(ret, video);
         return ret;
