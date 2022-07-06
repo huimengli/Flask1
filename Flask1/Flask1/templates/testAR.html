@@ -21,6 +21,10 @@
     <script>
         const Inflate = Zlib.Inflate;
     </script>
+    <!-- 加载API模块 -->
+    <script>
+        lt_code.initByTime("API");
+    </script>
     <style>
         * {
             padding: 0;
@@ -661,7 +665,7 @@
     }
 </script>
 <!-- 获取摄像头媒体流 -->
-<script>
+<!--<script>
     /**媒体流 */
     var mediaStream = null;
 
@@ -829,4 +833,50 @@
         }
     }, 200), "读取场景变换");
     
+</script>-->
+<script>
+    //获取video标签
+    var videoPlayer = document.querySelector('video#videoIn')
+    /**API对象 */
+    var API = null;
+
+    lt_code.variable.addRun(setInterval(function () {
+        if (lt_code.API) {
+            API = new lt_code.API();
+
+            lt_code.variable.delRun("等待API加载");
+
+            if (API.IsIOS()) {
+                videoPlayer.playsInline = true;
+                videoPlayer.setAttribute("webkit-playsinline", true);
+            }
+
+            //直接使用摄像头的数据
+            API.UseVideoIn = true;
+
+            //使用数据
+            API.VideoInInit(false, function (stream) {
+                if ("srcObject" in videoPlayer) {
+                    videoPlayer.srcObject = stream;
+                } else {
+                    videoPlayer.src = window.URL.createObjectURL(stream);
+                }
+                videoPlayer.onloadedmetadata = async function (e) {
+                    await videoPlayer.play();
+                }
+            });
+        }
+    }, 100), "等待API加载");
+</script>
+<!-- 拍照 -->
+<script>
+    GUI_tackphoto.onmousedown = function () {
+        if (API) {
+            var cas = lt_code.getAll("canvas");
+            //拍照
+            API.VideoAddCanvas(videoPlayer, cas);
+        } else {
+            alert("模块尚未加载完成");
+        }
+    }
 </script>
