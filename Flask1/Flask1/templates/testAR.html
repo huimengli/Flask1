@@ -855,19 +855,7 @@
 
             //直接使用摄像头的数据
             API.UseVideoIn = true;
-
-            //使用数据
-            API.VideoInInit(false, function (stream) {
-                if ("srcObject" in videoPlayer) {
-                    videoPlayer.srcObject = stream;
-                } else {
-                    videoPlayer.src = window.URL.createObjectURL(stream);
-                }
-                videoPlayer.onloadedmetadata = async function (e) {
-                    await videoPlayer.play();
-                }
-            });
-
+            
             /**修正场景 */
             var changeScene = function () {
                 //修正video
@@ -899,14 +887,26 @@
                 renderer.setSize(window.innerWidth, window.innerHeight);
             }
 
+            //使用数据
+            API.VideoInInit(false, function (stream) {
+                if ("srcObject" in videoPlayer) {
+                    videoPlayer.srcObject = stream;
+                } else {
+                    videoPlayer.src = window.URL.createObjectURL(stream);
+                }
+                videoPlayer.onloadedmetadata = async function (e) {
+                    await videoPlayer.play();
+                }
+                //第一次修改视频大小
+                changeScene();
+            });
+
             /**读取场景变化*/
             lt_code.variable.addRun(setInterval(function () {
                 if (lt_code.variable.WHchange) {
                     changeScene()
                 }
             }, 200), "读取场景变换");
-
-            changeScene();
         }
     }, 100), "等待API加载");
 </script>
