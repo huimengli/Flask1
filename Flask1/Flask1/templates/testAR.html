@@ -914,6 +914,8 @@
 <script>
     GUI_tackphoto.onmousedown = function () {
         if (API) {
+            //直接停止场景渲染
+            clearInterval(run);
             var cas = lt_code.getAll("canvas");
             //拍照
             API.VideoAddCanvas(videoPlayer, cas,"byCanvas");
