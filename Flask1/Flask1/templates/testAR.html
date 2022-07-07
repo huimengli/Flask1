@@ -914,10 +914,11 @@
 <script>
     GUI_tackphoto.onmousedown = function () {
         if (API) {
-            //直接停止场景渲染
-            clearInterval(run);
+            ////直接停止场景渲染
+            //clearInterval(run);
             var cas = lt_code.getAll("canvas");
             //拍照
+            renderer.render(scene, camera);//需要重新渲染一帧
             API.VideoAddCanvas(videoPlayer, cas,"byCanvas");
         } else {
             alert("模块尚未加载完成");
