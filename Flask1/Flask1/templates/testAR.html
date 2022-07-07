@@ -867,6 +867,39 @@
                     await videoPlayer.play();
                 }
             });
+
+            /**读取场景变化*/
+            lt_code.variable.addRun(setInterval(function () {
+                if (lt_code.variable.WHchange) {
+                    //修正video
+                    /**视频宽度 */
+                    var width = API.VideoInfo.width;
+                    /**视频高度 */
+                    var height = API.VideoInfo.height;
+                    /**视频流的比率 */
+                    var videoRatio = width / height;
+                    /**视频输入显示对象 */
+                    var videoIn = lt_code.getAll("#videoIn");
+
+                    width = videoRatio * window.innerHeight;
+                    if (width < window.innerWidth) {
+                        height = window.innerWidth / videoRatio;
+                        var top = (window.innerHeight - height) / 2;
+                        videoIn.style.width = "100vw";
+                        videoIn.style.left = 0;
+                        videoIn.style.height = height + "px";
+                        videoIn.style.top = top + "px";
+                    } else {
+                        var left = (window.innerWidth - width) / 2;
+                        videoIn.style.width = width + "px";
+                        videoIn.style.left = left + "px";
+                        videoIn.style.top = 0;
+                        videoIn.style.height = "100vh";
+                    }
+                    //重设渲染器大小
+                    renderer.setSize(window.innerWidth, window.innerHeight);
+                }
+            }, 200), "读取场景变换");
         }
     }, 100), "等待API加载");
 </script>
