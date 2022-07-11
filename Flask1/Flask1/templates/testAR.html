@@ -556,16 +556,16 @@
             //调整摄像机位置
             cameraBoxBox.position.set(0, 160, 0);
             scene.add(cameraBoxBox);
-            /**三维向量 */
-            var v3 = lt_code.pseudoThreeD.vector3;
-            //真实陀螺仪
-            window.gyroscope = new Gyroscope();
-            /**运行的次数 */
-            var time = 0;
-            /**获取2次真实陀螺仪后使用api陀螺仪数据 */
-            var overTime = 2;
-            /**上一次的z */
-            var oldz = null;
+            ///**三维向量 */
+            //var v3 = lt_code.pseudoThreeD.vector3;
+            ////真实陀螺仪
+            //window.gyroscope = new Gyroscope();
+            ///**运行的次数 */
+            //var time = 0;
+            ///**获取2次真实陀螺仪后使用api陀螺仪数据 */
+            //var overTime = 2;
+            ///**上一次的z */
+            //var oldz = null;
             window.addEventListener("deviceorientation", function (event) {
                 e = event;
 
@@ -574,43 +574,43 @@
                     y = event.gamma;
                 r.x = x, r.y = y, r.z = z;
 
-                if (!gyroscope.activated) {
-                    gyroscope.start();
-                    re.x = event.beta;
-                    re.y = event.gamma;
-                    re.z = event.alpha;
-                    or = re.clone();
-                } else {
-                    //只在z轴诡异偏移时修正
-                    re.x = x;
-                    //当x值在80-100°之间时,y值直接不计算,并且根据y值修正z值
-                    if (x < 65 || x > 115) {
-                        re.y = y;
-                        re.z = z;
-                        //re.z = z - oldz;
-                    } else {
-                        //y轴原有的偏移过大使用sin函数修正(修正值依旧过大)
-                        //cameraBox.rotation.y = Math.PI * (1 - Math.sin(x)) * y / 180;
-                        //尝试通过二次方程修正
-                        re.y = (1 - (-0.0016 * x * x + 0.288 * x - 11.96)) * y;
-                        //cameraBoxBox.rotation.z = Math.PI * (z - oldz - Math.abs(y)) / 180;
-                        if (Math.abs(y) < 20) {
-                            //取消y轴补偿
-                            re.z = z;
-                            //re.z = z - oldz;
-                        } else {
-                            /*
-                             * 在手机竖起来的时候
-                             * 左右旋转手机的时候
-                             * 应用y轴变量的尝试
-                             */
-                            re.z += gyroscope.y;
-                        }
-                    }
-                    //camerabox.rotation.x = Math.PI * re.x / 180;
-                    //cameraBox.rotation.y = Math.PI * re.y / 180;
-                    //cameraBoxBox.rotation.z = Math.PI * re.z / 180;
-                }
+                //if (!gyroscope.activated) {
+                //    gyroscope.start();
+                //    re.x = event.beta;
+                //    re.y = event.gamma;
+                //    re.z = event.alpha;
+                //    or = re.clone();
+                //} else {
+                //    //只在z轴诡异偏移时修正
+                //    re.x = x;
+                //    //当x值在80-100°之间时,y值直接不计算,并且根据y值修正z值
+                //    if (x < 65 || x > 115) {
+                //        re.y = y;
+                //        re.z = z;
+                //        //re.z = z - oldz;
+                //    } else {
+                //        //y轴原有的偏移过大使用sin函数修正(修正值依旧过大)
+                //        //cameraBox.rotation.y = Math.PI * (1 - Math.sin(x)) * y / 180;
+                //        //尝试通过二次方程修正
+                //        re.y = (1 - (-0.0016 * x * x + 0.288 * x - 11.96)) * y;
+                //        //cameraBoxBox.rotation.z = Math.PI * (z - oldz - Math.abs(y)) / 180;
+                //        if (Math.abs(y) < 20) {
+                //            //取消y轴补偿
+                //            re.z = z;
+                //            //re.z = z - oldz;
+                //        } else {
+                //            /*
+                //             * 在手机竖起来的时候
+                //             * 左右旋转手机的时候
+                //             * 应用y轴变量的尝试
+                //             */
+                //            re.z += gyroscope.y;
+                //        }
+                //    }
+                //    //camerabox.rotation.x = Math.PI * re.x / 180;
+                //    //cameraBox.rotation.y = Math.PI * re.y / 180;
+                //    //cameraBoxBox.rotation.z = Math.PI * re.z / 180;
+                //}
 
                 //当x轴向以及y轴向同时小于45时,隐去模型
                 if (r.x < 45 && r.y < 45) {
