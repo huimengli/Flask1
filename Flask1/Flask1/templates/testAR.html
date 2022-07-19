@@ -6,6 +6,7 @@
     <title>鹃湖定位演示DEMO</title>
     <script src="../static/js/jquery-3.3.1.js"></script>
     <script src="../static/JavaScriptCode/lt_code.js"></script>
+    <script src="../static/js/api.js"></script>
     <script src="../static/JavaScriptCode/item/pseudoThreeD.js"></script>
     <script src="../static/three.js/build/three.js"></script>
     <script src="../static/three.js/examples/js/loaders/FBXLoader.js"></script>
@@ -22,11 +23,6 @@
         const Inflate = Zlib.Inflate;
     </script>
     <!-- 加载API模块 -->
-    <script>
-        window.onload = function () {
-            lt_code.initByTime("API");
-        }
-    </script>
     <style>
         * {
             padding: 0;
@@ -84,27 +80,27 @@
             background-color: white;
         }
 
-            .GUI_tackphoto::before {
-                position: absolute;
-                content: "";
-                width: 70px;
-                height: 70px;
-                background: black;
-                border-radius: 35px;
-                left: 5px;
-                top: 5px;
-            }
+        .GUI_tackphoto::before {
+            position: absolute;
+            content: "";
+            width: 70px;
+            height: 70px;
+            background: black;
+            border-radius: 35px;
+            left: 5px;
+            top: 5px;
+        }
 
-            .GUI_tackphoto::after {
-                content: "";
-                position: absolute;
-                width: 60px;
-                height: 60px;
-                background-color: white;
-                border-radius: 30px;
-                left: 10px;
-                top: 10px;
-            }
+        .GUI_tackphoto::after {
+            content: "";
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background-color: white;
+            border-radius: 30px;
+            left: 10px;
+            top: 10px;
+        }
 
         .GUI_point {
             position: absolute;
@@ -115,11 +111,11 @@
             justify-content: flex-end;
         }
 
-            .GUI_task .GUI_downTask {
-            }
+        .GUI_task .GUI_downTask {
+        }
 
-            .GUI_task .GUI_allTask {
-            }
+        .GUI_task .GUI_allTask {
+        }
 
         .forIOS {
             width: 80vw;
@@ -137,25 +133,25 @@
             z-index: 1000;
         }
 
-            .forIOS .forIOS_Value {
-                padding: 0 50px;
-                font-size: 62px;
-            }
+        .forIOS .forIOS_Value {
+            padding: 0 50px;
+            font-size: 62px;
+        }
 
-            .forIOS .forIOS_button {
-                display: flex;
-                justify-content: flex-end;
-                width: 90%;
-            }
+        .forIOS .forIOS_button {
+            display: flex;
+            justify-content: flex-end;
+            width: 90%;
+        }
 
-                .forIOS .forIOS_button .forIOS_Yes {
-                    padding: 0 40px;
-                    color: #3333ff;
-                }
+        .forIOS .forIOS_button .forIOS_Yes {
+            padding: 0 40px;
+            color: #3333ff;
+        }
 
-                .forIOS .forIOS_button .forIOS_No {
-                    /*padding:0 40px;*/
-                }
+        .forIOS .forIOS_button .forIOS_No {
+            /*padding:0 40px;*/
+        }
     </style>
 </head>
 <body>
@@ -805,8 +801,8 @@
     var API = null;
 
     lt_code.variable.addRun(setInterval(function () {
-        if (lt_code.API) {
-            API = new lt_code.API();
+        if (lt.API) {
+            API = new lt.API();
 
             lt_code.variable.delRun("等待API加载");
 

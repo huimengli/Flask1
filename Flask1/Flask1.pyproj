@@ -624,6 +624,7 @@
     <Content Include="Flask1\static\JavaScriptCode\testPage\WaterMark.html" />
     <Content Include="Flask1\static\JavaScriptCode\文件合并.bat" />
     <Content Include="Flask1\static\JavaScriptCode\比较文件.bat" />
+    <Content Include="Flask1\static\js\api.js" />
     <Content Include="Flask1\static\js\baiduAPI\abclite-2059-s.js" />
     <Content Include="Flask1\static\js\baiduAPI\api.js" />
     <Content Include="Flask1\static\js\baiduAPI\getscript.js" />
