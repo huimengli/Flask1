@@ -4,11 +4,11 @@
     <title>测试API</title>
     <script src="/static/JavaScriptCode/lt_code.js?time=0"></script>
     <script src="/static/three.js/build/three.js"></script>
+    <script src="../static/js/api.js"></script>
     <style>
-        video#VideoIn{
-            border:1px solid black;
+        video#VideoIn {
+            border: 1px solid black;
         }
-
     </style>
 </head>
 <body>
@@ -131,7 +131,6 @@
 
     //加载模块
     window.onload = function () {
-        lt_code.initByTime("API");
         lt_code.init("PTD");
         lt_code.variable.addRun(setInterval(function () {
             if (lt_code.API&&lt_code.pseudoThreeD) {
