@@ -21,7 +21,7 @@
     var valueBox = lt_code.getAll(".valueBox");
     try {
         /**API对象 */
-        var API = new lt_code.API();
+        var API = new lt.API();
     } catch (e) {
         var API = null;
     }
@@ -133,9 +133,9 @@
     window.onload = function () {
         lt_code.init("PTD");
         lt_code.variable.addRun(setInterval(function () {
-            if (lt_code.API&&lt_code.pseudoThreeD) {
+            if (lt.API&&lt_code.pseudoThreeD) {
                 lt_code.variable.delRun("等待模块加载");
-                API = new lt_code.API();   
+                API = new lt.API();   
 
                 //修改video指向
                 video = function () {
