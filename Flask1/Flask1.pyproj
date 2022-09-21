@@ -670,7 +670,6 @@
     <Content Include="Flask1\static\js\plane\image.js" />
     <Content Include="Flask1\static\js\plane\index.js" />
     <Content Include="Flask1\static\js\plane\program.js" />
-    <Content Include="Flask1\static\temp\8440019_www.keliit.top_nginx.zip" />
     <Content Include="Flask1\static\three.js\.editorconfig" />
     <Content Include="Flask1\static\three.js\.gitattributes" />
     <Content Include="Flask1\static\three.js\.github\CODE_OF_CONDUCT.md" />
