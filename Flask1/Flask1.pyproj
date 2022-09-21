@@ -670,8 +670,7 @@
     <Content Include="Flask1\static\js\plane\image.js" />
     <Content Include="Flask1\static\js\plane\index.js" />
     <Content Include="Flask1\static\js\plane\program.js" />
-    <Content Include="Flask1\static\temp\Chrome_Google_v49.0.2623.112.exe" />
-    <Content Include="Flask1\static\temp\全部作业.txt" />
+    <Content Include="Flask1\static\temp\8440019_www.keliit.top_nginx.zip" />
     <Content Include="Flask1\static\three.js\.editorconfig" />
     <Content Include="Flask1\static\three.js\.gitattributes" />
     <Content Include="Flask1\static\three.js\.github\CODE_OF_CONDUCT.md" />
