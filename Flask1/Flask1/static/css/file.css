@@ -52,7 +52,7 @@ div.icon {
     text-shadow: 0px 0px 2px #555;
     box-shadow: inset 0 0 10px rgba(0, 138, 255, 0.6);
     position:absolute;
-    bottom:0px;
+    bottom:30px;
 }
 
     div.icon img.icon {
@@ -106,7 +106,7 @@ div.menu div.title {
 
 div.menu div.list{
     width:calc(30vw - 40px);
-    height:calc(100vh - 240px);
+    height:calc(100vh - 270px);
     overflow:auto;
     padding:20px;
 }
@@ -160,7 +160,7 @@ div.listSelect>div.listValue>div.listBottom {
 
 div.footer {
     position: absolute;
-    width: 100vw;
+    width: 100%;
     height: 30px;
     bottom: 0px;
     text-align: center;
@@ -168,13 +168,13 @@ div.footer {
 }
 
 div.allFooter{
-    width:370px;
+    /*width:370px;*/
     position:relative;
     height:30px;
     line-height:30px;
     margin:0 auto;
     bottom:0px;
-    background-color:rgba(255, 255, 255, 0.70);
+    background-color:rgba(255, 255, 255, 0.4);
 }
 
 div.main div.title div.bottom {
