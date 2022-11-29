@@ -165,6 +165,7 @@ div.footer {
     bottom: 0px;
     text-align: center;
     z-index:100;
+    overflow:hidden;
 }
 
 div.allFooter{
