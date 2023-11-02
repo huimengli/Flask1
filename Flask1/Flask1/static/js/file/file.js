@@ -92,7 +92,7 @@ var file_project = {
             return list.order(isMinToMax);
         } else if (typeof(list[0])=="string") {
             for (var i = 0; i < list.length; i++) {
-                list[i] = list[i].charCodeAt(0);
+                list[i] = list[i].charCodeAt(0)*10000+i;
             }
             var list2 = list.order(isMinToMax);
             for (var i = 0; i < list2.length; i++) {
