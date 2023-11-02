@@ -21,8 +21,8 @@
                     <div class="listBottom"></div>
                 </div>
                 <!--<div class="listBlock" data-isFile="false" data-dir="root\admin">
-                <div class="listValue">admin</div>
-            </div>-->
+                    <div class="listValue">admin</div>
+                </div>-->
             </div>
 
         </div>
@@ -101,6 +101,7 @@
         return ret;
     }();
 </script>
+<script src="/static/js/file/file.js"></script>
 <script>
 
 </script>
@@ -136,7 +137,7 @@
         /**最大记录条数 */
         maxHistory: 30,
         /**搜索目录*/
-        searchDir:function (dir) {
+        searchDir: function (dir) {
 
             //清空主盒子
             clearMainBox();
@@ -166,7 +167,7 @@
                             //console.log(data[j]);
                             for (var x in data[j]) {
                                 if (data[j][x] == "False") {
-                                    newEachFile(x.slice(dir.length), 0, 0, false, x);
+                                    file_project.pushLine(newEachFile(x.slice(dir.length), 0, 0, false, x));
                                 } else {
                                     newFileInfo(x);
                                 }
@@ -231,7 +232,7 @@
             var history = this.history;
             history.push(this.now);
             var ret = "";
-            for (var i = history.length-this.maxHistory<0?0:history.length - this.maxHistory; i < history.length-1; i++) {
+            for (var i = history.length - this.maxHistory < 0 ? 0 : history.length - this.maxHistory; i < history.length - 1; i++) {
                 ret += history[i] + ",";
             }
             ret += history[history.length - 1];
@@ -260,6 +261,7 @@
     /**清除主盒子 */
     var clearMainBox = function () {
         mainBox.innerHTML = "";
+        file_project.lines = [];
     };
 
     /**
@@ -451,11 +453,11 @@
      * @param {number} create 创建时间
      * @param {boolean} isFile 是否是文件
      * @param {string} dir 文件路径
-     * @param {number} [pag] 文件路径
-     * @param {number} [level] 文件路径
-     * @param {number} [isDelete] 文件路径
+     * @param {number} [pag] 文件包数量
+     * @param {number} [level] 文件权限级别
+     * @param {number} [isDelete] 文件是否删除
      */
-    var newEachFile = function (fileName, size, create, isFile, dir,pag,level,isDelete) {
+    var newEachFile = function (fileName, size, create, isFile, dir, pag, level, isDelete) {
         isFile = isFile == null ? true : isFile;
         pag = pag ? pag : 0;
         level = level ? level : 1;
@@ -528,7 +530,7 @@
             eachFile.title += "\n文件路径 : root" + dir;
             var l = "普通用户";
             switch (level) {
-                case 0:l = "错误文件"; break;
+                case 0: l = "错误文件"; break;
                 case 1:
                 case 10: l = "普通用户"; break;
                 case 11:
@@ -566,6 +568,8 @@
         lt_code.addChild(newEachFileSize, eachFile);
         lt_code.addChild(newEachFileBottom, eachFile);
         lt_code.addChild(eachFile, mainBox);
+
+        return eachFile;
     };
 
     /**文件信息查询并创建 */
@@ -592,7 +596,7 @@
                     var x = window.temp;
                     window.temp = "";
                     //console.log(x);
-                    newEachFile(x.name, x.size, lt_code.getNum(x.create), true, x.path,x.package,x.level,x.delete);
+                    file_project.pushLine(newEachFile(x.name, x.size, lt_code.getNum(x.create), true, x.path, x.package, x.level, x.delete));
                 });
             },
             error: function (err) {
@@ -1884,4 +1888,3 @@
         lt_code.history.save();
     };
 </script>
-<script src="/static/js/file/file.js"></script>

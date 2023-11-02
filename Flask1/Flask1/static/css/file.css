@@ -269,6 +269,36 @@ div.eachFile {
             cursor:pointer;
         }
 
+div.eachFile > div.down {
+}
+
+div.eachFile > div.down::after {
+    content: "";
+    width: 0px;
+    height: 0px;
+    border: 10px solid transparent;
+    border-top: 20px solid #5178C1;
+    border-bottom: 0px transparent;
+    position: relative;
+    left: 20px;
+    top: 20px;
+}
+
+div.eachFile > div.up {
+}
+
+div.eachFile > div.up::after {
+    content: "";
+    width: 0px;
+    height: 0px;
+    border: 10px solid transparent;
+    border-bottom: 20px solid #5178C1;
+    border-top: 0px transparent;
+    position: relative;
+    left: 20px;
+    top: -20px;
+}
+
 #alertInputBox.alertSelect {
     width: 100%;
     height: calc(200px - 90px - 10px - 3px);
