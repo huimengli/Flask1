@@ -598,8 +598,15 @@ var downFile = function (fileLine) {
                         down = lt_code.base64.change.getCode(down, key);
                         value = value[0] + "," + down;
                         if (x.md5 == lt_code.md5(value)) {
-                            lt_code.test.downFile(value, x.name);
-                            alert("下载成功!");
+                            var isSafari = /Safari/i.test(navigator.userAgent);
+                            if (isSafari) {
+                                newAlert("Safari下载", "是否将 " + x.name + " 下载到本地?", function () {
+                                    lt_code.test.downFile(value, x.name);
+                                });
+                            } else {
+                                lt_code.test.downFile(value, x.name);
+                                alert("下载成功!");
+                            }
                         } else {
                             newAlert("校检失败", "签名校检失败\n文件可能被篡改\n是否继续下载?", function () {
                                 lt_code.test.downFile(value, x.name);
