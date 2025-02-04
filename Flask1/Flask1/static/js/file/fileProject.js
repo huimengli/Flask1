@@ -552,6 +552,14 @@ var newListBlock = function (value, isfile, father) {
 };
 
 /**
+ * 是否是 Safari 浏览器
+ */
+var isSafari = function() {
+    var userAgent = navigator.userAgent.toLowerCase();
+    return userAgent.indexOf('safari') !== -1 && userAgent.indexOf('chrome') === -1;
+}
+
+/**
  * 下载文件
  * @param {HTMLDivElement} fileLine 文件行
  */
@@ -598,9 +606,8 @@ var downFile = function (fileLine) {
                         down = lt_code.base64.change.getCode(down, key);
                         value = value[0] + "," + down;
                         if (x.md5 == lt_code.md5(value)) {
-                            var isSafari = /Safari/i.test(navigator.userAgent);
-                            if (isSafari) {
-                                newAlert("Safari下载", "是否将 " + x.name + " 下载到本地?", function () {
+                            if (isSafari()) {
+                                newAlert("Safari下载", "Safari请求权限弹窗\n是否将 " + x.name + " 下载到本地?", function () {
                                     lt_code.test.downFile(value, x.name);
                                 });
                             } else {
