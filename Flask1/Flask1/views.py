@@ -85,10 +85,11 @@ def signIn():
             session['name'] = name;
             session['password'] = password;
         else:
-            user = User.SignIn(name,password);
-            session['id'] = user.id;
-            session['name'] = name;
-            session['password'] = password;
+            #user = User.SignIn(name,password);
+            #session['id'] = user.id;
+            #session['name'] = name;
+            #session['password'] = password;
+            return "注册已经关闭"
 
         return redirect(url_for(indexWeb));
 
