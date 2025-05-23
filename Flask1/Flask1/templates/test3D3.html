@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>VR图片查看</title>
+    <script src="../static/JavaScriptCode/lt_code.js"></script>
+    <script src="../static/js/jquery-3.3.1.js"></script>
+    <script src="../static/three.js/build/three.js"></script>
+    <script src="../static/three.js/examples/js/controls/OrbitControls.js"></script>
+    <style>
+        body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        img {
+            top: 100vh;
+            position:fixed;
+        }
+
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+    <img src="../static/images/background/5.webp" alt="Alternate Text" />
+</body>
+</html>
+
+<script>
+    /**图片 */
+    var image = lt_code.getAll("img");
+
+    /**渲染器 */
+    var renderer = new THREE.WebGLRenderer({
+        //抗锯齿处理
+        antialias: true,
+        alpha: true
+    }); //实例化渲染器
+    renderer.setSize(window.innerWidth, window.innerHeight); //设置宽和高
+
+    //告诉渲染器需要阴影效果
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap; // 默认的是，没有设置的这个清晰 THREE.PCFShadowMap
+
+    document.body.appendChild(renderer.domElement); //添加到dom
+
+    //初始化场景
+    /**场景 */
+    var scene = new THREE.Scene(); //实例化场景
+
+    //初始化相机
+    /**相机 */
+    var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 200);
+    //修改相机位置相机
+    camera.position.set(0, 0, 0);
+    //修改相机角度
+    //camera.rotation.set(-45 / 360 * Math.PI, 0, 0);
+
+    //环境光照
+    /**环境光照 */
+    var ambientLight = new THREE.AmbientLight("#999999");
+    scene.add(ambientLight);
+
+    //直接光照
+    /**直接光照 */
+    var directionalLight = new THREE.DirectionalLight("#ffeecc");
+    directionalLight.position.set(-40, 60, -10);
+
+    directionalLight.shadow.camera.near = 20; //产生阴影的最近距离
+    directionalLight.shadow.camera.far = 200; //产生阴影的最远距离
+    directionalLight.shadow.camera.left = -50; //产生阴影距离位置的最左边位置
+    directionalLight.shadow.camera.right = 50; //最右边
+    directionalLight.shadow.camera.top = 50; //最上边
+    directionalLight.shadow.camera.bottom = -50; //最下面
+
+    //这两个值决定使用多少像素生成阴影 默认512
+    directionalLight.shadow.mapSize.height = 1024;
+    directionalLight.shadow.mapSize.width = 1024;
+
+    //告诉平行光需要开启阴影投射
+    directionalLight.castShadow = true;
+
+    scene.add(directionalLight);
+
+    // 创建天空球
+    /**天空球 */
+    var geometry = new THREE.SphereGeometry(500, 60, 40);
+    //geometry.scale(-1, 1, 1); // 反转几何体
+
+    // 加载 360 度全景图
+    const textureLoader = new THREE.TextureLoader();
+    const panoramaTexture = textureLoader.load(image.src);
+    //image.style.opacity = 0; // 隐藏原图
+
+    // 创建材质（关键：设置 side 为 BackSide）
+    const material = new THREE.MeshBasicMaterial({
+        map: panoramaTexture,
+        side: THREE.DoubleSide
+    });
+
+    // 组合成网格对象
+    const sphere = new THREE.Mesh(geometry, material);
+    scene.add(sphere);
+
+    ///**控制器 */
+    //const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    //controls.minDistance = 1;    // 限制最近距离（防止穿出球体）
+    //controls.maxDistance = 10;   // 限制最远距离
+
+    // 添加窗口响应尺寸变化
+    window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    //底部平面
+    var planeGeometry = new THREE.PlaneGeometry(500, 500, 20, 20);
+    var planeMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff });
+
+    var planeWell = new THREE.PlaneGeometry(500, 500, 20, 20);
+
+    //底板网格
+    var plane = new THREE.Mesh(planeGeometry, planeMaterial);
+    plane.rotation.x = -0.5 * Math.PI;
+    plane.position.y = -0;
+
+    //竖版网格
+    var planeWellMesh = new THREE.Mesh(planeWell, planeMaterial);
+
+    //修改位置
+    planeWellMesh.position.z = -20;
+
+    //告诉平面需要接收阴影
+    plane.receiveShadow = true;
+    planeWellMesh.receiveShadow = true;
+
+    scene.add(plane);
+    scene.add(planeWellMesh);
+
+    //渲染动画
+    let run = setInterval(function () {
+        //渲染场景
+        renderer.render(scene, camera);
+
+        ////更新控制器
+        //controls.update();
+    }, 60);
+</script>

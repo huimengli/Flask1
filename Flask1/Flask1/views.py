@@ -806,6 +806,28 @@ def web3D2():
         'test3D2.html',
     );
 
+@app.route("/web3D3/")
+@app.route("/Web3D3/")
+def web3D3():
+    '''
+    网站3D测试
+    '''
+
+    return render_template(
+        'test3D3.html',
+    );
+
+@app.route("/web3D4/")
+@app.route("/Web3D4/")
+def web3D4():
+    '''
+    网站3D测试
+    '''
+
+    return render_template(
+        'test3D4.html',
+    );
+
 @app.route("/testAR/")
 @app.route("/testar/")
 @app.route("/AR/")

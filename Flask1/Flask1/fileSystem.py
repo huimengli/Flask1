@@ -533,7 +533,11 @@ class fileSystem(object):
         获取文件列表
         '''
         if dir==None or dir=="root":
+            if os.path.exists(self.root)==False:
+                os.mkdir(self.root);
             return str(self.getAllFilesAndType(self.root));
         else:
+            if os.path.exists(self.root+dir)==False:
+                os.mkdir(self.root+dir);
             return str(self.getAllFilesAndType(self.root+dir));
 

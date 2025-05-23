@@ -1,0 +1,159 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>VR_viewer</title>
+    <script src="/static/JavaScriptCode/lt_code.js"></script>
+    <script src="/static/js/jquery-3.3.1.js"></script>
+    <script src="/static/three.js/build/three.js"></script>
+    <style>
+        body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        img {
+            top: 100vh;
+            position: fixed;
+        }
+
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body>
+    <img src="../static/images/background/5.webp" alt="Alternate Text" />
+</body>
+</html>
+<script>
+    lt_code.onload = function () {
+        /**API模块 */
+        let API = null;
+
+        /**初始化角度 */
+        let base_rotation = new THREE.Vector3(0, 0, 0);
+
+        // 加载API模块
+        try {
+            lt_code.init("API", () => {
+                API = new lt_code.API();
+                // 启用陀螺仪
+                API.UseGyroscope = true;
+                window.API = API;
+                rotation = API.gyroscope || new THREE.Vector3(0, 0, 0);
+            });            
+        } catch (e) {
+            console.log(e);
+        }
+
+        /**缩放大小 */
+        let zoom = 0.015;
+
+        /**每次更改缩放多少 */
+        const trunZoom = 0.001;
+
+        //初始化渲染器
+        var renderer = new THREE.WebGLRenderer({
+            //抗锯齿处理
+            antialias: true,
+            alpha: true
+        }); //实例化渲染器
+        renderer.setSize(window.innerWidth, window.innerHeight); //设置宽和高
+
+        //告诉渲染器需要阴影效果
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap; // 默认的是，没有设置的这个清晰 THREE.PCFShadowMap
+
+        document.body.appendChild(renderer.domElement); //添加到dom
+
+        //初始化场景
+        var scene = new THREE.Scene(); //实例化场景
+
+        //初始化相机
+        var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 200);
+        //修改相机位置相机
+        camera.position.set(0, 0, 0);
+        //修改相机角度
+        camera.rotation.set(0 / 360 * Math.PI, 0, 0);
+
+        //环境光照
+        var ambientLight = new THREE.AmbientLight("#999999");
+        scene.add(ambientLight);
+
+        //直接光照
+        var directionalLight = new THREE.DirectionalLight("#ffeecc");
+        directionalLight.position.set(-40, 60, -10);
+
+        directionalLight.shadow.camera.near = 20; //产生阴影的最近距离
+        directionalLight.shadow.camera.far = 200; //产生阴影的最远距离
+        directionalLight.shadow.camera.left = -50; //产生阴影距离位置的最左边位置
+        directionalLight.shadow.camera.right = 50; //最右边
+        directionalLight.shadow.camera.top = 50; //最上边
+        directionalLight.shadow.camera.bottom = -50; //最下面
+
+        //这两个值决定使用多少像素生成阴影 默认512
+        directionalLight.shadow.mapSize.height = 1024;
+        directionalLight.shadow.mapSize.width = 1024;
+
+        //告诉平行光需要开启阴影投射
+        directionalLight.castShadow = true;
+
+        scene.add(directionalLight);
+
+        /**模型运行挂载 */
+        var run = 0;
+
+        // 添加天空球
+        /**图片 */
+        var image = lt_code.getAll("img");
+
+        /**天空球 */
+        var geometry = new THREE.SphereGeometry(5, 24, 12);
+        //geometry.scale(-1, 1, 1); // 反转几何体
+
+        // 加载 360 度全景图
+        const textureLoader = new THREE.TextureLoader();
+        const panoramaTexture = textureLoader.load(image.src);
+        //image.style.opacity = 0; // 隐藏原图
+
+        // 创建材质（关键：设置 side 为 BackSide）
+        const material = new THREE.MeshBasicMaterial({
+            map: panoramaTexture,
+            side: THREE.DoubleSide
+        });
+
+        // 组合成网格对象
+        const sphere = new THREE.Mesh(geometry, material);
+        scene.add(sphere);
+
+        let rotation = new THREE.Vector3(0,0,0);
+        run = setInterval(function () {
+            if (!API||!API.gyroscope) {
+                return;
+            }
+
+            // 获取陀螺仪数据（注意单位转换）
+            const gyro = API.gyroscope || { x: 0, y: 0, z: 0 };
+
+            // 坐标系转换（根据实际设备调整符号）
+            const x = gyro.x * Math.PI / 180;  // 转为弧度
+            const y = -gyro.y * Math.PI / 180; // Y轴取反
+            const z = gyro.z * Math.PI / 180;
+
+            // 使用四元数避免万向节锁
+            camera.quaternion.setFromEuler(
+                new THREE.Euler(
+                    base_rotation.x + x,
+                    base_rotation.y + y,
+                    base_rotation.z + z,
+                    'YXZ' // 重要：指定旋转顺序
+                )
+            );
+
+            //渲染场景
+            renderer.render(scene, camera); //渲染界面
+        }, 30);
+    }
+</script>
