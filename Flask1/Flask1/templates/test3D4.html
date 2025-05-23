@@ -28,6 +28,17 @@
 </html>
 <script>
     lt_code.onload = function () {
+        /**URL数据 */
+        let url = lt_code.getUrlData(window.location.href);
+        let src = url.src || url.path || url.img || url.href;
+
+        /**图片 */
+        let image = lt_code.newDom("img");
+        image.src = src;
+        image.onerror = function () {
+            alert("图片加载失败，请检查路径是否正确！");
+        }
+
         /**API模块 */
         let API = null;
 
@@ -105,16 +116,13 @@
         var run = 0;
 
         // 添加天空球
-        /**图片 */
-        var image = lt_code.getAll("img");
-
         /**天空球 */
         var geometry = new THREE.SphereGeometry(5, 24, 12);
         //geometry.scale(-1, 1, 1); // 反转几何体
 
         // 加载 360 度全景图
-        const textureLoader = new THREE.TextureLoader();
-        const panoramaTexture = textureLoader.load(image.src);
+        const textureLoader = new THREE.TextureLoader().setCrossOrigin('anonymous');
+        const panoramaTexture = textureLoader.load(src);
         //image.style.opacity = 0; // 隐藏原图
 
         // 创建材质（关键：设置 side 为 BackSide）
