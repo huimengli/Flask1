@@ -68,11 +68,11 @@
             // 加载API模块
             try {
                 lt_code.init("API", () => {
-                    API = new lt_code.API();
-                    // 启用陀螺仪
-                    API.UseGyroscope = true;
-                    window.API = API;
-                    rotation = API.gyroscope || new THREE.Vector3(0, 0, 0);
+                    //API = new lt_code.API();
+                    ////启用陀螺仪
+                    //API.UseGyroscope = true;
+                    //window.API = API;
+                    //rotation = API.gyroscope || new THREE.Vector3(0, 0, 0);
                 });
             } catch (e) {
                 console.log(e);
@@ -105,9 +105,10 @@
             var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 200);
             //修改相机位置相机
             camera.position.set(0, 0, 0);
+            camera.rotation.order = 'YXZ'; // 设置旋转顺序为YXZ
             //修改相机角度
             camera.rotation.set(0 / 360 * Math.PI, 0, 0);
-            window.camera = camera; // 允许外部访问
+            //window.camera = camera; // 允许外部访问
 
             //环境光照
             var ambientLight = new THREE.AmbientLight("#999999");
@@ -138,7 +139,7 @@
 
             // 添加天空球
             /**天空球 */
-            var geometry = new THREE.SphereGeometry(5, 24, 12);
+            var geometry = new THREE.SphereGeometry(5, 60, 60);
             //geometry.scale(-1, 1, 1); // 反转几何体
 
             // 加载 360 度全景图
@@ -155,11 +156,14 @@
             // 组合成网格对象
             const sphere = new THREE.Mesh(geometry, material);
             scene.add(sphere);
-            window.sphere = sphere; // 允许外部访问
+            //window.sphere = sphere; // 允许外部访问
 
             let rotation = new THREE.Vector3(0, 0, 0);
             run = setInterval(function () {
+                //console.log(camera.rotation);
                 if (!API || !API.gyroscope) {
+                    //渲染场景
+                    renderer.render(scene, camera); //渲染界面
                     return;
                 }
 
@@ -231,6 +235,44 @@
                     window.ontouchmove = null; // 移除移动事件监听
                 }
             }
+
+            // 添加点击事件监听
+            window.onmousedown = function (event_start) {
+                let startX = event_start.clientX,
+                    startY = event_start.clientY;
+                // 记录起始位置的旋转，使用相机的当前rotation（order已设为YXZ）
+                base_rotation.set(camera.rotation.x, camera.rotation.y, camera.rotation.z);
+                window.onmousemove = function (event_move) {
+                    const deltaX = event_move.clientX - startX;
+                    const deltaY = event_move.clientY - startY;
+
+                    // 修改起始xy
+                    startX = event_move.clientX;
+                    startY = event_move.clientY;
+
+                    // 使用YXZ顺序创建Euler角，并调整方向
+                    const euler = new THREE.Euler(
+                        base_rotation.x += deltaY * 0.0005, // 调整符号
+                        base_rotation.y += deltaX * 0.0005,
+                        base_rotation.z,
+                        'YXZ'
+                    );
+
+                    // 限制相机的旋转范围
+                    euler.x = THREE.MathUtils.clamp(
+                        euler.x,
+                        -Math.PI / 4, // 最大仰角（向下看限制）
+                        Math.PI / 4   // 最大俯角（向上看限制）
+                    );
+
+                    console.log(euler.x);
+
+                    camera.quaternion.setFromEuler(euler);                                        
+                }
+                window.onmouseup = function () {
+                    window.onmousemove = null;
+                }
+            };
         }        
     }
 </script>
