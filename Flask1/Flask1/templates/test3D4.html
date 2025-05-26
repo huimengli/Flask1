@@ -35,7 +35,7 @@
         /**图片 */
         let image = new Image();
         image.crossOrigin = "anonymous"; // 解决跨域问题
-        image.src = src;
+        image.src = src || "../static/images/background/5.webp";
         image.onerror = function () {
             alert("图片加载失败，请检查路径是否正确！");
             image.src = "../static/images/background/5.webp"; // 默认图片
@@ -79,7 +79,7 @@
             }
 
             /**缩放大小 */
-            let zoom = 0.015;
+            let zoom = 1;
 
             /**每次更改缩放多少 */
             const trunZoom = 0.001;
@@ -107,6 +107,7 @@
             camera.position.set(0, 0, 0);
             //修改相机角度
             camera.rotation.set(0 / 360 * Math.PI, 0, 0);
+            window.camera = camera; // 允许外部访问
 
             //环境光照
             var ambientLight = new THREE.AmbientLight("#999999");
@@ -154,6 +155,7 @@
             // 组合成网格对象
             const sphere = new THREE.Mesh(geometry, material);
             scene.add(sphere);
+            window.sphere = sphere; // 允许外部访问
 
             let rotation = new THREE.Vector3(0, 0, 0);
             run = setInterval(function () {
@@ -182,6 +184,53 @@
                 //渲染场景
                 renderer.render(scene, camera); //渲染界面
             }, 30);
+
+            // 添加触摸事件监听
+            window.ontouchstart = function (event_start) {
+                if (event_start.touches.length === 1) {
+                    // 单指触摸，记录起始位置
+                    base_rotation.x = camera.rotation.x;
+                    base_rotation.y = camera.rotation.y;
+                    base_rotation.z = camera.rotation.z;
+                } else if (event_start.touches.length === 2) {
+                    // 双指触摸，计算缩放
+                    const dx = event_start.touches[0].clientX - event_start.touches[1].clientX;
+                    const dy = event_start.touches[0].clientY - event_start.touches[1].clientY;
+                }
+
+                window.ontouchmove = function (event_move) {
+                    if (event_move.touches.length === 1) {
+                        // 单指触摸，计算旋转
+                        const deltaX = event_move.touches[0].clientX - event_start.touches[0].clientX;
+                        const deltaY = event_move.touches[0].clientY - event_start.touches[0].clientY;
+
+                        // 使用四元数避免万向节锁
+                        camera.quaternion.setFromEuler(
+                            new THREE.Euler(
+                                base_rotation.x + deltaY * 0.01, // 调整旋转速度
+                                base_rotation.y + deltaX * 0.01,
+                                base_rotation.z,
+                                'YXZ' // 重要：指定旋转顺序
+                            )
+                        );
+                    } else if (event_move.touches.length === 2) {
+                        // 双指触摸，计算缩放
+                        const newDx = event_move.touches[0].clientX - event_move.touches[1].clientX;
+                        const newDy = event_move.touches[0].clientY - event_move.touches[1].clientY;
+                        const newDistance = Math.sqrt(newDx * newDx + newDy * newDy);
+                        const oldDistance = Math.sqrt(dx * dx + dy * dy);
+                        zoom += (newDistance - oldDistance) * trunZoom;
+                        zoom = Math.max(0.1, Math.min(zoom, 2)); // 限制缩放范围
+                        // 修改相机FOV来实现缩放
+                        camera.fov = 45 * zoom;
+                        camera.updateProjectionMatrix(); // 更新投影矩阵
+                    }
+                }
+
+                window.ontouchend = function (event_end) {
+                    window.ontouchmove = null; // 移除移动事件监听
+                }
+            }
         }        
     }
 </script>
