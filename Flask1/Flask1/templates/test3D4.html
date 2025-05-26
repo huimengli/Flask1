@@ -190,63 +190,62 @@
             }, 30);
 
             // 添加触摸事件监听
-            //window.ontouchstart = function (event_start) {
-            //    if (event_start.touches.length === 1) {
-            //        // 单指触摸，记录起始位置
-            //        base_rotation.set(camera.rotation.x, camera.rotation.y, camera.rotation.z);
+            window.ontouchstart = function (event_start) {
+                let startX = event_start.touches[0].clientX,
+                    startY = event_start.touches[0].clientY;
+                if (event_start.touches.length === 1) {
+                    // 单指触摸，记录起始位置
+                    base_rotation.set(camera.rotation.x, camera.rotation.y, camera.rotation.z);
+                } else if (event_start.touches.length === 2) {
+                    // 双指触摸，计算缩放
+                    const dx = event_start.touches[0].clientX - event_start.touches[1].clientX;
+                    const dy = event_start.touches[0].clientY - event_start.touches[1].clientY;
+                }
 
-            //        let startX = event_start.touches[0].clientX,
-            //            startY = event_start.touches[0].clientY;
-            //    } else if (event_start.touches.length === 2) {
-            //        // 双指触摸，计算缩放
-            //        const dx = event_start.touches[0].clientX - event_start.touches[1].clientX;
-            //        const dy = event_start.touches[0].clientY - event_start.touches[1].clientY;
-            //    }
+                window.ontouchmove = function (event_move) {
+                    if (event_move.touches.length === 1) {
+                        // 单指触摸，计算旋转
+                        const deltaX = event_move.touches[0].clientX - startX;
+                        const deltaY = event_move.touches[0].clientY - startY;
 
-            //    window.ontouchmove = function (event_move) {
-            //        if (event_move.touches.length === 1) {
-            //            // 单指触摸，计算旋转
-            //            const deltaX = event_move.touches[0].clientX - startX;
-            //            const deltaY = event_move.touches[0].clientY - startY;
+                        // 修改起始xy
+                        startX = event_move.touches[0].clientX;
+                        startY = event_move.touches[0].clientY;
 
-            //            // 修改起始xy
-            //            startX = event_move.touches[0].clientX;
-            //            startY = event_move.touches[0].clientY;
+                        // 使用YXZ顺序创建Euler角，并调整方向, 使用四元数避免万向节锁
+                        const euler = new THREE.Euler(
+                            base_rotation.x += deltaY * 0.0005, // 调整符号
+                            base_rotation.y += deltaX * 0.0005,
+                            base_rotation.z,
+                            'YXZ'
+                        );
 
-            //            // 使用YXZ顺序创建Euler角，并调整方向, 使用四元数避免万向节锁
-            //            const euler = new THREE.Euler(
-            //                base_rotation.x += deltaY * 0.0005, // 调整符号
-            //                base_rotation.y += deltaX * 0.0005,
-            //                base_rotation.z,
-            //                'YXZ'
-            //            );
+                        // 限制相机的旋转范围
+                        euler.x = THREE.MathUtils.clamp(
+                            euler.x,
+                            -Math.PI / 4, // 最大仰角（向下看限制）
+                            Math.PI / 4   // 最大俯角（向上看限制）
+                        );
 
-            //            // 限制相机的旋转范围
-            //            euler.x = THREE.MathUtils.clamp(
-            //                euler.x,
-            //                -Math.PI / 4, // 最大仰角（向下看限制）
-            //                Math.PI / 4   // 最大俯角（向上看限制）
-            //            );
+                        camera.quaternion.setFromEuler(euler);
+                    } else if (event_move.touches.length === 2) {
+                        // 双指触摸，计算缩放
+                        const newDx = event_move.touches[0].clientX - event_move.touches[1].clientX;
+                        const newDy = event_move.touches[0].clientY - event_move.touches[1].clientY;
+                        const newDistance = Math.sqrt(newDx * newDx + newDy * newDy);
+                        const oldDistance = Math.sqrt(dx * dx + dy * dy);
+                        zoom += (newDistance - oldDistance) * trunZoom;
+                        zoom = Math.max(0.1, Math.min(zoom, 2)); // 限制缩放范围
+                        // 修改相机FOV来实现缩放
+                        camera.fov = 45 * zoom;
+                        camera.updateProjectionMatrix(); // 更新投影矩阵
+                    }
+                }
 
-            //            camera.quaternion.setFromEuler(euler);
-            //        } else if (event_move.touches.length === 2) {
-            //            // 双指触摸，计算缩放
-            //            const newDx = event_move.touches[0].clientX - event_move.touches[1].clientX;
-            //            const newDy = event_move.touches[0].clientY - event_move.touches[1].clientY;
-            //            const newDistance = Math.sqrt(newDx * newDx + newDy * newDy);
-            //            const oldDistance = Math.sqrt(dx * dx + dy * dy);
-            //            zoom += (newDistance - oldDistance) * trunZoom;
-            //            zoom = Math.max(0.1, Math.min(zoom, 2)); // 限制缩放范围
-            //            // 修改相机FOV来实现缩放
-            //            camera.fov = 45 * zoom;
-            //            camera.updateProjectionMatrix(); // 更新投影矩阵
-            //        }
-            //    }
-
-            //    window.ontouchend = function (event_end) {
-            //        window.ontouchmove = null; // 移除移动事件监听
-            //    }
-            //}
+                window.ontouchend = function (event_end) {
+                    window.ontouchmove = null; // 移除移动事件监听
+                }
+            }
 
             // 添加点击事件监听
             window.onmousedown = function (event_start) {
