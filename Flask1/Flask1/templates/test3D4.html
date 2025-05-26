@@ -196,6 +196,9 @@
                     base_rotation.x = camera.rotation.x;
                     base_rotation.y = camera.rotation.y;
                     base_rotation.z = camera.rotation.z;
+
+                    let startX = event_start.touches[0].clientX,
+                        startY = event_start.touches[0].clientY;
                 } else if (event_start.touches.length === 2) {
                     // 双指触摸，计算缩放
                     const dx = event_start.touches[0].clientX - event_start.touches[1].clientX;
@@ -205,18 +208,29 @@
                 window.ontouchmove = function (event_move) {
                     if (event_move.touches.length === 1) {
                         // 单指触摸，计算旋转
-                        const deltaX = event_move.touches[0].clientX - event_start.touches[0].clientX;
-                        const deltaY = event_move.touches[0].clientY - event_start.touches[0].clientY;
+                        const deltaX = event_move.touches[0].clientX - startX;
+                        const deltaY = event_move.touches[0].clientY - startY;
 
-                        // 使用四元数避免万向节锁
-                        camera.quaternion.setFromEuler(
-                            new THREE.Euler(
-                                base_rotation.x + deltaY * 0.01, // 调整旋转速度
-                                base_rotation.y + deltaX * 0.01,
-                                base_rotation.z,
-                                'YXZ' // 重要：指定旋转顺序
-                            )
+                        // 修改起始xy
+                        startX = event_move.touches[0].clientX;
+                        startY = event_move.touches[0].clientY;
+
+                        // 使用YXZ顺序创建Euler角，并调整方向, 使用四元数避免万向节锁
+                        const euler = new THREE.Euler(
+                            base_rotation.x += deltaY * 0.0005, // 调整符号
+                            base_rotation.y += deltaX * 0.0005,
+                            base_rotation.z,
+                            'YXZ'
                         );
+
+                        // 限制相机的旋转范围
+                        euler.x = THREE.MathUtils.clamp(
+                            euler.x,
+                            -Math.PI / 4, // 最大仰角（向下看限制）
+                            Math.PI / 4   // 最大俯角（向上看限制）
+                        );
+
+                        camera.quaternion.setFromEuler(euler);
                     } else if (event_move.touches.length === 2) {
                         // 双指触摸，计算缩放
                         const newDx = event_move.touches[0].clientX - event_move.touches[1].clientX;
@@ -264,8 +278,6 @@
                         -Math.PI / 4, // 最大仰角（向下看限制）
                         Math.PI / 4   // 最大俯角（向上看限制）
                     );
-
-                    console.log(euler.x);
 
                     camera.quaternion.setFromEuler(euler);                                        
                 }
