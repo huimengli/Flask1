@@ -1,0 +1,287 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>VR_viewer</title>
+    <script src="/static/JavaScriptCode/lt_code.js"></script>
+    <script src="/static/js/jquery-3.3.1.js"></script>
+    <script src="/static/three.js/build/three.js"></script>
+    <style>
+        body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        img {
+            top: 100vh;
+            position: fixed;
+        }
+
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body>
+</body>
+</html>
+<script>
+    lt_code.onload = function () {
+        /**URL数据 */
+        let url = lt_code.getUrlData(window.location.href);
+        let src = url.src || url.path || url.img || url.href;
+
+        /**图片 */
+        let image = new Image();
+        image.crossOrigin = "anonymous"; // 解决跨域问题
+        image.src = src || "../static/images/background/5.webp";
+        image.onerror = function () {
+            alert("图片加载失败，请检查路径是否正确！");
+            image.src = "../static/images/background/5.webp"; // 默认图片
+        }
+        image.onload = function () {
+            // 隐藏原图
+            image.style.opacity = 0;
+
+            let cas = lt_code.newDom("canvas", {
+                width: image.width,
+                height: image.height,
+                style: {
+                    position: "fixed",
+                    top: "100vh",
+                },
+            });
+
+            let ctx = cas.getContext("2d");
+            ctx.drawImage(image, 0, 0, image.width, image.height);
+
+            /**输出Base64 */
+            let base64 = cas.toDataURL('image/png'); // 输出 base64
+
+            /**API模块 */
+            let API = null;
+
+            /**初始化角度 */
+            let base_rotation = new THREE.Vector3(0, 0, 0);
+
+            // 加载API模块
+            try {
+                lt_code.init("API", () => {
+                    //API = new lt_code.API();
+                    ////启用陀螺仪
+                    //API.UseGyroscope = true;
+                    //window.API = API;
+                    //rotation = API.gyroscope || new THREE.Vector3(0, 0, 0);
+                });
+            } catch (e) {
+                console.log(e);
+            }
+
+            /**缩放大小 */
+            let zoom = 1;
+
+            /**每次更改缩放多少 */
+            const trunZoom = 0.001;
+
+            //初始化渲染器
+            var renderer = new THREE.WebGLRenderer({
+                //抗锯齿处理
+                antialias: true,
+                alpha: true
+            }); //实例化渲染器
+            renderer.setSize(window.innerWidth, window.innerHeight); //设置宽和高
+
+            //告诉渲染器需要阴影效果
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap; // 默认的是，没有设置的这个清晰 THREE.PCFShadowMap
+
+            document.body.appendChild(renderer.domElement); //添加到dom
+
+            //初始化场景
+            var scene = new THREE.Scene(); //实例化场景
+
+            //初始化相机
+            var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 200);
+            //修改相机位置相机
+            camera.position.set(0, 0, 0);
+            camera.rotation.order = 'YXZ'; // 设置旋转顺序为YXZ
+            //修改相机角度
+            camera.rotation.set(0 / 360 * Math.PI, 0, 0);
+            //window.camera = camera; // 允许外部访问
+
+            //环境光照
+            var ambientLight = new THREE.AmbientLight("#999999");
+            scene.add(ambientLight);
+
+            //直接光照
+            var directionalLight = new THREE.DirectionalLight("#ffeecc");
+            directionalLight.position.set(-40, 60, -10);
+
+            directionalLight.shadow.camera.near = 20; //产生阴影的最近距离
+            directionalLight.shadow.camera.far = 200; //产生阴影的最远距离
+            directionalLight.shadow.camera.left = -50; //产生阴影距离位置的最左边位置
+            directionalLight.shadow.camera.right = 50; //最右边
+            directionalLight.shadow.camera.top = 50; //最上边
+            directionalLight.shadow.camera.bottom = -50; //最下面
+
+            //这两个值决定使用多少像素生成阴影 默认512
+            directionalLight.shadow.mapSize.height = 1024;
+            directionalLight.shadow.mapSize.width = 1024;
+
+            //告诉平行光需要开启阴影投射
+            directionalLight.castShadow = true;
+
+            scene.add(directionalLight);
+
+            /**模型运行挂载 */
+            var run = 0;
+
+            // 添加天空球
+            /**天空球 */
+            var geometry = new THREE.SphereGeometry(5, 60, 60);
+            //geometry.scale(-1, 1, 1); // 反转几何体
+
+            // 加载 360 度全景图
+            const textureLoader = new THREE.TextureLoader().setCrossOrigin('anonymous');
+            const panoramaTexture = textureLoader.load(base64||src);
+            //image.style.opacity = 0; // 隐藏原图
+
+            // 创建材质（关键：设置 side 为 BackSide）
+            const material = new THREE.MeshBasicMaterial({
+                map: panoramaTexture,
+                side: THREE.DoubleSide
+            });
+
+            // 组合成网格对象
+            const sphere = new THREE.Mesh(geometry, material);
+            scene.add(sphere);
+            //window.sphere = sphere; // 允许外部访问
+
+            let rotation = new THREE.Vector3(0, 0, 0);
+            run = setInterval(function () {
+                //console.log(camera.rotation);
+                if (!API || !API.gyroscope) {
+                    //渲染场景
+                    renderer.render(scene, camera); //渲染界面
+                    return;
+                }
+
+                // 获取陀螺仪数据（注意单位转换）
+                const gyro = API.gyroscope || { x: 0, y: 0, z: 0 };
+
+                // 坐标系转换（根据实际设备调整符号）
+                const x = gyro.x * Math.PI / 180;  // 转为弧度
+                const y = -gyro.y * Math.PI / 180; // Y轴取反
+                const z = gyro.z * Math.PI / 180;
+
+                // 使用四元数避免万向节锁
+                camera.quaternion.setFromEuler(
+                    new THREE.Euler(
+                        base_rotation.x + x,
+                        base_rotation.y + y,
+                        base_rotation.z + z,
+                        'YXZ' // 重要：指定旋转顺序
+                    )
+                );
+
+                //渲染场景
+                renderer.render(scene, camera); //渲染界面
+            }, 30);
+
+            // 添加触摸事件监听
+            window.ontouchstart = function (event_start) {
+                let startX = event_start.touches[0].clientX,
+                    startY = event_start.touches[0].clientY;
+                if (event_start.touches.length === 1) {
+                    // 单指触摸，记录起始位置
+                    base_rotation.set(camera.rotation.x, camera.rotation.y, camera.rotation.z);
+                } else if (event_start.touches.length === 2) {
+                    // 双指触摸，计算缩放
+                    const dx = event_start.touches[0].clientX - event_start.touches[1].clientX;
+                    const dy = event_start.touches[0].clientY - event_start.touches[1].clientY;
+                }
+
+                window.ontouchmove = function (event_move) {
+                    if (event_move.touches.length === 1) {
+                        // 单指触摸，计算旋转
+                        const deltaX = event_move.touches[0].clientX - startX;
+                        const deltaY = event_move.touches[0].clientY - startY;
+
+                        // 修改起始xy
+                        startX = event_move.touches[0].clientX;
+                        startY = event_move.touches[0].clientY;
+
+                        // 使用YXZ顺序创建Euler角，并调整方向, 使用四元数避免万向节锁
+                        const euler = new THREE.Euler(
+                            base_rotation.x += deltaY * 0.0005, // 调整符号
+                            base_rotation.y += deltaX * 0.0005,
+                            base_rotation.z,
+                            'YXZ'
+                        );
+
+                        // 限制相机的旋转范围
+                        euler.x = THREE.MathUtils.clamp(
+                            euler.x,
+                            -Math.PI / 4, // 最大仰角（向下看限制）
+                            Math.PI / 4   // 最大俯角（向上看限制）
+                        );
+
+                        camera.quaternion.setFromEuler(euler);
+                    } else if (event_move.touches.length === 2) {
+                        // 双指触摸，计算缩放
+                        const newDx = event_move.touches[0].clientX - event_move.touches[1].clientX;
+                        const newDy = event_move.touches[0].clientY - event_move.touches[1].clientY;
+                        const newDistance = Math.sqrt(newDx * newDx + newDy * newDy);
+                        const oldDistance = Math.sqrt(dx * dx + dy * dy);
+                        zoom += (newDistance - oldDistance) * trunZoom;
+                        zoom = Math.max(0.1, Math.min(zoom, 2)); // 限制缩放范围
+                        // 修改相机FOV来实现缩放
+                        camera.fov = 45 * zoom;
+                        camera.updateProjectionMatrix(); // 更新投影矩阵
+                    }
+                }
+
+                window.ontouchend = function (event_end) {
+                    window.ontouchmove = null; // 移除移动事件监听
+                }
+            }
+
+            // 添加点击事件监听
+            window.onmousedown = function (event_start) {
+                let startX = event_start.clientX,
+                    startY = event_start.clientY;
+                // 记录起始位置的旋转，使用相机的当前rotation（order已设为YXZ）
+                base_rotation.set(camera.rotation.x, camera.rotation.y, camera.rotation.z);
+                window.onmousemove = function (event_move) {
+                    const deltaX = event_move.clientX - startX;
+                    const deltaY = event_move.clientY - startY;
+
+                    // 修改起始xy
+                    startX = event_move.clientX;
+                    startY = event_move.clientY;
+
+                    // 使用YXZ顺序创建Euler角，并调整方向
+                    const euler = new THREE.Euler(
+                        base_rotation.x += deltaY * 0.0005, // 调整符号
+                        base_rotation.y += deltaX * 0.0005,
+                        base_rotation.z,
+                        'YXZ'
+                    );
+
+                    // 限制相机的旋转范围
+                    euler.x = THREE.MathUtils.clamp(
+                        euler.x,
+                        -Math.PI / 4, // 最大仰角（向下看限制）
+                        Math.PI / 4   // 最大俯角（向上看限制）
+                    );
+
+                    camera.quaternion.setFromEuler(euler);                                        
+                }
+                window.onmouseup = function () {
+                    window.onmousemove = null;
+                }
+            };
+        }        
+    }
+</script>

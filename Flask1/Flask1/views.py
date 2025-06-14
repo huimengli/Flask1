@@ -85,10 +85,11 @@ def signIn():
             session['name'] = name;
             session['password'] = password;
         else:
-            user = User.SignIn(name,password);
-            session['id'] = user.id;
-            session['name'] = name;
-            session['password'] = password;
+            #user = User.SignIn(name,password);
+            #session['id'] = user.id;
+            #session['name'] = name;
+            #session['password'] = password;
+            return "注册已经关闭"
 
         return redirect(url_for(indexWeb));
 
@@ -803,6 +804,28 @@ def web3D2():
 
     return render_template(
         'test3D2.html',
+    );
+
+@app.route("/web3D3/")
+@app.route("/Web3D3/")
+def web3D3():
+    '''
+    网站3D测试
+    '''
+
+    return render_template(
+        'test3D3.html',
+    );
+
+@app.route("/web3D4/")
+@app.route("/Web3D4/")
+def web3D4():
+    '''
+    网站3D测试
+    '''
+
+    return render_template(
+        'test3D4.html',
     );
 
 @app.route("/testAR/")
