@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script src="../static/JavaScriptCode/lt_code.js"></script>
+</head>
+<body>
+
+</body>
+</html>
+<script>
+    var global = {
+        body: null,
+        width: 800,
+        height:800,
+        canvas: null,
+        ctx: lt_code.getCtx(),
+        point_number:8,
+        points: [],
+        run: -1,
+        isInit:false,
+        init: function () {
+            this.body = lt_code.getAll();
+            this.canvas = lt_code.newDom("canvas", {
+                width: this.width,
+                height: this.height,
+                style: {
+                    position: "fixed",
+                    width: `${this.width}px`,
+                    height: `${this.height}px`,
+                    top: `calc(50vh - ${this.width/2}px)`,
+                    left: `calc(50vw - ${this.height/2}px)`,
+                    "z-index": 1000
+                }
+            });
+            this.ctx = lt_code.getCtx(this.canvas);
+
+            lt_code.addChild(this.canvas, this.body);
+
+            //初始化成功
+            this.isInit = true;  
+        },
+        drawPoint: function (x, y, c, r) {
+            if (this.isInit) {
+                this.ctx.beginPath();
+                
+                this.ctx.arc(x, y, r, 0, 360);
+                this.ctx.fillStyle = c;
+                this.ctx.fill();
+
+                this.ctx.closePath();
+            }
+        }
+    };
+</script>

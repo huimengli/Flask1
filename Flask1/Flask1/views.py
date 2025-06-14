@@ -858,6 +858,15 @@ def testAPI():
         'TestAPI.html',        
     )
 
+@app.route("/loading/")
+def loading():
+    '''
+    加载界面
+    '''
+    return render_template(
+        'loading.html'
+    )
+
 #@app.route('/')
 #@app.route('/home')
 #def home():
