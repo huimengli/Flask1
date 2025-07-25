@@ -545,6 +545,10 @@ var newListBlock = function (value, isfile, father) {
     newValue.innerHTML = value;
     newValue.onmousedown = function () {
         var dir = lt_code.getDomFather(this).dataset.dir;
+        var removeItems = Array.prototype.slice.call(lt_code.getClass("listBlock", null, newBlock, false));
+        removeItems.forEach(item => {
+            lt_code.removeChild(item, lt_code.getDomFather(item));
+        });
         newListBlockInList(newBlock);
         lt_code.history.newSearch(dir);
     };
