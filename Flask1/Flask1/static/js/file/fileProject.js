@@ -545,6 +545,7 @@ var newListBlock = function (value, isfile, father) {
     newValue.innerHTML = value;
     newValue.onmousedown = function () {
         var dir = lt_code.getDomFather(this).dataset.dir;
+        newListBlockInList(newBlock);
         lt_code.history.newSearch(dir);
     };
 
@@ -1304,6 +1305,45 @@ lt_code.variable.addRun(function () {
         body.clientWidth / body.clientHeight < 1470 / 935 ? body.style.backgroundSize = "auto 100%" : body.style.backgroundSize = "100% auto";
     }, 100);
 }(), "背景图片适应");
+
+// 新建ListBlock行
+var newListBlockInList = function (father) {
+    /**真实路径 */
+    var dir = father.dataset.dir;
+    /**上传数据 */
+    var up = {
+        n: "list",
+        isdir: "True",
+        dir: dir
+    };
+    //获取目录
+    $(function () {
+        $.ajax({
+            type: "post",
+            url: postUrl,
+            data: JSON.stringify(up),
+            contentType: "application/json; charset=utf-8",
+            dataType: "text",
+            success: function (data) {
+                eval("data = " + data);
+                //console.log(data);
+                for (var j = 0; j < data.length; j++) {
+                    //console.log(data[j]);
+                    for (var x in data[j]) {
+                        if (data[j][x] == "False") {
+                            newListBlock(x, false, father);
+                        } else if (data[j][x] == "True") {
+                            continue;
+                        }
+                    }
+                }
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        });
+    });
+}
 
 //页面加载
 window.onload = function () {
