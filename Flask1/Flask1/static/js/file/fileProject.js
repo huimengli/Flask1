@@ -1323,7 +1323,8 @@ window.onload = function () {
         //console.log(father.classList);
     };
     var i = 0;
-    lt_code.variable.addRun(setInterval(function () {
+    //lt_code.variable.addRun(setInterval(function () {
+    setTimeout(function () {
         if (i < lists.length) {
             /**父类结点 */
             var father = lists[i];
@@ -1370,7 +1371,8 @@ window.onload = function () {
                 }
             });
         }
-    }, 100), "遍历所有文件夹");
+    });
+    //}, 100), "遍历所有文件夹");
     lt_code.history.newSearch("");
     lt_code.getAll(".listValue", 0).onmousedown = function () {
         lt_code.history.newSearch("");
