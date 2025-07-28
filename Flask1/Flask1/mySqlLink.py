@@ -172,7 +172,7 @@ def getTable(tablename,listname=None,where=None):
     if not where==None:
         sql+=" WHERE "+where;
 
-    sql += " ORDERY BY id DESC";
+    #sql += " ORDERY BY id DESC";
 
     return getValue(sql);
 
