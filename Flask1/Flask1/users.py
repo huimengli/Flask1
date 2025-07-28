@@ -4,6 +4,7 @@
 import re;
 import Flask1.mySqlLink as Link;
 import Flask1.fileSystem as fileSys;
+import Flask1.item as Item;
 
 #用户数据文件存在位置
 USERFILEPATH = 'usersfile.txt';
@@ -85,8 +86,8 @@ def getValue(code,gets):
     for x in gets:
         item = re.compile(x+r':([^:;]*)');
         item2 = item.search(code)
-        print(item);
-        print(item2);
+        Item.Trace(item);
+        Item.Trace(item2);
         if not item2==None:
             ret.append(item2.group(1));
         else:
@@ -128,14 +129,12 @@ class UserBasic(object):
             UserBasic.USERS = UserBasic.CreateAllUserSql();
         for user in UserBasic.USERS:
             if not isinstance(user,UserBasic):
-                print('next');
+                Item.Trace('next');
                 continue;
             if user.name==name and user.password==password:
                 ret = user;
                 break;
             else:
-                print(user.name==name)
-                print(user.password==password)
                 pass
 
         if isinstance(ret,UserBasic):
@@ -162,7 +161,7 @@ class UserBasic(object):
         注册账号
         '''
         userId = UserBasic.SignOn(name,password);
-        print(userId);
+        Item.Trace(userId);
         if int(userId)<0:
             id = len(UserBasic.USERS);
             newUser = UserBasic(id,name,password,"basic");
@@ -326,19 +325,19 @@ class UserBasic(object):
 
     def UpHeadPhoto(self,photo):
         '''上传头像'''
-        print(len(photo));
+        Item.Trace(len(photo));
         ret = False;
         try:
             ret = Link.addValue("headphoto",Link.getColumns("headphoto"),[str(self.id),photo]);
         except Exception as err:
             ret = self.ChangeHeadPhoto(photo);
-            print(err);
-            print(ret);
+            Item.Trace(err);
+            Item.Trace(ret);
         return ret;
 
     def ChangeHeadPhoto(self,photo):
         '''更新头像'''
-        print(len(photo));
+        Item.Trace(len(photo));
         return Link.changeValue("headphoto","headphoto",photo,"id",str(self.id));
 
     def GetDiary(self):

@@ -5,6 +5,7 @@
 import MySQLdb;
 import os;
 import time;
+import Flask1.item as item;
 
 #连接地址
 LINKPATH = "localhost";
@@ -39,7 +40,7 @@ def getValue(sql):
     '''
     直接运行sql语句
     '''
-    print(sql);
+    item.Trace(sql);
 
     try:
         # 使用cursor()方法获取操作游标 
@@ -61,7 +62,7 @@ def getValue(sql):
         else:
             return data;
     except Exception as e:
-        print(e);
+        item.Trace(e);
         with open(LOGPATH,"a") as f:
             f.write("报告时间: "+str(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())))
             f.write("\n错误内容: "+str(e));

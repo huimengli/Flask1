@@ -4,7 +4,7 @@ Routes and views for the flask application.
 
 from datetime import datetime
 from flask import render_template,redirect, request, url_for,session
-from Flask1 import app
+from Flask1 import app, item
 from random import randint;
 from Flask1.users import UserBasic as User;
 import json;
@@ -32,15 +32,15 @@ def signOn():
     name = request.args.get("name");
     password = request.args.get("password");
     id = None;
-    if name==None or password==None:
+    if name==None and password==None:
         try:
-            name = session['name'];
-            password = session['password'];
+            id = session.get("id",None);
+            # password = session['password'];
         except:
             print;
     if not name==None and not password==None:
-        id = User.SignOn(name,password);
-        print(id);
+        id = session.get("id",None) or User.SignOn(name,password);
+        item.Trace(id);
     if id==None:
         pass
     elif id<0:
@@ -49,7 +49,7 @@ def signOn():
     elif id>=0:
         session['id'] = id;
         session['name'] = name;
-        session['password'] = password;
+        # session['password'] = password;
         return redirect(url_for(indexWeb));
     
     return render_template(
@@ -70,20 +70,22 @@ def signIn():
     name = request.args.get("name");
     password = request.args.get("password");
     user = None;
-    if name==None or password==None:
+    if name==None and password==None:
         try:
-            name = session['name'];
-            password = session['password'];
+            id = session.get("id",None);
+            user = User.GetUser(id);
+            # password = session['password'];
         except Exception as e:
-            print(e);
+            item.Trace(e);
     if not name==None and not password==None and not name=='' and not password=='':
-        user = User.GetUser(User.SignOn(name,password));
-        print(user);
+        id = session.get("id",None) or User.SignOn(name,password);
+        user = User.GetUser(id);
+        item.Trace(user);
 
         if isinstance(user,User):
             session['id'] = user.id;
             session['name'] = name;
-            session['password'] = password;
+            # session['password'] = password;
         else:
             #user = User.SignIn(name,password);
             #session['id'] = user.id;
@@ -109,30 +111,31 @@ def index():
     name = request.args.get("name");
     password = request.args.get("password");
     user = None;
-    if name==None or password==None:
+    if name==None and password==None:
         try:
-            name = session['name'];
-            password = session['password'];
+            id = session.get("id",None);
+            user = User.GetUser(id);
+            # password = session['password'];
         except :
             print;
 
     if not name==None and not password==None and not name=='' and not password=='':
-        id = User.SignOn(name,password);
-        print(id);
+        id = session.get("id",None) or User.SignOn(name,password);
+        item.Trace(id);
         user = User.GetUser(id);
-        print(user);
+        item.Trace(user);
 
     if isinstance(user,User):
         session['id'] = user.id;
         session['name'] = name;
-        session['password'] = password;
+        # session['password'] = password;
     else:
         return redirect(url_for("signIn"));
 
     values = request.get_data();
-    print(values);
+    item.Trace(values);
     if len(values)>0:
-        print(values);
+        item.Trace(values);
         value = json.loads(values);
         try:
             if value['n']=='name':
@@ -169,7 +172,7 @@ def index():
                 return redirect(url_for("oneValue"));
 
         except Exception as e:
-            print(e);
+            item.Trace(e);
 
         return values;
 
@@ -197,32 +200,33 @@ def oneValue():
         session['diaryid'] = "";
         return redirect(url_for("index"));
     user = None;
-    if name==None or password==None:
+    if name==None and password==None:
         try:
-            name = session['name'];
-            password = session['password'];
+            id = session.get("id",None);
+            user = User.GetUser(id);
+            # password = session['password'];
         except Exception as e:
-            print(e);
+            item.Trace(e);
 
     if not name==None and not password==None:
         user = User.GetUser(User.SignOn(name,password));
-        print(user.ToString());
+        item.Trace(user.ToString());
 
     if isinstance(user,User):
         session['id'] = user.id;
         session['name'] = name;
-        session['password'] = password;
+        # session['password'] = password;
     else:
         return redirect(url_for("signIn"));
 
     try:
         diaryId = session['diaryid'];
         diary = user.GetOneDiary(diaryId);
-        print(diary);
+        item.Trace(diary);
         context['diarytitle'] = diary[0][0];
         context['diaryvalue'] = diary[0][1];
     except Exception as e:
-        print(e);
+        item.Trace(e);
         return redirect(url_for("index"));
 
     return render_template(
@@ -248,12 +252,13 @@ def changeValue():
     if not exit==None:
         return redirect(url_for("index"));
     user = None;
-    if name==None or password==None:
+    if name==None and password==None:
         try:
-            name = session['name'];
-            password = session['password'];
+            id = session.get("id",None);
+            user = User.GetUser(id);
+            # password = session['password'];
         except Exception as e:
-            print(e);
+            item.Trace(e);
 
     if not name==None and not password==None:
         user = User.GetUser(User.SignOn(name,password));
@@ -261,7 +266,7 @@ def changeValue():
     if isinstance(user,User) and not user==None:
         session['id'] = user.id;
         session['name'] = name;
-        session['password'] = password;
+        # session['password'] = password;
         context['username'] = user.name;
         context['userid'] = str(user.id);
     else:
@@ -278,7 +283,8 @@ def changeValue():
     if not old==None and not ne==None:
         isChangePassword = user.ChangePassword(old,ne);
         if isChangePassword:
-            session['password'] = ne;
+            # session['password'] = ne;
+            pass
 
     return render_template(
         'changeValue.html',
@@ -321,37 +327,38 @@ def file():
     context = {};
     context['name'] = myname;
     context['title'] = "文件管理";
-    print("\n");
     name = None;
     password = None;
     user = None;
-    if name==None or password==None:
+    id = None;
+    if name==None and password==None:
         try:
-            name = session['name'];
-            password = session['password'];
+            id = session.get("id",None);
+            user = User.GetUser(id);
+            # password = session['password'];
         except Exception as err:
-            print(err);
+            item.Trace(err);
 
     if not name==None and not password==None and not name=='' and not password=='':
-        id = User.SignOn(name,password);
-        #print(id);
+        id = session.get("id",None) or User.SignOn(name,password);
+        #item.Trace(id);
         user = User.GetUser(id);
-        #print(user);
+        #item.Trace(user);
 
     if isinstance(user,User) and not user==None:
         session['id'] = user.id;
         session['name'] = name;
-        session['password'] = password;
+        # session['password'] = password;
 
 
     values = request.get_data();
     
-    #print(values);
+    #item.Trace(values);
     
     if len(values)>0:
-        #print(values);
+        #item.Trace(values);
         value = json.loads(values);
-        #print(values.decode("utf8"));
+        #item.Trace(values.decode("utf8"));
         try:
             if value['n']=='name':
                 return user.name;
@@ -383,7 +390,7 @@ def file():
                     return str(Fsys.files.getFileNoDelete(fileSys.fileSteam,value['dir']));
 
             elif value['n']=="newDir":
-                #print(user.ToString());
+                #item.Trace(user.ToString());
                 if not isinstance(user,User) or user==None:
                     return "Error";
                 else:
@@ -405,7 +412,7 @@ def file():
                     level += user.AddLevel();
 
                     newFile = Fsys.files(len(files),value['name'],value['size'],str(eachSize),package,value['md5'],fileSys.root+value['dir']+"/"+value['name']+".file",user.id,level,value['create'],value['uptime'],0);
-                    print(newFile.toDictNoCut());
+                    item.Trace(newFile.toDictNoCut());
                     upSql = newFile.upSql("files");
                     if upSql=="True":
                         write = newFile.toDictNoCut();
@@ -432,7 +439,7 @@ def file():
 
             elif value['n']=="getFileInfo":
                 dir = fileSys.root+value["dir"]+".file";
-                print(dir);
+                item.Trace(dir);
                 if fileSys.exists(dir):
                     file = fileSys.getFile(dir);
                     return str(file.toDict());
@@ -441,16 +448,16 @@ def file():
 
             elif value['n']=="upFileOver":
                 dir = fileSys.root+value['dir']+"/"+value["name"]+".file";
-                print(dir);
+                item.Trace(dir);
                 if not isinstance(user,User) or user==None:
                     return "Error";
                 else:
                     fileSys.streamUpdate();
                     file = fileSys.getFile(dir);
-                    print(file.toDict());
+                    item.Trace(file.toDict());
                     if int(file.id)>=0:
                         fileIndex = fileSys.fileSteam.index(file);
-                        print(fileIndex);
+                        item.Trace(fileIndex);
                         eachSize = 1024*1024*20;
                         if eachSize>int(value['size']):
                             eachSize = int(value['size']);
@@ -470,7 +477,7 @@ def file():
                             file.uptime = value['uptime'];
                             upSql = file.changeSql(fileSys.tableName);
                             if upSql==True or upSql=="True":
-                                #print("True");
+                                #item.Trace("True");
                                 write = file.toDictNoCut();
                                 write['value'] = value['value'];
                                 fileSys.fileSteam[fileIndex] = file;
@@ -482,7 +489,7 @@ def file():
 
             elif value['n']=="downFile":
                 dir = fileSys.root+value["dir"];
-                print(dir);
+                item.Trace(dir);
                 if not fileSys.exists(dir):
                     file = fileSys.getFile(dir);
                     return "Alive";
@@ -505,7 +512,7 @@ def file():
                     return "Alive";
                 else:
                     file = fileSys.getFile(dir);
-                    print(file.toDictNoCut());
+                    item.Trace(file.toDictNoCut());
                     if not isinstance(user,User) or user ==None:
                         return "Error";
                     else:
@@ -532,14 +539,14 @@ def file():
                         return str(user.ChangeHeadPhoto(value['value']));
 
         except Exception as e:
-            #print("错误内容:"+str(e));
-            #print("错误文件:"+str(e.__traceback__.tb_frame.f_globals["__file__"]))  # 发生异常所在的文件
-            #print("错误行数:"+str(e.__traceback__.tb_lineno))                       # 发生异常所在的行数
+            #item.Trace("错误内容:"+str(e));
+            #item.Trace("错误文件:"+str(e.__traceback__.tb_frame.f_globals["__file__"]))  # 发生异常所在的文件
+            #item.Trace("错误行数:"+str(e.__traceback__.tb_lineno))                       # 发生异常所在的行数
             raise e;
     #else:
         return values;
 
-    #print(fileSys.fileSteam[0].getValue());
+    #item.Trace(fileSys.fileSteam[0].getValue());
 
     return render_template(
         'file.html',
@@ -555,27 +562,28 @@ def adminfile():
     context = {};
     context['name'] = myname;
     context['title'] = "文件管理员";
-    print("\n");
+    item.Trace("\n");
     name = None;
     password = None;
     user = None;
-    if name==None or password==None:
+    if name==None and password==None:
         try:
-            name = session['name'];
-            password = session['password'];
+            id = session.get("id",None);
+            user = User.GetUser(id);
+            # password = session['password'];
         except Exception as err:
-            print(err);
+            item.Trace(err);
 
     if not name==None and not password==None and not name=='' and not password=='':
-        id = User.SignOn(name,password);
-        #print(id);
+        id = session.get("id",None) or User.SignOn(name,password);
+        #item.Trace(id);
         user = User.GetUser(id);
-        #print(user);
+        #item.Trace(user);
 
     if isinstance(user,User) and not user==None:
         session['id'] = user.id;
         session['name'] = name;
-        session['password'] = password;
+        # session['password'] = password;
 
     try:
         if user.ChackLevel(100)==False:
@@ -585,12 +593,12 @@ def adminfile():
 
     values = request.get_data();
     
-    #print(values);
+    #item.Trace(values);
     
     if len(values)>0:
-        #print(values);
+        #item.Trace(values);
         value = json.loads(values);
-        #print(values.decode("utf8"));
+        #item.Trace(values.decode("utf8"));
         try:
             if value['n']=='name':
                 return user.name;
@@ -622,7 +630,7 @@ def adminfile():
                     return str(Fsys.files.getFile(fileSys.fileSteam,value['dir']));
 
             elif value['n']=="newDir":
-                #print(user.ToString());
+                #item.Trace(user.ToString());
                 if not isinstance(user,User) or user==None:
                     return "Error";
                 else:
@@ -644,7 +652,7 @@ def adminfile():
                     level += user.AddLevel();
 
                     newFile = Fsys.files(len(files),value['name'],value['size'],str(eachSize),package,value['md5'],fileSys.root+value['dir']+"/"+value['name']+".file",user.id,level,value['create'],value['uptime'],0);
-                    print(newFile.toDictNoCut());
+                    item.Trace(newFile.toDictNoCut());
                     upSql = newFile.upSql("files");
                     if upSql=="True":
                         write = newFile.toDictNoCut();
@@ -671,7 +679,7 @@ def adminfile():
 
             elif value['n']=="getFileInfo":
                 dir = fileSys.root+value["dir"]+".file";
-                print(dir);
+                item.Trace(dir);
                 if fileSys.exists(dir):
                     file = fileSys.getFile(dir);
                     return str(file.toDict());
@@ -680,16 +688,16 @@ def adminfile():
 
             elif value['n']=="upFileOver":
                 dir = fileSys.root+value['dir']+"/"+value["name"]+".file";
-                print(dir);
+                item.Trace(dir);
                 if not isinstance(user,User) or user==None:
                     return "Error";
                 else:
                     fileSys.streamUpdate();
                     file = fileSys.getFile(dir);
-                    print(file.toDict());
+                    item.Trace(file.toDict());
                     if int(file.id)>=0:
                         fileIndex = fileSys.fileSteam.index(file);
-                        print(fileIndex);
+                        item.Trace(fileIndex);
                         eachSize = 1024*1024*20;
                         if eachSize>int(value['size']):
                             eachSize = int(value['size']);
@@ -708,7 +716,7 @@ def adminfile():
                             file.userid = user.id;
                             upSql = file.changeSql(fileSys.tableName);
                             if upSql==True or upSql=="True":
-                                #print("True");
+                                #item.Trace("True");
                                 write = file.toDictNoCut();
                                 write['value'] = value['value'];
                                 fileSys.fileSteam[fileIndex] = file;
@@ -720,7 +728,7 @@ def adminfile():
 
             elif value['n']=="downFile":
                 dir = fileSys.root+value["dir"];
-                print(dir);
+                item.Trace(dir);
                 if not fileSys.exists(dir):
                     file = fileSys.getFile(dir);
                     return "Alive";
@@ -743,7 +751,7 @@ def adminfile():
                     return "Alive";
                 else:
                     file = fileSys.getFile(dir);
-                    print(file.toDictNoCut());
+                    item.Trace(file.toDictNoCut());
                     if not isinstance(user,User) or user ==None:
                         return "Error";
                     else:
@@ -770,14 +778,14 @@ def adminfile():
                         return str(user.ChangeHeadPhoto(value['value']));
 
         except Exception as e:
-            #print("错误内容:"+str(e));
-            #print("错误文件:"+str(e.__traceback__.tb_frame.f_globals["__file__"]))  # 发生异常所在的文件
-            #print("错误行数:"+str(e.__traceback__.tb_lineno))                       # 发生异常所在的行数
+            #item.Trace("错误内容:"+str(e));
+            #item.Trace("错误文件:"+str(e.__traceback__.tb_frame.f_globals["__file__"]))  # 发生异常所在的文件
+            #item.Trace("错误行数:"+str(e.__traceback__.tb_lineno))                       # 发生异常所在的行数
             raise e;
     #else:
         return values;
 
-    #print(fileSys.fileSteam[0].getValue());
+    #item.Trace(fileSys.fileSteam[0].getValue());
 
     return render_template(
         'adminFile.html',
@@ -890,32 +898,12 @@ def loading():
         'loading.html'
     )
 
-#@app.route('/')
-#@app.route('/home')
-#def home():
-#    """Renders the home page."""
-#    return render_template(
-#        'index.html',
-#        title='Home Page',
-#        year=datetime.now().year,
-#    )
+@app.route("/download/")
+def DirectDownload():
+    '''
+    直接下载文件的函数
+    '''
+    id = session["id"];
+    user = None;
 
-#@app.route('/contact')
-#def contact():
-#    """Renders the contact page."""
-#    return render_template(
-#        'contact.html',
-#        title='Contact',
-#        year=datetime.now().year,
-#        message='Your contact page.'
-#    )
-
-#@app.route('/about')
-#def about():
-#    """Renders the about page."""
-#    return render_template(
-#        'about.html',
-#        title='About',
-#        year=datetime.now().year,
-#        message='Your application description page.'
-#    )
+    return "权限不足，无法下载文件。请登录后再试。"
