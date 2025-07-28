@@ -208,8 +208,8 @@ var file_project = {
             } else {
                 lt_code.removeChild(e, this.box);
                 var time = lt_code.getAll2(".eachFileCreate", e);
-                fileTimes.push(new Date(time.innerHTML).getTime()+i);
-                times.push(new Date(time.innerHTML).getTime()+i);
+                fileTimes.push(e.dataset.time + i);
+                times.push(e.dataset.time + i);
             }
         });
         fileTimes = this.ListOrder(fileTimes);
@@ -229,8 +229,8 @@ var file_project = {
             } else {
                 lt_code.removeChild(e, this.box);
                 var time = lt_code.getAll2(".eachFileCreate", e);
-                fileTimes.push(new Date(time.innerHTML).getTime()+i);
-                times.push(new Date(time.innerHTML).getTime()+i);
+                fileTimes.push(e.dataset.time + i);
+                times.push(e.dataset.time + i);
             }
         });
         fileTimes = this.ListOrder(fileTimes,false);

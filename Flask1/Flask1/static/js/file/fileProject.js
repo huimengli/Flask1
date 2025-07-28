@@ -363,6 +363,7 @@ var newEachFile = function (fileName, size, create, isFile, dir, pag, level, isD
         "data-fileName": fileName,
         "data-dir": dir,
         "data-isFile": isFile,
+        "data-time": create,
     });
 
     /**文件行文件名 */
